@@ -3,7 +3,7 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
 } from '@ant-design/icons';
-import { Button, Layout, Menu, theme } from 'antd';
+import { Avatar, Button, Layout, Menu, theme } from 'antd';
 import { Link, Outlet } from 'react-router';
 import icons from '../assets/icons';
 
@@ -15,7 +15,20 @@ const AdminLayout = () => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     // buoc nay lay page tu account duoc luu trong context
-    const permittedPages = ['dashboard', 'cities', 'airlines', 'flights'];
+    const permittedPages = [
+        'dashboard',
+        'cities',
+        'airports',
+        'airlines',
+        'planes',
+        'flights',
+        'tickets',
+        'seats',
+        'roles',
+        'accounts',
+        'setting',
+    ];
+
     //
     const labelMap: Record<string, { label: React.ReactNode; icon: React.ReactNode }> = {
         dashboard: { label: <Link to="/admin/dashboard">Dashboard</Link>, icon: icons.dashboard },
@@ -57,9 +70,12 @@ const AdminLayout = () => {
             </Sider>
             <Layout>
                 <Header style={{
+                    display: 'flex',
+                    alignItems: 'center',
                     padding: 0,
                     background: colorBgContainer,
-                    boxShadow: " 0 1px 1px 0 rgba(0, 0, 0, 0.1)"
+                    boxShadow: " 0 1px 1px 0 rgba(0, 0, 0, 0.1)",
+                    paddingRight: 20
                 }}>
                     <Button
                         type="text"
@@ -71,6 +87,14 @@ const AdminLayout = () => {
                             height: 64,
                         }}
                     />
+                    <Avatar
+                        style={{
+                            marginLeft: 'auto',
+                            marginRight: 20,
+                            backgroundColor: "oklch(80.9% 0.105 251.813)"
+                        }}
+                        src={<img src={"https://i1.sndcdn.com/artworks-PLgC53YqkzWnTZqP-yBrw4g-t500x500.jpg"} alt="avatar" />} />
+                    <div className=' text-blue-500'>Hi, Phuc Nguyen</div>
                 </Header>
                 <Content
                     style={{
