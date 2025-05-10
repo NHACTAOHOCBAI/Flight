@@ -1,10 +1,19 @@
+import { ProTable } from '@ant-design/pro-components';
 
+const columns = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+  },
+];
 
-function App() {
-
+const App = () => {
   return (
-    <h1>hello</h1>
+    <ProTable columns={columns} request={async () => ({ data: [], success: true })} rowKey="id" />
   )
 }
-
-export default App
+export default App;
