@@ -14,6 +14,7 @@ import Setting from "../pages/admin/Setting";
 import Tickets from "../pages/admin/Tickets";
 import Login from "../pages/auth/Login";
 import Resgister from "../pages/auth/Resgister";
+import NotFound from "../pages/errors/NotFound";
 
 const router = createBrowserRouter([
     {
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
                 path: "",
                 element: <AdminLayout />,
                 children: [
-                    { index: true, element: <Dashboard /> },
+                    { path: "dashboard", element: <Dashboard /> },
                     { path: "accounts", element: <Accounts /> },
                     { path: "airlines", element: <Airlines /> },
                     { path: "airports", element: <Airports /> },
@@ -50,6 +51,11 @@ const router = createBrowserRouter([
                 ]
             }
         ]
+    },
+    // not found
+    {
+        path: "*",
+        element: <NotFound />,
     },
 ]);
 export default router

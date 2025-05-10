@@ -1,6 +1,6 @@
 const checkAuth = (pathname: string) => {
     // buoc nay lay page tu account duoc luu trong context
-    const permittedPages = ['', 'cities', 'airlines', 'flights'];
+    const permittedPages = ['dashboard', 'cities', 'airlines', 'flights'];
     //
 
     const endpoints = pathname.split('/').pop() as string;
