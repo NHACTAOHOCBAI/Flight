@@ -4,12 +4,14 @@ import {
     MenuUnfoldOutlined,
 } from '@ant-design/icons';
 import { Avatar, Button, Layout, Menu, theme } from 'antd';
-import { Link, Outlet } from 'react-router';
+import { Link, Outlet, useLocation } from 'react-router';
 import icons from '../assets/icons';
 
 const { Header, Sider, Content } = Layout;
 
 const AdminLayout = () => {
+    const { pathname } = useLocation();
+    const endpoints = pathname.split('/').pop() as string;
     const [collapsed, setCollapsed] = useState(false);
     const {
         token: { colorBgContainer },
@@ -44,9 +46,9 @@ const AdminLayout = () => {
         tickets: { label: <Link to="/admin/tickets">Ticket</Link>, icon: icons.ticket },
     };
 
-    const menuItems = permittedPages.map((value, index) => {
+    const menuItems = permittedPages.map((value) => {
         return ({
-            key: index,
+            key: value,
             icon: labelMap[value].icon,
             label: labelMap[value].label
         })
@@ -64,7 +66,7 @@ const AdminLayout = () => {
                 <Menu
                     theme="light"
                     mode="inline"
-                    defaultSelectedKeys={['1']}
+                    selectedKeys={[endpoints]}
                     items={menuItems}
                 />
             </Sider>
