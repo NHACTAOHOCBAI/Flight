@@ -1,5 +1,6 @@
-import { Form, Input, Modal } from "antd"
-import { useEffect, useState } from "react";
+import { Form, Input, message, Modal } from "antd"
+import { useEffect } from "react";
+import { useUpdateCity } from "../../hooks/useCities";
 
 interface Props {
     updatedCity: City,
@@ -9,14 +10,25 @@ interface Props {
 
 const UpdateCity = ({ updatedCity, isUpdateOpen, setIsUpdateOpen }: Props) => {
     const [form] = Form.useForm();
-    const [isSubmitUpdate, setIsSubmitUpdate] = useState(false)
-    const handleOk = () => {
-        setIsUpdateOpen(false);
+    const { mutate, isPending } = useUpdateCity();
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const handleOk = (value: City) => {
+        mutate({ id: updatedCity.id, updateCity: value }, {
+            onSuccess: () => {
+                messageApi.success("Update city successfully");
+                setIsUpdateOpen(false);
+            },
+            onError: (error) => {
+                messageApi.error(error.message);
+            },
+        })
     };
 
     const handleCancel = () => {
         setIsUpdateOpen(false);
     };
+
     useEffect(() => {
         form.setFieldsValue({
             id: updatedCity.id,
@@ -25,38 +37,42 @@ const UpdateCity = ({ updatedCity, isUpdateOpen, setIsUpdateOpen }: Props) => {
         })
     }, [updatedCity, form])
     return (
-        <Modal
-            title="Update City"
-            closable={{ 'aria-label': 'Custom Close Button' }}
-            okText="Update"
-            open={isUpdateOpen}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            loading={isSubmitUpdate}
-        >
-            <Form
-                layout={"vertical"}
-                form={form}
+        <>
+            {contextHolder}
+            <Modal
+                title="Update City"
+                closable={{ 'aria-label': 'Custom Close Button' }}
+                okText="Update"
+                open={isUpdateOpen}
+                onCancel={handleCancel}
+                loading={isPending}
+                onOk={() => form.submit()}
             >
+                <Form
+                    layout={"vertical"}
+                    form={form}
+                    onFinish={handleOk}
+                >
 
-                <Form.Item label="ID"
-                    name="id">
-                    <Input disabled />
-                </Form.Item>
+                    <Form.Item label="ID"
+                        name="id">
+                        <Input disabled />
+                    </Form.Item>
 
-                <Form.Item label="Code"
-                    name="cityCode"
-                    rules={[{ required: true }]}>
-                    <Input placeholder="please input city code" />
-                </Form.Item>
+                    <Form.Item label="Code"
+                        name="cityCode"
+                        rules={[{ required: true }]}>
+                        <Input disabled={isPending} placeholder="please input city code" />
+                    </Form.Item>
 
-                <Form.Item label="City"
-                    name="cityName"
-                    rules={[{ required: true }]}>
-                    <Input placeholder="please input city name" />
-                </Form.Item>
-            </Form>
-        </Modal>
+                    <Form.Item label="City"
+                        name="cityName"
+                        rules={[{ required: true }]}>
+                        <Input disabled={isPending} placeholder="please input city name" />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
     )
 }
 export default UpdateCity
