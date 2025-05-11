@@ -5,11 +5,16 @@ import { ConfigProvider } from 'antd'
 import enUS from 'antd/locale/en_US';
 import { RouterProvider } from 'react-router'
 import router from './routes/router.tsx'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
   <ConfigProvider locale={enUS}>
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <StrictMode>
+        <RouterProvider router={router} />
+      </StrictMode>
+    </QueryClientProvider>
   </ConfigProvider>,
 )

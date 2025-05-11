@@ -3,19 +3,14 @@ import type { ProColumns } from "@ant-design/pro-components";
 import icons from "../../assets/icons";
 import NewCity from "../../components/city/NewCity";
 import UpdateCity from "../../components/city/updateCity";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Form, Input } from "antd";
-import { fetchAllCities } from "../../services/city";
-
-
+import { useGetAllCities } from "../../hooks/useCities";
+import Error from "../../components/Error";
 
 const Cities = () => {
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-    const [updateCity, setUpdatedCity] = useState<City>({
-        id: 0,
-        cityCode: '',
-        cityName: ''
-    });
+    const [updateCity, setUpdatedCity] = useState<City>({ id: 0, cityCode: '', cityName: '' });
     const [searchForm] = Form.useForm();
     const columns: ProColumns<City>[] = [
         {
@@ -51,12 +46,13 @@ const Cities = () => {
             ),
         }
     ];
-    useEffect(() => {
-        fetchAllCities();
-    }, [])
+    const { data, isLoading, isError, error } = useGetAllCities();
+    if (isError) {
+        return (<Error error={error.message} />)
+    }
     return (
         <>
-            <div className="flex flex-row gap-[14px] flex-1">
+            <div className="flex flex-row gap-[14px] w-full h-full">
                 <div className="flex flex-col flex-1 w-[60%] gap-[10px]">
                     <div className="w-full bg-white p-[20px] rounded-[8px]">
                         <Form
@@ -82,8 +78,9 @@ const Cities = () => {
                         </Form>
                     </div>
                     <ProTable<City>
+                        loading={isLoading}
                         columns={columns}
-                        dataSource={data}
+                        dataSource={data?.data}
                         rowKey="id"
                         search={false}
                         pagination={{
@@ -107,18 +104,4 @@ const Cities = () => {
         </>
     );
 };
-const data: City[] = [
-    { id: 1, cityCode: "DN", cityName: "Da Nang" },
-    { id: 2, cityCode: "HCM", cityName: "Ho Chi Minh" },
-    { id: 3, cityCode: "DN", cityName: "Da Nang" },
-    { id: 4, cityCode: "HCM", cityName: "Ho Chi Minh" },
-    { id: 5, cityCode: "DN", cityName: "Da Nang" },
-    { id: 6, cityCode: "HCM", cityName: "Ho Chi Minh" },
-    { id: 7, cityCode: "DN", cityName: "Da Nang" },
-    { id: 8, cityCode: "HCM", cityName: "Ho Chi Minh" },
-    { id: 9, cityCode: "DN", cityName: "Da Nang" },
-    { id: 10, cityCode: "HCM", cityName: "Ho Chi Minh" },
-    { id: 11, cityCode: "DN", cityName: "Da Nang" },
-    { id: 12, cityCode: "HCM", cityName: "Ho Chi Minh" },
-];
 export default Cities;
