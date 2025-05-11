@@ -19,16 +19,21 @@ const Cities = () => {
     const [citiesData, setCitiesData] = useState<City[]>([]);
     //
     const handleDelete = (id: number) => {
-        setIsLoadingData(true);
         mutate(id, {
-            onSuccess: () => {
-                setIsLoadingData(false);
+            onSuccess: async () => {
+                await refetchData();
                 messageApi.success("Delete city successfully");
             },
             onError: (error) => {
                 messageApi.error(error.message);
-            },
+            }
         })
+    }
+    const refetchData = async () => {
+        setIsLoadingData(true);
+        const res = await fetchAllCities();
+        setCitiesData(res.data)
+        setIsLoadingData(false);
     }
 
     const handleSearch = (value: City) => {
@@ -80,13 +85,7 @@ const Cities = () => {
     ];
 
     useEffect(() => {
-        const fetchData = async () => {
-            setIsLoadingData(true);
-            const res = await fetchAllCities();
-            setCitiesData(res.data)
-            setIsLoadingData(false);
-        }
-        fetchData();
+        refetchData();
     }, [])
     return (
         <>
@@ -135,11 +134,11 @@ const Cities = () => {
                 </div>
 
                 <NewCity
-                    setIsLoadingData={setIsLoadingData}
+                    refetchData={refetchData}
                 />
             </div>
             <UpdateCity
-                setIsLoadingData={setIsLoadingData}
+                refetchData={refetchData}
                 updatedCity={updateCity}
                 setIsUpdateOpen={setIsUpdateOpen}
                 isUpdateOpen={isUpdateOpen}

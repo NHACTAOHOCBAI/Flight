@@ -2,23 +2,20 @@ import { Button, Form, Input, message } from 'antd';
 import { useCreateCity } from '../../hooks/useCities';
 
 interface Prop {
-    setIsLoadingData: (value: boolean) => void
+    refetchData: () => Promise<void>
 }
-const NewCity = ({ setIsLoadingData }: Prop) => {
+const NewCity = ({ refetchData }: Prop) => {
     const { mutate, isPending } = useCreateCity();
     const [messageApi, contextHolder] = message.useMessage();
     const handleNew = (value: City) => {
-        setIsLoadingData(true);
         mutate(value, {
-            onSuccess: () => {
+            onSuccess: async () => {
+                await refetchData();
                 messageApi.success("Create city successfully");
             },
             onError: (error) => {
                 messageApi.error(error.message);
             },
-            onSettled: () => {
-                setIsLoadingData(false);
-            }
         })
     }
     return (
