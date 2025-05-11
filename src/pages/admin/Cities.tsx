@@ -7,7 +7,8 @@ import { useEffect, useState } from "react";
 import { Button, Form, Input, message, Popconfirm } from "antd";
 import { useDeleteCity } from "../../hooks/useCities";
 import { fetchAllCities } from "../../services/city";
-import UpdateCity from "../../components/city/updateCity";
+import UpdateCity from "../../components/city/UpdateCity";
+
 
 const Cities = () => {
     const [messageApi, contextHolder] = message.useMessage();

@@ -34,3 +34,11 @@ interface Plane {
         logo: string
     }
 }
+
+interface Seat {
+    id: number,
+    seatCode: string,
+    seatName: string,
+    price: number,
+    description: string
+}
