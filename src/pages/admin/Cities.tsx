@@ -2,11 +2,12 @@ import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
 import icons from "../../assets/icons";
 import NewCity from "../../components/city/NewCity";
-import UpdateCity from "../../components/city/updateCity";
+
 import { useEffect, useState } from "react";
 import { Button, Form, Input, message, Popconfirm } from "antd";
 import { useDeleteCity } from "../../hooks/useCities";
 import { fetchAllCities } from "../../services/city";
+import UpdateCity from "../../components/city/updateCity";
 
 const Cities = () => {
     const [messageApi, contextHolder] = message.useMessage();
