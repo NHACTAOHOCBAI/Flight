@@ -12,7 +12,7 @@ const { Header, Sider, Content } = Layout;
 const AdminLayout = () => {
     const [collapsed, setCollapsed] = useState(false);
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        token: { colorBgContainer },
     } = theme.useToken();
     // buoc nay lay page tu account duoc luu trong context
     const permittedPages = [
@@ -53,7 +53,7 @@ const AdminLayout = () => {
     })
 
     return (
-        <Layout style={{ height: '100vh' }}>
+        <Layout style={{ height: '100%', minHeight: '100vh' }}>
             <Sider
                 trigger={null} collapsible collapsed={collapsed}
                 style={{
@@ -98,11 +98,8 @@ const AdminLayout = () => {
                 </Header>
                 <Content
                     style={{
-                        margin: '16px 16px',
-                        padding: 24,
+                        padding: 14,
                         minHeight: 280,
-                        background: colorBgContainer,
-                        borderRadius: borderRadiusLG,
                     }}
                 >
                     <Outlet />
