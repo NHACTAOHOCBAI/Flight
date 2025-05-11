@@ -22,3 +22,15 @@ interface Airport {
         cityName: string
     }
 }
+
+interface Plane {
+    id: number,
+    planeCode: string,
+    planeName: string,
+    airline: {
+        id: number,
+        airlineCode: string,
+        airlineName: string,
+        logo: string
+    }
+}
