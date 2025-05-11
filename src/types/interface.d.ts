@@ -11,3 +11,14 @@ interface Airline {
     airlineName: string,
     logo: string
 }
+
+interface Airport {
+    id: number,
+    airportCode: string,
+    airportName: string,
+    city: {
+        id: number,
+        cityCode: string,
+        cityName: string
+    }
+}
