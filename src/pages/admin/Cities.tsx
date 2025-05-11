@@ -3,22 +3,26 @@ import type { ProColumns } from "@ant-design/pro-components";
 import icons from "../../assets/icons";
 import NewCity from "../../components/city/NewCity";
 import UpdateCity from "../../components/city/updateCity";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, Input, message, Popconfirm } from "antd";
-import { useDeleteCity, useGetAllCities } from "../../hooks/useCities";
-import Error from "../../components/Error";
+import { useDeleteCity } from "../../hooks/useCities";
+import { fetchAllCities } from "../../services/city";
 
 const Cities = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [updateCity, setUpdatedCity] = useState<City>({ id: 0, cityCode: '', cityName: '' });
     const [searchForm] = Form.useForm();
-    const { data, isLoading, isError, error } = useGetAllCities();
     const { mutate } = useDeleteCity();
-
+    // table
+    const [isLoadingData, setIsLoadingData] = useState(false);
+    const [citiesData, setCitiesData] = useState<City[]>([]);
+    //
     const handleDelete = (id: number) => {
+        setIsLoadingData(true);
         mutate(id, {
             onSuccess: () => {
+                setIsLoadingData(false);
                 messageApi.success("Delete city successfully");
             },
             onError: (error) => {
@@ -27,8 +31,8 @@ const Cities = () => {
         })
     }
 
-    if (isError) {
-        return (<Error error={error.message} />)
+    const handleSearch = (value: City) => {
+        console.log(value)
     }
 
     const columns: ProColumns<City>[] = [
@@ -74,6 +78,16 @@ const Cities = () => {
             ),
         }
     ];
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoadingData(true);
+            const res = await fetchAllCities();
+            setCitiesData(res.data)
+            setIsLoadingData(false);
+        }
+        fetchData();
+    }, [])
     return (
         <>
             {contextHolder}
@@ -84,6 +98,7 @@ const Cities = () => {
                             style={{ height: '100%' }}
                             layout={"inline"}
                             form={searchForm}
+                            onFinish={handleSearch}
                         >
 
                             <Form.Item label="Code"
@@ -103,9 +118,9 @@ const Cities = () => {
                         </Form>
                     </div>
                     <ProTable<City>
-                        loading={isLoading}
+                        loading={isLoadingData}
                         columns={columns}
-                        dataSource={data?.data}
+                        dataSource={citiesData}
                         rowKey="id"
                         search={false}
                         pagination={{
@@ -119,9 +134,12 @@ const Cities = () => {
                     />
                 </div>
 
-                <NewCity />
+                <NewCity
+                    setIsLoadingData={setIsLoadingData}
+                />
             </div>
             <UpdateCity
+                setIsLoadingData={setIsLoadingData}
                 updatedCity={updateCity}
                 setIsUpdateOpen={setIsUpdateOpen}
                 isUpdateOpen={isUpdateOpen}

@@ -6,22 +6,27 @@ interface Props {
     updatedCity: City,
     isUpdateOpen: boolean,
     setIsUpdateOpen: (value: boolean) => void
+    setIsLoadingData: (value: boolean) => void
 }
 
-const UpdateCity = ({ updatedCity, isUpdateOpen, setIsUpdateOpen }: Props) => {
+const UpdateCity = ({ updatedCity, isUpdateOpen, setIsUpdateOpen, setIsLoadingData }: Props) => {
     const [form] = Form.useForm();
     const { mutate, isPending } = useUpdateCity();
     const [messageApi, contextHolder] = message.useMessage();
 
     const handleOk = (value: City) => {
+        setIsLoadingData(true);
         mutate({ id: updatedCity.id, updateCity: value }, {
             onSuccess: () => {
                 messageApi.success("Update city successfully");
-                setIsUpdateOpen(false);
             },
             onError: (error) => {
                 messageApi.error(error.message);
             },
+            onSettled: () => {
+                setIsLoadingData(false);
+                setIsUpdateOpen(false);
+            }
         })
     };
 
