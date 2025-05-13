@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Button, Form, Input, Popconfirm } from "antd";
 import { fetchAllFlights } from "../../services/flight";
 import DetailFlight from "../../components/flight/DetailFlight";
+import NewFlight from "../../components/flight/NewFlight";
 
 
 const Flights = () => {
@@ -55,6 +56,7 @@ const Flights = () => {
             price: 0
         }]
     });
+    const [isNewOpen, setIsNewOpen] = useState(true)
     const [searchForm] = Form.useForm();
     // table
     const [isLoadingData, setIsLoadingData] = useState(false);
@@ -64,7 +66,6 @@ const Flights = () => {
         setIsLoadingData(true);
         const res = await fetchAllFlights();
         setFlightsData(res.data)
-        console.log(res.data);
         setIsLoadingData(false);
     }
 
@@ -205,6 +206,19 @@ const Flights = () => {
                         }}
                         headerTitle="Flight Table"
                         scroll={{ x: 'max-content' }}
+                        toolBarRender={() => {
+                            return [
+                                <Button
+                                    type="primary"
+                                    key="save"
+                                    onClick={() => {
+                                        setIsNewOpen(true);
+                                    }}
+                                >
+                                    New Flight
+                                </Button>,
+                            ];
+                        }}
                     />
                 </div>
             </div>
@@ -212,6 +226,10 @@ const Flights = () => {
                 isDetailOpen={isDetailOpen}
                 setIsDetailOpen={setIsDetailOpen}
                 detailFlight={detailFlight}
+            />
+            <NewFlight
+                setIsNewOpen={setIsNewOpen}
+                isNewOpen={isNewOpen}
             />
         </>
     );

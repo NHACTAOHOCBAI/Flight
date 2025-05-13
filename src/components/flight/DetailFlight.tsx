@@ -6,7 +6,7 @@ interface Props {
     setIsDetailOpen: (value: boolean) => void
     detailFlight: Flight
 }
-interface InterAiportDataType {
+interface InterAirportDataType {
     airport: {
         id: number,
         airportCode: string,
@@ -86,7 +86,7 @@ const DetailFlight = ({ isDetailOpen, setIsDetailOpen, detailFlight }: Props) =>
     ];
 
 
-    const interAirportsColumns: TableProps<InterAiportDataType>['columns'] = [
+    const interAirportsColumns: TableProps<InterAirportDataType>['columns'] = [
         {
             title: < div className="font-normal text-gray-600 min-w-[100px]" >Inter Airport</div >,
             children: [
@@ -104,7 +104,7 @@ const DetailFlight = ({ isDetailOpen, setIsDetailOpen, detailFlight }: Props) =>
                 },
                 {
                     title: < div className="font-normal text-gray-600" >Note</div >,
-                    render: (_text, record) => <div>{record.airport.airportName}</div>,
+                    render: (_text, record) => <div>{record.note}</div>,
                 },
             ]
         }
@@ -141,7 +141,7 @@ const DetailFlight = ({ isDetailOpen, setIsDetailOpen, detailFlight }: Props) =>
             open={isDetailOpen}
         >
             <Descriptions bordered items={items} column={2} />
-            <Table<InterAiportDataType>
+            <Table<InterAirportDataType>
                 pagination={false}
                 style={{ marginTop: 20 }} bordered columns={interAirportsColumns} dataSource={detailFlight.interAirports} />
             <Table<SeatsDataType>

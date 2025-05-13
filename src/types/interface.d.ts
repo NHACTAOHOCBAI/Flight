@@ -99,7 +99,7 @@ interface FlightRequest {
     arrivalDate: string;
     departureTime: string;
     arrivalTime: string;
-    originalPrice: number;
+    originPrice: number;
     interAirports: {
         airportId: number;
         departureDate: string;

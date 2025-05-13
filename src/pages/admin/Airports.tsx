@@ -7,11 +7,12 @@ import { useDeleteAirport } from "../../hooks/useAiports";
 import { fetchAllAirports } from "../../services/airport";
 import NewAirport from "../../components/airport/NewAirport";
 import UpdateAirport from "../../components/airport/UpdateAirport";
-import { useGetAllCities } from "../../hooks/useCities";
+import useSelectOptions from "../../utils/selectOptions";
 
 
 
 const Airports = () => {
+    const { citySelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [updateAirport, setUpdateAirport] = useState<Airport>({
@@ -28,15 +29,7 @@ const Airports = () => {
     const { mutate } = useDeleteAirport();
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [airportsData, setAirportsData] = useState<Airport[]>([]);
-    const { data: cities } = useGetAllCities();
 
-    const citySelectOptions: {
-        value: number,
-        label: React.ReactNode
-    }[] = cities?.data?.map((city: City) => ({
-        value: city.id,
-        label: city.cityName,
-    })) ?? [];
     const handleDelete = (id: number) => {
         mutate(id, {
             onSuccess: async () => {

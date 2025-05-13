@@ -51,7 +51,7 @@ const UpdatePlane = ({ updatedPlane, isUpdateOpen, setIsUpdateOpen, refetchData,
                 open={isUpdateOpen}
                 onCancel={handleCancel}
                 onOk={() => form.submit()}
-                confirmLoading={isPending}
+            // confirmLoading={isPending}
             >
                 <Form layout="vertical" form={form} onFinish={handleOk}>
                     <Form.Item label="ID" name="id">

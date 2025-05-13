@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import { Button, Form, Input, message, Popconfirm } from "antd";
 import icons from "../../assets/icons";
 
-import { useGetAllAirlines } from "../../hooks/useAirlines";
+
 import { useDeletePlane } from "../../hooks/usePlanes";
 import { fetchAllPlanes } from "../../services/plane";
 import UpdatePlane from "../../components/plane/UpdatePlane";
 import NewPlane from "../../components/plane/NewPlane";
+import useSelectOptions from "../../utils/selectOptions";
 
 const Planes = () => {
+    const { airlineSelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [updatePlane, setUpdatePlane] = useState<Plane>({
@@ -28,12 +30,7 @@ const Planes = () => {
     const { mutate } = useDeletePlane();
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [planesData, setPlanesData] = useState<Plane[]>([]);
-    const { data: airlines } = useGetAllAirlines();
 
-    const airlineSelectOptions = airlines?.data?.map((airline: Airline) => ({
-        value: airline.id,
-        label: airline.airlineName
-    })) ?? [];
 
     const handleDelete = (id: number) => {
         mutate(id, {
