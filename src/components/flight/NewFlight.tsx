@@ -2,7 +2,6 @@
 import { Button, Col, DatePicker, Form, Input, InputNumber, message, Modal, Row, Select } from "antd";
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import { useCreateFlight } from "../../hooks/useFlights";
-import useSelectOptions from "../../utils/selectOptions";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 
@@ -10,12 +9,16 @@ interface Props {
     isNewOpen: boolean;
     setIsNewOpen: (value: boolean) => void;
     refetchData: () => Promise<void>;
+    planeSelectOptions: { value: number, label: React.ReactNode }[],
+    airportSelectOptions: { value: number, label: React.ReactNode }[],
+    seatSelectOptions: { value: number, label: React.ReactNode }[],
+    MIN_FLIGHT_TIME: number,
+    MIN_STOP_TIME: number,
+    MAX_STOP_TIME: number,
 }
-const MIN_FLIGHT_TIME = 300;
-const MIN_STOP_TIME = 60;
-const MAX_STOP_TIME = 100
-const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData }: Props) => {
-    const { planeSelectOptions, airportSelectOptions, seatSelectOptions } = useSelectOptions();
+const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
+    MIN_FLIGHT_TIME, MAX_STOP_TIME, MIN_STOP_TIME,
+    planeSelectOptions, airportSelectOptions, seatSelectOptions }: Props) => {
     const [form] = Form.useForm();
     const { mutate, isPending } = useCreateFlight();
     const [messageApi, contextHolder] = message.useMessage();
@@ -385,7 +388,7 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData }: Props) => {
                                                         rules={[{ required: true, message: 'Enter quantity' }]}
                                                         style={{ marginBottom: 0 }}
                                                     >
-                                                        <InputNumber disabled={isPending} placeholder="Enter quantity" addonAfter="%" style={{ width: "100%" }} />
+                                                        <InputNumber disabled={isPending} placeholder="Enter quantity" addonAfter="Tickets" style={{ width: "100%" }} />
                                                     </Form.Item>
                                                 </Col>
                                                 <Col span={2} style={{ textAlign: 'center' }}>
@@ -410,7 +413,10 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData }: Props) => {
                             name="originalPrice"
                             rules={[{ required: true, message: "Enter the original price" }]}
                         >
-                            <InputNumber min={0} disabled={isPending} placeholder="Enter original price" style={{ width: "100%" }} addonAfter="VND" />
+                            <InputNumber
+                                formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                parser={(v: string | undefined): number => Number(v?.replace(/[^\d]/g, ""))}
+                                min={0} disabled={isPending} placeholder="Enter original price" style={{ width: "100%" }} addonAfter="VND" />
                         </Form.Item>
                     </div>
                 </Form>

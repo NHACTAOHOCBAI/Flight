@@ -7,9 +7,14 @@ import { fetchAllFlights } from "../../services/flight";
 import DetailFlight from "../../components/flight/DetailFlight";
 import NewFlight from "../../components/flight/NewFlight";
 import { useDeleteFlight } from "../../hooks/useFlights";
+import UpdateFlight from "../../components/flight/UpdateFlight";
+import useSelectOptions from "../../utils/selectOptions";
 
-
+const MIN_FLIGHT_TIME = 300;
+const MIN_STOP_TIME = 60;
+const MAX_STOP_TIME = 100
 const Flights = () => {
+    const { planeSelectOptions, airportSelectOptions, seatSelectOptions } = useSelectOptions();
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [detailFlight, setDetailFlight] = useState<Flight>({
         id: 0,
@@ -57,7 +62,54 @@ const Flights = () => {
             price: 0
         }]
     });
-    const [isNewOpen, setIsNewOpen] = useState(true)
+    const [isUpdateOpen, setIsUpdateOpen] = useState(false)
+    const [updateFlight, setUpdateFlight] = useState({
+        id: 0,
+        flightCode: "",
+        plane: {
+            id: 0,
+            planeCode: "",
+            planeName: "",
+        },
+        departureAirport: {
+            id: 0,
+            airportCode: "",
+            airportName: ""
+        },
+        arrivalAirport: {
+            id: 0,
+            airportCode: "",
+            airportName: ""
+        },
+        departureDate: "",
+        arrivalDate: "",
+        departureTime: "",
+        arrivalTime: "",
+        originalPrice: 0,
+        interAirports: [{
+            airport: {
+                id: 0,
+                airportCode: "",
+                airportName: ""
+            },
+            departureDate: "",
+            arrivalDate: "",
+            note: ""
+        }],
+        seats: [{
+            seat: {
+                id: 0,
+                seatCode: "",
+                seatName: "",
+                price: 0,
+                description: ""
+            },
+            quantity: 0,
+            remainingTickets: 0,
+            price: 0
+        }]
+    })
+    const [isNewOpen, setIsNewOpen] = useState(false)
     const [searchForm] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
     // table
@@ -155,6 +207,8 @@ const Flights = () => {
                 <div className="flex flex-row gap-[10px]">
                     <div
                         onClick={() => {
+                            setUpdateFlight(value)
+                            setIsUpdateOpen(true)
                         }}
                         className="text-yellow-400">
                         {icons.edit}
@@ -244,9 +298,28 @@ const Flights = () => {
                 detailFlight={detailFlight}
             />
             <NewFlight
+                planeSelectOptions={planeSelectOptions}
+                airportSelectOptions={airportSelectOptions}
+                seatSelectOptions={seatSelectOptions}
+                MIN_FLIGHT_TIME={MIN_FLIGHT_TIME}
+                MIN_STOP_TIME={MIN_STOP_TIME}
+                MAX_STOP_TIME={MAX_STOP_TIME}
                 refetchData={refetchData}
                 setIsNewOpen={setIsNewOpen}
                 isNewOpen={isNewOpen}
+            />
+            <UpdateFlight
+                planeSelectOptions={planeSelectOptions}
+                airportSelectOptions={airportSelectOptions}
+                seatSelectOptions={seatSelectOptions}
+                MIN_FLIGHT_TIME={MIN_FLIGHT_TIME}
+                MIN_STOP_TIME={MIN_STOP_TIME}
+                MAX_STOP_TIME={MAX_STOP_TIME}
+                isUpdateOpen={isUpdateOpen}
+                setIsUpdateOpen={setIsUpdateOpen}
+                updatedFlight={updateFlight}
+                refetchData={refetchData}
+                setUpdateFlight={setUpdateFlight}
             />
         </>
     );

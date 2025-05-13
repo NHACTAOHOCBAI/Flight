@@ -7,7 +7,7 @@ const createFlight = (newFlight: FlightRequest) => {
     return axiosInstance.post(`/flights`, newFlight)
 }
 const updateFlight = ({ id, updateFlight }: { id: number, updateFlight: FlightRequest }) => {
-    return axiosInstance.post(`/flights/${id}`, updateFlight);
+    return axiosInstance.put(`/flights/${id}`, updateFlight);
 }
 const deleteFlight = (id: number) => {
     return axiosInstance.delete(`flights/${id}`)
