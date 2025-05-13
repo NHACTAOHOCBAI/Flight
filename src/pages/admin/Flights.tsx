@@ -2,10 +2,11 @@ import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
 import icons from "../../assets/icons";
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Popconfirm } from "antd";
+import { Button, Form, Input, message, Popconfirm } from "antd";
 import { fetchAllFlights } from "../../services/flight";
 import DetailFlight from "../../components/flight/DetailFlight";
 import NewFlight from "../../components/flight/NewFlight";
+import { useDeleteFlight } from "../../hooks/useFlights";
 
 
 const Flights = () => {
@@ -58,16 +59,30 @@ const Flights = () => {
     });
     const [isNewOpen, setIsNewOpen] = useState(true)
     const [searchForm] = Form.useForm();
+    const [messageApi, contextHolder] = message.useMessage();
     // table
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [flightsData, setFlightsData] = useState<Flight[]>([]);
     //
+    const { mutate } = useDeleteFlight();
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllFlights();
         setFlightsData(res.data)
         setIsLoadingData(false);
     }
+
+    const handleDelete = (id: number) => {
+        mutate(id, {
+            onSuccess: async () => {
+                await refetchData();
+                messageApi.success("Delete flight successfully");
+            },
+            onError: (error) => {
+                messageApi.error(error.message);
+            }
+        });
+    };
 
     const handleSearch = (value: City) => {
         console.log(value)
@@ -136,7 +151,7 @@ const Flights = () => {
         },
         {
             title: "Action",
-            render: () => (
+            render: (_, value) => (
                 <div className="flex flex-row gap-[10px]">
                     <div
                         onClick={() => {
@@ -147,7 +162,7 @@ const Flights = () => {
                     <Popconfirm
                         title="Delete the city"
                         description="Are you sure to delete this city?"
-                        onConfirm={() => { }}
+                        onConfirm={() => { handleDelete(value.id) }}
                         onCancel={() => { }}
                         okText="Yes"
                         cancelText="No"
@@ -166,6 +181,7 @@ const Flights = () => {
     }, [])
     return (
         <>
+            {contextHolder}
             <div className="flex flex-row gap-[14px] w-full h-full">
                 <div className="flex flex-col flex-1 gap-[10px]">
                     <div className="w-full bg-white p-[20px] rounded-[8px]">
@@ -228,6 +244,7 @@ const Flights = () => {
                 detailFlight={detailFlight}
             />
             <NewFlight
+                refetchData={refetchData}
                 setIsNewOpen={setIsNewOpen}
                 isNewOpen={isNewOpen}
             />
