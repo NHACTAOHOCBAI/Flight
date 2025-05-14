@@ -33,16 +33,12 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
         const departureTime = dayjs(values.departureDate).format('HH:mm:ss');
         const arrivalTime = dayjs(values.arrivalDate).format('HH:mm:ss');
         const interAirports = values.interAirports.map((value: any) => {
-            const departureDate = dayjs(value.departureDate).format('YYYY-MM-DD');
-            const arrivalDate = dayjs(value.arrivalDate).format('YYYY-MM-DD');
-            const departureTime = dayjs(value.departureDate).format('HH:mm:ss');
-            const arrivalTime = dayjs(value.arrivalDate).format('HH:mm:ss');
+            const departureDateTime = dayjs(value.departureDate).format('YYYY-MM-DDTHH:mm:ss');
+            const arrivalDateTime = dayjs(value.arrivalDate).format('YYYY-MM-DDTHH:mm:ss');
             return {
                 airportId: value.airportId,
-                departureDate,
-                arrivalDate,
-                departureTime,
-                arrivalTime,
+                departureDateTime,
+                arrivalDateTime,
                 note: value.note
             }
         })
@@ -59,6 +55,7 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
             interAirports: interAirports,
             seats: values.seats
         }
+        console.log(newFlight);
         mutate(newFlight, {
             onSuccess: async () => {
                 await refetchData();

@@ -72,8 +72,8 @@ interface Flight {
             airportCode: string,
             airportName: string
         }
-        departureDate: string
-        arrivalDate: string
+        departureDateTime: string
+        arrivalDateTime: string
         note: string
     }[]
     seats: {
@@ -102,14 +102,32 @@ interface FlightRequest {
     originPrice: number;
     interAirports: {
         airportId: number;
-        departureDate: string;
-        arrivalDate: string;
-        departureTime: string;
-        arrivalTime: string;
+        departureDateTime: string;
+        arrivalDateTime: string;
         note: string;
     }[];
     seats: {
         seatId: number;
         quantity: number;
     }[];
+}
+
+interface Ticket {
+    id: number;
+    flight: Flight;
+    seat: Seat;
+    passengerName: string;
+    passengerEmail: string;
+    passengerPhone: string;
+    passengerIDCard: string;
+}
+
+
+interface TicketRequest {
+    flightId: number
+    seatId: number
+    passengerName: string
+    passengerPhone: string
+    passengerIDCard: string
+    passengerEmail: string
 }

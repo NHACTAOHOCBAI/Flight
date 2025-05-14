@@ -15,6 +15,7 @@ import Tickets from "../pages/admin/Tickets";
 import Login from "../pages/auth/Login";
 import Resgister from "../pages/auth/Resgister";
 import NotFound from "../pages/errors/NotFound";
+import Booking from "../pages/admin/Booking";
 
 const router = createBrowserRouter([
     {
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
                     { path: "roles", element: <Roles /> },
                     { path: "seats", element: <Seats /> },
                     { path: "setting", element: <Setting /> },
+                    { path: "booking", element: <Booking /> },
                     { path: "tickets", element: <Tickets /> },
                 ]
             }

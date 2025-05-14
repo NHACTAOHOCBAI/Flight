@@ -6,6 +6,9 @@ import enUS from 'antd/locale/en_US';
 import { RouterProvider } from 'react-router'
 import router from './routes/router.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { TicketsProvider } from './context/TicketsContext.tsx';
+
+
 
 const queryClient = new QueryClient()
 
@@ -13,7 +16,9 @@ createRoot(document.getElementById('root')!).render(
   <ConfigProvider locale={enUS}>
     <QueryClientProvider client={queryClient}>
       <StrictMode>
-        <RouterProvider router={router} />
+        <TicketsProvider>
+          <RouterProvider router={router} />
+        </TicketsProvider>
       </StrictMode>
     </QueryClientProvider>
   </ConfigProvider>,

@@ -1,17 +1,16 @@
-import { MdOutlineDelete } from "react-icons/md";
-import { IoPlanetOutline, IoSearch, IoSettingsOutline } from "react-icons/io5";
+import { IoAirplaneOutline, IoPlanetOutline, IoSearch, IoSettingsOutline, IoTicketOutline } from "react-icons/io5";
 import { PiAirplaneInFlight, PiCityLight, PiSeat } from "react-icons/pi";
-import { LuPlane, LuTicket } from "react-icons/lu";
 import { BsDiagram2 } from "react-icons/bs";
-import { FiEdit } from "react-icons/fi";
 import { RxDashboard } from "react-icons/rx";
 import { GoLocation } from "react-icons/go";
 import { VscAccount } from "react-icons/vsc";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { LiaTicketAltSolid } from "react-icons/lia";
 const size = 20;
 
 const icons = {
     account: <VscAccount size={size} />,
-    plane: <LuPlane size={size} />,
+    plane: <IoAirplaneOutline size={size} />,
     airline: <IoPlanetOutline size={size} />,
     airport: <GoLocation size={size} />,
     city: <PiCityLight size={size} />,
@@ -20,10 +19,12 @@ const icons = {
     role: <BsDiagram2 size={size} />,
     seat: <PiSeat size={size} />,
     setting: <IoSettingsOutline size={size} />,
-    ticket: <LuTicket size={size} />,
-    edit: <FiEdit size={size} />,
-    delete: <MdOutlineDelete size={size} />,
+    ticket: <LiaTicketAltSolid size={size} />,
+    edit: <EditOutlined />,
     search: <IoSearch size={16} />,
+    plus: <PlusOutlined />,
+    delete: <DeleteOutlined />,
+    booking: <IoTicketOutline />
 };
 
 export default icons;

@@ -11,7 +11,8 @@ const checkAuth = (pathname: string) => {
         'roles',
         'seats',
         'setting',
-        'tickets'
+        'tickets',
+        'booking'
     ];
     //
 

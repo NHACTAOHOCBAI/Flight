@@ -1,6 +1,6 @@
 import { Descriptions, Drawer, Table, type TableProps } from "antd"
 import type { DescriptionsProps } from "antd/lib"
-
+import dayjs from 'dayjs';
 interface Props {
     isDetailOpen: boolean
     setIsDetailOpen: (value: boolean) => void
@@ -12,8 +12,8 @@ interface InterAirportDataType {
         airportCode: string,
         airportName: string
     }
-    departureDate: string
-    arrivalDate: string
+    departureDateTime: string
+    arrivalDateTime: string
     note: string
 }
 interface SeatsDataType {
@@ -96,11 +96,11 @@ const DetailFlight = ({ isDetailOpen, setIsDetailOpen, detailFlight }: Props) =>
                 },
                 {
                     title: < div className="font-normal text-gray-600 min-w-[130px]" >Stop Date</div >,
-                    dataIndex: 'arrivalDate',
+                    render: (_text, record) => <div>{dayjs(record.arrivalDateTime).format('YYYY-MM-DD | HH:mm:ss')}</div>,
                 },
                 {
                     title: < div className="font-normal text-gray-600 min-w-[130px]" >Re-Departure Date</div >,
-                    dataIndex: 'departureDate',
+                    render: (_text, record) => <div>{dayjs(record.departureDateTime).format('YYYY-MM-DD | HH:mm:ss')}</div>,
                 },
                 {
                     title: < div className="font-normal text-gray-600" >Note</div >,

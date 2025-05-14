@@ -9,11 +9,13 @@ import NewFlight from "../../components/flight/NewFlight";
 import { useDeleteFlight } from "../../hooks/useFlights";
 import UpdateFlight from "../../components/flight/UpdateFlight";
 import useSelectOptions from "../../utils/selectOptions";
+import { useNavigate } from "react-router";
 
 const MIN_FLIGHT_TIME = 300;
 const MIN_STOP_TIME = 60;
 const MAX_STOP_TIME = 100
 const Flights = () => {
+    const navigate = useNavigate();
     const { planeSelectOptions, airportSelectOptions, seatSelectOptions } = useSelectOptions();
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [detailFlight, setDetailFlight] = useState<Flight>({
@@ -45,8 +47,8 @@ const Flights = () => {
                 airportCode: "",
                 airportName: ""
             },
-            departureDate: "",
-            arrivalDate: "",
+            departureDateTime: "",
+            arrivalDateTime: "",
             note: ""
         }],
         seats: [{
@@ -92,8 +94,8 @@ const Flights = () => {
                 airportCode: "",
                 airportName: ""
             },
-            departureDate: "",
-            arrivalDate: "",
+            departureDateTime: "",
+            arrivalDateTime: "",
             note: ""
         }],
         seats: [{
@@ -136,10 +138,14 @@ const Flights = () => {
         });
     };
 
-    const handleSearch = (value: City) => {
+    const handleSearch = (value: Flight) => {
         console.log(value)
     }
 
+    const handleBooking = (value: Flight) => {
+        localStorage.setItem('booked_flight', JSON.stringify(value));
+        navigate("/admin/booking")
+    }
     const columns: ProColumns<Flight>[] = [
         {
             title: "No.",
@@ -204,7 +210,7 @@ const Flights = () => {
         {
             title: "Action",
             render: (_, value) => (
-                <div className="flex flex-row gap-[10px]">
+                <div className="flex flex-row gap-[10px] items-center">
                     <div
                         onClick={() => {
                             setUpdateFlight(value)
@@ -225,6 +231,14 @@ const Flights = () => {
                             {icons.delete}
                         </div>
                     </Popconfirm>
+                    <Button
+                        type="dashed"
+                        onClick={() => {
+                            handleBooking(value)
+                        }}
+                        className="text-yellow-400">
+                        {icons.booking} Booking
+                    </Button>
                 </div>
             ),
         }

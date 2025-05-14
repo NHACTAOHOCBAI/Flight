@@ -58,8 +58,8 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
                     airportCode: "",
                     airportName: ""
                 },
-                departureDate: "",
-                arrivalDate: "",
+                departureDateTime: "",
+                arrivalDateTime: "",
                 note: ""
             }],
             seats: [{
@@ -82,16 +82,12 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
         const departureTime = dayjs(values.departureDate).format('HH:mm:ss');
         const arrivalTime = dayjs(values.arrivalDate).format('HH:mm:ss');
         const interAirports = values.interAirports.map((value: any) => {
-            const departureDate = dayjs(value.departureDate).format('YYYY-MM-DD');
-            const arrivalDate = dayjs(value.arrivalDate).format('YYYY-MM-DD');
-            const departureTime = dayjs(value.departureDate).format('HH:mm:ss');
-            const arrivalTime = dayjs(value.arrivalDate).format('HH:mm:ss');
+            const departureDateTime = dayjs(value.departureDate).format('YYYY-MM-DDTHH:mm:ss');
+            const arrivalDateTime = dayjs(value.arrivalDate).format('YYYY-MM-DDTHH:mm:ss');
             return {
                 airportId: value.airportId,
-                departureDate,
-                arrivalDate,
-                departureTime,
-                arrivalTime,
+                departureDateTime,
+                arrivalDateTime,
                 note: value.note
             }
         })
@@ -128,8 +124,8 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
         const interAirports = updatedFlight.interAirports.map((value) => {
             return {
                 airportId: value.airport.id,
-                arrivalDate: dayjs(value.arrivalDate, "YYYY-MM-DD"),
-                departureDate: dayjs(value.departureDate, "YYYY-MM-DD"),
+                arrivalDate: dayjs(value.arrivalDateTime, "YYYY-MM-DD"),
+                departureDate: dayjs(value.departureDateTime, "YYYY-MM-DD"),
                 note: value.note
             }
         })
