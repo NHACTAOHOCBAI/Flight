@@ -31,7 +31,7 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
     return (
         <>
             {contextHolder}
-            <div className="bg-white p-[24px] w-[40%] h-full rounded-[8px]">
+            <div className="bg-white  drop-shadow-xs p-[24px] w-[40%] h-full rounded-[8px]">
                 <div className="font-medium text-[16px] mb-[10px]">Create Role</div>
                 <Form layout="vertical" onFinish={handleNew}>
                     <Form.Item label="Role Name" name="roleName" rules={[{ required: true }]}>

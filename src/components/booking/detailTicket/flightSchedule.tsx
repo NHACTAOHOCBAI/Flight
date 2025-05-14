@@ -42,7 +42,7 @@ const FlightCard: React.FC<Props> = ({ flight }) => {
     );
 
     return (
-        <div className="drop-shadow-2xl rounded-lg bg-white p-4 flex flex-col gap-[10px]">
+        <div className="drop-shadow-xs rounded-lg bg-white p-4 flex flex-col gap-[10px]">
             {/* Departure */}
             <div className="flex items-start space-x-3">
                 <div className="text-lg font-bold">{flight.departureTime.slice(0, 5)}</div>

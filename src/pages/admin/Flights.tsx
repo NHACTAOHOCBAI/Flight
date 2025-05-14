@@ -251,7 +251,7 @@ const Flights = () => {
         <>
             {contextHolder}
             <div className="flex flex-row gap-[14px] w-full h-full">
-                <div className="flex flex-col flex-1 gap-[10px]">
+                <div className="flex drop-shadow-xs flex-col flex-1 gap-[10px]">
                     <div className="w-full bg-white p-[20px] rounded-[8px]">
                         <Form
                             style={{ height: '100%' }}

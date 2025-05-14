@@ -5,6 +5,7 @@ interface Prop {
     refetchData: () => Promise<void>
 }
 const NewCity = ({ refetchData }: Prop) => {
+    const [form] = Form.useForm();
     const { mutate, isPending } = useCreateCity();
     const [messageApi, contextHolder] = message.useMessage();
     const handleNew = (value: City) => {
@@ -12,18 +13,23 @@ const NewCity = ({ refetchData }: Prop) => {
             onSuccess: async () => {
                 await refetchData();
                 messageApi.success("Create city successfully");
+                finish();
             },
             onError: (error) => {
                 messageApi.error(error.message);
             },
         })
     }
+    const finish = () => {
+        form.resetFields()
+    }
     return (
         <>
             {contextHolder}
-            <div className='bg-white p-[24px] w-[40%] h-full rounded-[8px]'>
+            <div className='bg-white  drop-shadow-xs p-[24px] w-[40%] h-full rounded-[8px]'>
                 <div className='font-medium text-[16px] mb-[10px]'>Create City</div>
                 <Form
+                    form={form}
                     style={{ height: '100%' }}
                     layout={"vertical"}
                     onFinish={handleNew}

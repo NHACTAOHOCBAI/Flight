@@ -7,6 +7,7 @@ interface Props {
 }
 
 const NewPlane = ({ refetchData, airlineSelectOptions }: Props) => {
+    const [form] = Form.useForm();
     const { mutate, isPending } = useCreatePlane();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -15,19 +16,22 @@ const NewPlane = ({ refetchData, airlineSelectOptions }: Props) => {
             onSuccess: async () => {
                 await refetchData();
                 messageApi.success("Create plane successfully");
+                finish()
             },
             onError: (error) => {
                 messageApi.error(error.message);
             },
         });
     };
-
+    const finish = () => {
+        form.resetFields()
+    }
     return (
         <>
             {contextHolder}
-            <div className="bg-white p-[24px] w-[40%] h-full rounded-[8px]">
+            <div className="bg-white  drop-shadow-xs p-[24px] w-[40%] h-full rounded-[8px]">
                 <div className="font-medium text-[16px] mb-[10px]">Create Plane</div>
-                <Form layout="vertical" onFinish={handleNew}>
+                <Form form={form} layout="vertical" onFinish={handleNew}>
                     <Form.Item label="Code" name="planeCode" rules={[{ required: true }]}>
                         <Input disabled={isPending} placeholder="Enter plane code" />
                     </Form.Item>

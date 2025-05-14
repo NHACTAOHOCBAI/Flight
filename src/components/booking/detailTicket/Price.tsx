@@ -31,7 +31,7 @@ const Price = () => {
     const data = convertTicketsToDataType(tickets, seatList, flight?.originalPrice);
     const totalPrice = data.reduce((result, value) => result + value.price * value.quantity, 0)
     return (
-        <div className="w-full p-[10px] rounded-[10px] bg-white drop-shadow-xl">
+        <div className="w-full p-[10px] rounded-[10px] bg-white drop-shadow-xs">
             <h2 className="font-medium text-[16px] mb-[10px]">Detail Price</h2>
             <Table<DataType>
                 pagination={false}

@@ -100,7 +100,7 @@ const Seats = () => {
         <>
             {contextHolder}
             <div className="flex flex-row gap-[14px] w-full h-full">
-                <div className="flex flex-col flex-1 w-[60%] gap-[10px]">
+                <div className="flex flex-col  drop-shadow-xs flex-1 w-[60%] gap-[10px]">
                     <div className="w-full bg-white p-[20px] rounded-[8px]">
                         <Form layout="inline" form={searchForm} onFinish={handleSearch}>
                             <Form.Item label="Code" name="seatCode">

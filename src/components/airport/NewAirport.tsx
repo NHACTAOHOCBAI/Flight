@@ -11,6 +11,7 @@ interface Props {
 }
 
 const NewAirport = ({ refetchData, citySelectOptions }: Props) => {
+    const [form] = Form.useForm();
     const { mutate, isPending } = useCreateAirport();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -19,18 +20,22 @@ const NewAirport = ({ refetchData, citySelectOptions }: Props) => {
             onSuccess: async () => {
                 await refetchData();
                 messageApi.success("Create airport successfully");
+                finish();
             },
             onError: (error) => {
                 messageApi.error(error.message);
             },
         });
     };
+    const finish = () => {
+        form.resetFields()
+    }
     return (
         <>
             {contextHolder}
-            <div className="bg-white p-[24px] w-[40%] h-full rounded-[8px]">
+            <div className="bg-white  drop-shadow-xs p-[24px] w-[40%] h-full rounded-[8px]">
                 <div className="font-medium text-[16px] mb-[10px]">Create Airport</div>
-                <Form layout="vertical" onFinish={handleNew}>
+                <Form form={form} layout="vertical" onFinish={handleNew}>
                     <Form.Item label="Code" name="airportCode" rules={[{ required: true }]}>
                         <Input disabled={isPending} placeholder="Enter airport code" />
                     </Form.Item>

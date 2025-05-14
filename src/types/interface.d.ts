@@ -140,3 +140,24 @@ interface Role {
         pageName: string
     }[]
 }
+
+interface Account {
+    id: number,
+    username: string,
+    password: string
+    email: string
+    fullName: string
+    phone: string
+    avatar: string
+    role: Role
+}
+
+interface AccountRequest {
+    username: string,
+    password: string
+    email: string
+    fullName: string
+    phone: string
+    avatar: string
+    roleId: number
+}
