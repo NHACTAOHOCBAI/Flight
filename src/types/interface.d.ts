@@ -131,3 +131,12 @@ interface TicketRequest {
     passengerIDCard: string
     passengerEmail: string
 }
+
+interface Role {
+    id: number,
+    roleName: string,
+    pages: {
+        id: number,
+        pageName: string
+    }[]
+}

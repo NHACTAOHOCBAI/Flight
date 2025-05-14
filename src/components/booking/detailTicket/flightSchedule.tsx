@@ -32,6 +32,8 @@ function calculateDuration(startDate: string, startTime: string, endDate: string
 
 
 const FlightCard: React.FC<Props> = ({ flight }) => {
+    if (!flight)
+        return (<></>)
     const duration = calculateDuration(
         flight.departureDate,
         flight.departureTime,

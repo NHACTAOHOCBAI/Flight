@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, message, Steps, theme } from 'antd';
 import FirstStep from '../../components/booking/firstStep/FirstStep';
 import SecondStep from '../../components/booking/secondStep/SecondStep';
 import { useCreateTicket } from '../../hooks/useTickets';
 import DetailTicket from '../../components/booking/detailTicket/DetailTicket';
 import { useTicketsContext } from '../../context/TicketsContext';
+import { useNavigate } from 'react-router';
 
 
 const Booking = () => {
+    const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
+    const navigate = useNavigate();
     const { tickets } = useTicketsContext();
     const { mutate } = useCreateTicket();
     const [messageApi, contextHolder] = message.useMessage();
@@ -43,7 +46,10 @@ const Booking = () => {
         marginTop: 16,
     };
     const handleBooking = () => {
-        const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
+        if (!tickets) {
+            messageApi.error("You haven't booked any tickets");
+            return;
+        }
         const ticketRequest: TicketRequest = {
             flightId: flight.id,
             seatId: tickets[0].seatId,
@@ -61,12 +67,19 @@ const Booking = () => {
                 messageApi.success("booking flight successfully");
                 localStorage.removeItem("tickets");
                 localStorage.removeItem("booked_flight");
+                navigate("/admin/flights")
             },
             onError: (error) => {
                 messageApi.error(error.message);
             },
         });
     }
+    useEffect(() => {
+        if (flight === null) {
+            console.log("flight is null, redirecting...");
+            navigate("/admin/flights");
+        }
+    }, [flight, navigate]);
     return (
         <>
             {contextHolder}
