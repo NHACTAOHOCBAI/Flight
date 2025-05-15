@@ -1,5 +1,8 @@
 import { Button, Form, Input, message } from "antd";
 import { useCreateAirline } from "../../hooks/useAirlines";
+import type { UploadFile } from "antd/lib";
+import { useState } from "react";
+import UploadImage from "./test";
 
 
 interface Props {
@@ -7,12 +10,18 @@ interface Props {
 }
 
 const NewAirline = ({ refetchData }: Props) => {
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [form] = Form.useForm();
     const { mutate, isPending } = useCreateAirline();
     const [messageApi, contextHolder] = message.useMessage();
 
     const handleNew = (value: Airline) => {
-        mutate(value, {
+        mutate({
+            airline: value,
+            ...(fileList && fileList.length > 0 && {
+                logo: fileList[0].originFileObj as File,
+            })
+        }, {
             onSuccess: async () => {
                 await refetchData();
                 messageApi.success("Create airline successfully");
@@ -24,6 +33,7 @@ const NewAirline = ({ refetchData }: Props) => {
         });
     };
     const finish = () => {
+        setFileList([])
         form.resetFields()
     }
     return (
@@ -38,9 +48,14 @@ const NewAirline = ({ refetchData }: Props) => {
                     <Form.Item label="Name" name="airlineName" rules={[{ required: true }]}>
                         <Input disabled={isPending} placeholder="Enter airline name" />
                     </Form.Item>
-                    <Form.Item label={<div>Logo <span className="text-gray-400">(optional)</span></div>} name="logo">
-                        <Input disabled={isPending} placeholder="Enter logo URL" />
-                    </Form.Item>
+                    <div className="mb-[10px]">
+                        <h3 className="mb-[10px]">Logo<span className="text-gray-300">{" (optional)"}</span></h3>
+                        <UploadImage
+                            isPending={isPending}
+                            fileList={fileList}
+                            setFileList={setFileList}
+                        />
+                    </div>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" loading={isPending} style={{ width: "100%" }}>
                             Create Airline

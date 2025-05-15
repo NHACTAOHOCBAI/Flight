@@ -62,7 +62,10 @@ const Airlines = () => {
         {
             title: "Logo",
             dataIndex: "logo",
-            render: (_, record) => <img src={record.logo} alt="logo" style={{ width: 50, height: 30 }} />,
+            render: (_, record) => <img style={{
+                objectFit: "cover",
+                width: 50, height: 30
+            }} src={record.logo} alt="logo" />,
         },
         {
             title: "Action",
@@ -132,6 +135,7 @@ const Airlines = () => {
                 <NewAirline refetchData={refetchData} />
             </div>
             <UpdateAirline
+                setUpdateAirline={setUpdateAirline}
                 refetchData={refetchData}
                 updatedAirline={updateAirline}
                 setIsUpdateOpen={setIsUpdateOpen}

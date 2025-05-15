@@ -4,9 +4,9 @@ const axiosInstance = axios.create({
     baseURL: BASE_URL,  // URL gốc của API
     timeout: 3000,
     withCredentials: true,                   // Timeout sau 10 giây
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    // headers: {
+    //     'Content-Type': 'application/json',
+    // },
 });
 // Add a request interceptor
 axiosInstance.interceptors.request.use(function (config) {
