@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/plots": "^2.4.0",
     "@ant-design/pro-components": "^2.8.7",
+    "@antv/g2plot": "^2.4.33",
     "@tailwindcss/vite": "^4.1.6",
     "@tanstack/react-query": "^5.75.7",
     "antd": "^5.25.1",
