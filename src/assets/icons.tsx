@@ -1,11 +1,12 @@
 import { IoAirplaneOutline, IoPlanetOutline, IoSearch, IoSettingsOutline, IoTicketOutline } from "react-icons/io5";
-import { PiAirplaneInFlight, PiCityLight, PiSeat } from "react-icons/pi";
+import { PiAirplaneInFlight, PiCityLight, PiExportBold, PiSeat } from "react-icons/pi";
 import { BsDiagram2 } from "react-icons/bs";
 import { RxDashboard } from "react-icons/rx";
 import { GoLocation } from "react-icons/go";
 import { VscAccount } from "react-icons/vsc";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { LiaTicketAltSolid } from "react-icons/lia";
+import { TbReportAnalytics } from "react-icons/tb";
 const size = 20;
 
 const icons = {
@@ -24,7 +25,8 @@ const icons = {
     search: <IoSearch size={16} />,
     plus: <PlusOutlined />,
     delete: <DeleteOutlined />,
-    booking: <IoTicketOutline />
-};
-
+    booking: <IoTicketOutline />,
+    export: <PiExportBold />,
+    report: <TbReportAnalytics />
+}
 export default icons;

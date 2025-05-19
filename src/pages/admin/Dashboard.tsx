@@ -1,6 +1,8 @@
 import { Select } from "antd";
 import { Column, Pie } from "@antv/g2plot";
 import { useEffect, useRef } from "react";
+import TicketReport from "../../components/dashboard/TicketReport";
+import AnnualRevenue from "../../components/dashboard/AnnualRevenue";
 
 const Dashboard = () => {
     const bookingRateDate = [
@@ -23,17 +25,21 @@ const Dashboard = () => {
     ]
     return (
         <div className="w-full">
-            <div className="w-full flex justify-between flex-wrap gap-y-2">
+            <div className="w-full flex gap-[10px] justify-between flex-wrap gap-y-2">
                 <Card title="Total Sales" value="1,800,000 đ" desc="Tăng 10% so với năm trước" filter={true} />
                 <Card title="Flights" value="20 flights" desc="Tăng 5% so với năm trước" filter={true} />
                 <Card title="Airlines" value="30 airlines" desc="Tăng 10% so với năm trước" />
                 <Card title="Airports" value="16 airports" desc="Tăng 12% so với năm trước" />
             </div>
 
-            <div className=" mt-[10px] flex justify-between flex-wrap gap-y-2">
+            <div className=" mt-[10px] gap-[10px] flex justify-between flex-wrap gap-y-2">
                 <BookingRate
                     bookingRateDate={bookingRateDate} />
                 <PopularAirline />
+            </div>
+            <div className="flex gap-[10px] flex-wrap">
+                <TicketReport />
+                <AnnualRevenue />
             </div>
         </div>
     );
@@ -41,7 +47,7 @@ const Dashboard = () => {
 
 const Card = ({ title, value, desc, filter = false }: { title: string, value: string, desc: string, filter?: boolean }) => {
     return (
-        <div className="w-[310px] drop-shadow-xs h-[194px] bg-white px-[24px] py-[20px]">
+        <div className="flex-1 drop-shadow-xs min h-[194px] min-w-[250px] bg-white px-[24px] py-[20px]">
             <div className="w-full flex justify-between items-center mb-2">
                 <h3 className="opacity-45">{title}</h3>
                 {filter && <Select
@@ -93,7 +99,7 @@ const BookingRate = ({ bookingRateDate }: {
         }
     }, []);
     return (
-        <div className="max-w-[770px] min-w-[400px] w-full p-[10px] bg-white drop-shadow-xs">
+        <div className=" flex-5 min-w-[400px] w-full p-[10px] bg-white drop-shadow-xs">
             <div className="h-[56px] flex items-center text-[16px] font-medium justify-between">
                 <h2>Booking Rate Overview</h2>
                 <Select
@@ -162,11 +168,11 @@ const PopularAirline = () => {
     }, []);
 
     return (
-        <div className="w-full max-w-[510px] min-w-[400px] bg-white drop-shadow-xs p-[10px]">
+        <div className="flex-2 min-w-[400px] bg-white drop-shadow-xs p-[10px]">
             <div className="h-[56px] flex items-center text-[16px] font-medium justify-between">
                 <h2>Popular Airlines</h2>
             </div>
-            <div ref={chartRef} className="h-[400px]" />
+            <div ref={chartRef} className="h-[400px] w-full" />
         </div>
     );
 };
