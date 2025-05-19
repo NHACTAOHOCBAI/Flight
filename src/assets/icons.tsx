@@ -1,4 +1,4 @@
-import { IoAirplaneOutline, IoPlanetOutline, IoSearch, IoSettingsOutline, IoTicketOutline } from "react-icons/io5";
+import { IoAirplaneOutline, IoLogoGoogle, IoPlanetOutline, IoSearch, IoSettingsOutline, IoTicketOutline } from "react-icons/io5";
 import { PiAirplaneInFlight, PiCityLight, PiExportBold, PiSeat } from "react-icons/pi";
 import { BsDiagram2 } from "react-icons/bs";
 import { RxDashboard } from "react-icons/rx";
@@ -27,6 +27,7 @@ const icons = {
     delete: <DeleteOutlined />,
     booking: <IoTicketOutline />,
     export: <PiExportBold />,
-    report: <TbReportAnalytics />
+    report: <TbReportAnalytics />,
+    google: <IoLogoGoogle size={16} />
 }
 export default icons;
