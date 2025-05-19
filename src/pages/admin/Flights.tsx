@@ -2,7 +2,7 @@ import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
 import icons from "../../assets/icons";
 import { useEffect, useState } from "react";
-import { Button, Form, Input, message, Popconfirm } from "antd";
+import { Button, DatePicker, Form, message, Popconfirm, Select } from "antd";
 import { fetchAllFlights } from "../../services/flight";
 import DetailFlight from "../../components/flight/DetailFlight";
 import NewFlight from "../../components/flight/NewFlight";
@@ -10,6 +10,7 @@ import { useDeleteFlight } from "../../hooks/useFlights";
 import UpdateFlight from "../../components/flight/UpdateFlight";
 import useSelectOptions from "../../utils/selectOptions";
 import { useNavigate } from "react-router";
+import Filter from "../../components/flight/Filter";
 
 const MIN_FLIGHT_TIME = 300;
 const MIN_STOP_TIME = 60;
@@ -112,7 +113,7 @@ const Flights = () => {
         }]
     })
     const [isNewOpen, setIsNewOpen] = useState(false)
-    const [searchForm] = Form.useForm();
+    const [isFilterOpen, setIsFilterOpen] = useState(false)
     const [messageApi, contextHolder] = message.useMessage();
     // table
     const [isLoadingData, setIsLoadingData] = useState(false);
@@ -137,10 +138,6 @@ const Flights = () => {
             }
         });
     };
-
-    const handleSearch = (value: Flight) => {
-        console.log(value)
-    }
 
     const handleBooking = (value: Flight) => {
         localStorage.setItem('booked_flight', JSON.stringify(value));
@@ -252,30 +249,7 @@ const Flights = () => {
             {contextHolder}
             <div className="flex flex-row gap-[14px] w-full h-full">
                 <div className="flex drop-shadow-xs flex-col flex-1 gap-[10px]">
-                    <div className="w-full bg-white p-[20px] rounded-[8px]">
-                        <Form
-                            style={{ height: '100%' }}
-                            layout={"inline"}
-                            form={searchForm}
-                            onFinish={handleSearch}
-                        >
-
-                            <Form.Item label="Code"
-                                name="cityCode">
-                                <Input placeholder="please input city code" />
-                            </Form.Item>
-
-                            <Form.Item label="City"
-                                name="cityName">
-                                <Input placeholder="please input city name" />
-                            </Form.Item>
-
-                            <Button
-                                style={{ marginLeft: 'auto' }}
-                                icon={icons.search}
-                                type="primary" htmlType="submit">Search</Button>
-                        </Form>
-                    </div>
+                    <Search />
                     <ProTable<Flight>
                         loading={isLoadingData}
                         columns={columns}
@@ -301,6 +275,15 @@ const Flights = () => {
                                 >
                                     New Flight
                                 </Button>,
+                                <Button
+                                    type="default"
+                                    key="save"
+                                    onClick={() => {
+                                        setIsFilterOpen(true);
+                                    }}
+                                >
+                                    Filter
+                                </Button>,
                             ];
                         }}
                     />
@@ -310,6 +293,10 @@ const Flights = () => {
                 isDetailOpen={isDetailOpen}
                 setIsDetailOpen={setIsDetailOpen}
                 detailFlight={detailFlight}
+            />
+            <Filter
+                isFilterOpen={isFilterOpen}
+                setIsFilterOpen={setIsFilterOpen}
             />
             <NewFlight
                 planeSelectOptions={planeSelectOptions}
@@ -338,4 +325,47 @@ const Flights = () => {
         </>
     );
 };
+const Search = () => {
+    const { RangePicker } = DatePicker;
+    const { citySelectOptions } = useSelectOptions();
+    const [searchForm] = Form.useForm();
+    const handleSearch = (value: Flight) => {
+        console.log(value)
+    }
+    return (
+        <div className="w-full bg-white p-[20px] rounded-[8px]">
+            <Form
+                layout={"inline"}
+                style={{ height: '100%' }}
+                form={searchForm}
+                onFinish={handleSearch}
+            >
+                <Form.Item label="From"
+                    name="from">
+                    <Select
+                        style={{ width: 200 }}
+                        options={citySelectOptions} placeholder="Select departure city"
+                    />
+                </Form.Item>
+                <Form.Item label="To"
+                    name="to">
+                    <Select
+                        style={{ width: 200 }}
+                        options={citySelectOptions} placeholder="Select departure city"
+                    />
+                </Form.Item>
+                <Form.Item label="Date"
+                    style={{ marginLeft: 'auto' }}
+                    name="date">
+                    <RangePicker style={{ width: 500 }} />
+                </Form.Item>
+                <Button
+                    style={{ marginLeft: 'auto' }}
+                    icon={icons.search}
+                    type="primary" htmlType="submit">Search</Button>
+
+            </Form>
+        </div >
+    )
+}
 export default Flights;
