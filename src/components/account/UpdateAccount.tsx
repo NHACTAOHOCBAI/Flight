@@ -23,7 +23,7 @@ const UpdateAccount = ({
 
     const handleOk = (value: AccountRequest) => {
         mutate(
-            { id: updatedAccount.id, updateAccount: value },
+            { id: updatedAccount.id, account: value },
             {
                 onSuccess: async () => {
                     await refetchData();
@@ -58,6 +58,7 @@ const UpdateAccount = ({
                 open={isUpdateOpen}
                 onCancel={handleCancel}
                 onOk={() => form.submit()}
+                confirmLoading={isPending}
             >
                 <Form layout="vertical" form={form} onFinish={handleOk}>
                     <Form.Item name="username" label="Username">

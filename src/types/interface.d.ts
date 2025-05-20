@@ -158,6 +158,19 @@ interface AccountRequest {
     email: string
     fullName: string
     phone: string
-    avatar: string
     roleId: number
+}
+
+interface Dashboard {
+    revenueThisYear: number;
+    revenueLastYear: number;
+    revenueThisMonth: number;
+    revenueLastMonth: number;
+    flightCountThisYear: number;
+    flightCountLastYear: number;
+    flightCountThisMonth: number;
+    flightCountLastMonth: number;
+    airlineCount: number;
+    airportCount: number;
+    airlinePopularity: Record<string, number>;
 }

@@ -13,17 +13,18 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
     const { mutate, isPending } = useCreateAccount();
     const [messageApi, contextHolder] = message.useMessage();
     const handleOk = (value: AccountRequest) => {
-        mutate(value, {
+        mutate({
+            account: value,
+        }, {
             onSuccess: async () => {
                 await refetchData();
-                messageApi.success("Create account successfully");
+                messageApi.success("Create airline successfully");
             },
             onError: (error) => {
                 messageApi.error(error.message);
             },
         });
     };
-
     const handleCancel = () => {
         setIsNewOpen(false);
         form.resetFields();
@@ -36,6 +37,7 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
                 open={isNewOpen}
                 onCancel={handleCancel}
                 onOk={() => form.submit()}
+                confirmLoading={isPending}
             >
                 <Form layout="vertical" form={form} onFinish={handleOk}>
                     <Form.Item name="username" label="Username" rules={[{ required: true }]}>
@@ -51,9 +53,6 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
                         <Input disabled={isPending} />
                     </Form.Item>
                     <Form.Item name="phone" label="Phone" rules={[{ required: true }]}>
-                        <Input disabled={isPending} />
-                    </Form.Item>
-                    <Form.Item name="avatar" label="Avatar URL">
                         <Input disabled={isPending} />
                     </Form.Item>
                     <Form.Item name="roleId" label="Role" rules={[{ required: true }]}>
