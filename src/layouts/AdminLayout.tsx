@@ -9,7 +9,26 @@ import icons from '../assets/icons';
 import { getUserRoleFromToken } from '../utils/decodeJwt';
 
 const { Header, Sider, Content } = Layout;
-
+const roles: Role[] = [
+    {
+        id: 9,
+        roleName: "USER",
+        pages: [
+            {
+                id: 1,
+                pageName: "airlines"
+            },
+            {
+                id: 2,
+                pageName: "accounts"
+            },
+            {
+                id: 3,
+                pageName: "roles"
+            },
+        ]
+    }
+]
 const AdminLayout = () => {
     const { pathname } = useLocation();
     const endpoints = pathname.split('/').pop() as string;
@@ -19,35 +38,12 @@ const AdminLayout = () => {
     } = theme.useToken();
     // buoc nay lay page tu account duoc luu trong context
     const role = getUserRoleFromToken();
-    if (!role) return false;
-
-    const roles: Role[] = [
-        {
-            id: 9,
-            roleName: "USER",
-            pages: [
-                {
-                    id: 1,
-                    pageName: "airlines"
-                },
-                {
-                    id: 2,
-                    pageName: "accounts"
-                },
-                {
-                    id: 3,
-                    pageName: "roles"
-                },
-            ]
-        }
-    ]
     const currentRole = roles.find((r: Role) => `ROLE_${r.roleName.toUpperCase()}` === role);
-    console.log(currentRole?.pages)
     const permittedPages = currentRole?.pages.map((value) => value.pageName)
 
     //
     const labelMap: Record<string, { label: React.ReactNode; icon: React.ReactNode }> = {
-        dashboard: { label: <Link to="/admin/dashboard">Dashboard</Link>, icon: icons.dashboard },
+        dashboard: { label: <Link to="/admin">Dashboard</Link>, icon: icons.dashboard },
         accounts: { label: <Link to="/admin/accounts">Account</Link>, icon: icons.account },
         airlines: { label: <Link to="/admin/airlines">Airline</Link>, icon: icons.airline },
         airports: { label: <Link to="/admin/airports">Airport</Link>, icon: icons.airport },

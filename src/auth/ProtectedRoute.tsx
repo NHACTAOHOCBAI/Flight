@@ -29,7 +29,7 @@ export default function ProtectedRoute() {
 
     if (checking) {
         return (
-            <div className="flex h-dvh w-dvw justify-center items-center">
+            <div className="flex h-full w-full justify-center items-center">
                 <Spin size="large" />
             </div>
         );

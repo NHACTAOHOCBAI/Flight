@@ -32,11 +32,11 @@ const router = createBrowserRouter([
     },
     {
         path: "/admin",
-        element: <ProtectedRoute />,
+        element: < AdminLayout />,
         children: [
             {
                 path: "",
-                element: <AdminLayout />,
+                element: <ProtectedRoute />,
                 children: [
                     {
                         index: true,
