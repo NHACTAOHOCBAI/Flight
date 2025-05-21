@@ -18,7 +18,8 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
         }, {
             onSuccess: async () => {
                 await refetchData();
-                messageApi.success("Create airline successfully");
+                messageApi.success("Create account successfully");
+                handleCancel();
             },
             onError: (error) => {
                 messageApi.error(error.message);
