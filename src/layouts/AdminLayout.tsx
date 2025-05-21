@@ -6,6 +6,7 @@ import {
 import { Avatar, Button, Layout, Menu, theme } from 'antd';
 import { Link, Outlet, useLocation } from 'react-router';
 import icons from '../assets/icons';
+import { getUserRoleFromToken } from '../utils/decodeJwt';
 
 const { Header, Sider, Content } = Layout;
 
@@ -17,19 +18,32 @@ const AdminLayout = () => {
         token: { colorBgContainer },
     } = theme.useToken();
     // buoc nay lay page tu account duoc luu trong context
-    const permittedPages = [
-        'dashboard',
-        'cities',
-        'airports',
-        'airlines',
-        'planes',
-        'flights',
-        'tickets',
-        'seats',
-        'roles',
-        'accounts',
-        'setting',
-    ];
+    const role = getUserRoleFromToken();
+    if (!role) return false;
+
+    const roles: Role[] = [
+        {
+            id: 9,
+            roleName: "USER",
+            pages: [
+                {
+                    id: 1,
+                    pageName: "airlines"
+                },
+                {
+                    id: 2,
+                    pageName: "accounts"
+                },
+                {
+                    id: 3,
+                    pageName: "roles"
+                },
+            ]
+        }
+    ]
+    const currentRole = roles.find((r: Role) => `ROLE_${r.roleName.toUpperCase()}` === role);
+    console.log(currentRole?.pages)
+    const permittedPages = currentRole?.pages.map((value) => value.pageName)
 
     //
     const labelMap: Record<string, { label: React.ReactNode; icon: React.ReactNode }> = {
@@ -46,13 +60,19 @@ const AdminLayout = () => {
         tickets: { label: <Link to="/admin/tickets">Ticket</Link>, icon: icons.ticket },
     };
 
-    const menuItems = permittedPages.map((value) => {
-        return ({
+    const menuItems = [
+        {
+            key: 'dashboard',
+            icon: labelMap['dashboard'].icon,
+            label: labelMap['dashboard'].label,
+        },
+        ...(permittedPages?.filter(p => p !== 'dashboard').map((value) => ({
             key: value,
             icon: labelMap[value].icon,
             label: labelMap[value].label
-        })
-    })
+        })) || [])
+    ];
+
 
     return (
         <Layout style={{ height: '100%', minHeight: '100vh' }}>

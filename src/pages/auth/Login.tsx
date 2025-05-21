@@ -1,8 +1,9 @@
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input, message, Spin } from 'antd';
 import icons from '../../assets/icons';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useLogin } from '../../hooks/useAuth';
+import { useState } from 'react';
 
 type FieldType = {
     username?: string;
@@ -12,13 +13,22 @@ type FieldType = {
 
 
 const Login = () => {
+    const navigate = useNavigate();
     const { mutate, isPending } = useLogin();
     const [messageApi, contextHolder] = message.useMessage();
+    const [isRedirecting, setIsRedirecting] = useState(false);
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
         mutate({
             username: values.username as string,
             password: values.password as string
         }, {
+            onSuccess: async (data) => {
+                setIsRedirecting(true);
+                localStorage.setItem('accessToken', data.data.accessToken);
+                setTimeout(() => {
+                    navigate('/admin');
+                }, 500);
+            },
             onError: (error) => {
                 messageApi.error(error.message);
             },
@@ -29,8 +39,7 @@ const Login = () => {
         <>
             {contextHolder}
             <div className=' w-lvw h-lvh flex items-center justify-center'>
-                {isPending ? <Spin size="large" />
-                    :
+                {isRedirecting ? <Spin size='large' /> :
                     <div className=' rounded-md bg-white p-[24px] drop-shadow-md flex gap-[20px]'>
                         <div className='w-[400px]'>
                             <h1 className='font-medium text-[24px] text-center text-blue-500 p-[24px]'>Wellcome to our website :))</h1>
@@ -76,7 +85,7 @@ const Login = () => {
                             </Button>
                             <p className=' text-gray-800 text-[14px] mt-[20px]'>Don't have an account? <Link to={'/register'} style={{ color: "oklch(62.3% 0.214 259.815)", textDecoration: "underline" }}>Sign up here</Link></p>
                         </div>
-                        <img src="../../../public/registerImg.png" className='h-[500px] drop-shadow-lg' />
+                        {/* <img src="../../../public/registerImg.png" className='h-[500px] drop-shadow-lg' /> */}
                     </div>
                 }
 

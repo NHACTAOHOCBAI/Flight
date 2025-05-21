@@ -38,7 +38,10 @@ const router = createBrowserRouter([
                 path: "",
                 element: <AdminLayout />,
                 children: [
-                    { path: "dashboard", element: <Dashboard /> },
+                    {
+                        index: true,
+                        element: <Dashboard />
+                    },
                     { path: "accounts", element: <Accounts /> },
                     { path: "airlines", element: <Airlines /> },
                     { path: "airports", element: <Airports /> },
