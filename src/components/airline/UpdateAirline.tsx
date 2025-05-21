@@ -92,6 +92,7 @@ const UpdateAirline = ({ setUpdateAirline, updatedAirline, isUpdateOpen, setIsUp
                     <div className="mb-[10px]">
                         <h3 className="mb-[10px]">Logo<span className="text-gray-300">{" (optional)"}</span></h3>
                         <UploadImage
+                            isPending={isPending}
                             fileList={fileList}
                             setFileList={setFileList}
                         />

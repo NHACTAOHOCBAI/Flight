@@ -73,6 +73,23 @@ const Accounts = () => {
             dataIndex: "fullName",
         },
         {
+            title: "Email",
+            dataIndex: "email",
+        },
+        {
+            title: "Phone",
+            dataIndex: "phone",
+        },
+        {
+            title: "Avatar",
+            dataIndex: "logo",
+            render: (_, record) => <img style={{
+                objectFit: "cover",
+                width: 50, height: 30,
+                borderRadius: 9999
+            }} src={record.avatar} alt="avatar" />,
+        },
+        {
             title: "Role",
             render: (_, record) => <div>{record.role?.roleName}</div>,
         },
@@ -153,7 +170,7 @@ const Accounts = () => {
                                         setIsNewOpen(true);
                                     }}
                                 >
-                                    New Flight
+                                    New Account
                                 </Button>,
                             ];
                         }}

@@ -1,5 +1,8 @@
 import { Form, Input, message, Modal, Select } from "antd";
 import { useCreateAccount } from "../../hooks/useAccounts";
+import type { UploadFile } from "antd/lib";
+import { useState } from "react";
+import UploadImage from "../airline/test";
 
 interface Props {
     refetchData: () => Promise<void>;
@@ -9,12 +12,16 @@ interface Props {
 }
 
 const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props) => {
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [form] = Form.useForm();
     const { mutate, isPending } = useCreateAccount();
     const [messageApi, contextHolder] = message.useMessage();
     const handleOk = (value: AccountRequest) => {
         mutate({
             account: value,
+            ...(fileList && fileList.length > 0 && {
+                logo: fileList[0].originFileObj as File,
+            })
         }, {
             onSuccess: async () => {
                 await refetchData();
@@ -27,6 +34,7 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
         });
     };
     const handleCancel = () => {
+        setFileList([])
         setIsNewOpen(false);
         form.resetFields();
     };
@@ -59,6 +67,14 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
                     <Form.Item name="roleId" label="Role" rules={[{ required: true }]}>
                         <Select disabled={isPending} options={roleOptions} />
                     </Form.Item>
+                    <div className="mb-[10px]">
+                        <h3 className="mb-[10px]">Avatar<span className="text-gray-300">{" (optional)"}</span></h3>
+                        <UploadImage
+                            isPending={isPending}
+                            fileList={fileList}
+                            setFileList={setFileList}
+                        />
+                    </div>
                 </Form>
             </Modal>
         </>
