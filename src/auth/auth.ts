@@ -4,7 +4,8 @@ import { getUserRoleFromToken } from "../utils/decodeJwt";
 // Trả về một Promise<boolean>
 const checkAuth = async (pathname: string): Promise<boolean> => {
     try {
-        const role = getUserRoleFromToken(); // ví dụ: "ROLE_USER" hoặc "ROLE_ADMIN"
+        const tokenData = getUserRoleFromToken();
+        const role = tokenData?.authorities?.[0]?.role ?? null; // ví dụ: "ROLE_USER" hoặc "ROLE_ADMIN"
         if (!role) return false;
         const endpoint = pathname.split('/').pop(); // lấy phần sau cùng của URL, vd: 'dashboard'
 

@@ -9,6 +9,7 @@ export const createAccount = ({ account, avatar, }: { account: AccountRequest; a
     if (avatar) {
         formData.append("avatar", avatar);
     }
+    console.log(account)
     return axiosInstance.post("/accounts", formData);
 };
 export const updateAccount = ({ id, account, avatar }: { id: number, account: AccountRequest, avatar?: File }) => {

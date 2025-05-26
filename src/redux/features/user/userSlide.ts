@@ -1,13 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 interface User {
-    id: number,
-    username: string,
-    password: string
-    email: string
-    fullName: string
-    phone: string
-    avatar: string
-    roleId: number
+    id?: number,
+    username?: string,
+    password?: string
+    name?: string
+    phone?: string
+    avatar?: string
+    roleId?: number
 }
 interface UserState {
     user: User
@@ -19,8 +18,7 @@ const initialState: UserState = {
         id: 0,
         username: "",
         password: "",
-        email: "",
-        fullName: "",
+        name: "",
         phone: "",
         avatar: "",
         roleId: 0
@@ -41,8 +39,7 @@ const userSlice = createSlice({
                 id: 0,
                 username: "",
                 password: "",
-                email: "",
-                fullName: "",
+                name: "",
                 phone: "",
                 avatar: "",
                 roleId: 0

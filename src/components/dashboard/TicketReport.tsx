@@ -3,141 +3,111 @@ import icons from '../../assets/icons';
 import type { DatePickerProps } from 'antd/lib';
 import exportToExcel from '../../utils/exportFile';
 import { ProTable, type ProColumns } from '@ant-design/pro-components';
+import formatPrice from '../../utils/formatVNprice';
 
-interface DataType {
-    key: number,
-    flightCode: string,
-    ticketQuantity: number,
-    revenue: number,
-    rate: number
-}
-const data: DataType[] = [
-    {
-        key: 1,
-        flightCode: "VN101",
-        ticketQuantity: 120,
-        revenue: 150000000,
-        rate: 12.5,
-    },
-    {
-        key: 2,
-        flightCode: "VN202",
-        ticketQuantity: 95,
-        revenue: 113000000,
-        rate: 10.8,
-    },
-    {
-        key: 3,
-        flightCode: "VN303",
-        ticketQuantity: 145,
-        revenue: 175000000,
-        rate: 14.2,
-    },
-    {
-        key: 4,
-        flightCode: "VN404",
-        ticketQuantity: 80,
-        revenue: 92000000,
-        rate: 9.0,
-    },
-    {
-        key: 5,
-        flightCode: "VN505",
-        ticketQuantity: 160,
-        revenue: 195000000,
-        rate: 15.1,
-    },
-    {
-        key: 6,
-        flightCode: "VN606",
-        ticketQuantity: 110,
-        revenue: 130000000,
-        rate: 11.6,
-    },
-    {
-        key: 7,
-        flightCode: "VN707",
-        ticketQuantity: 135,
-        revenue: 162000000,
-        rate: 13.3,
-    },
-    {
-        key: 8,
-        flightCode: "VN808",
-        ticketQuantity: 100,
-        revenue: 118000000,
-        rate: 10.2,
-    },
-    {
-        key: 9,
-        flightCode: "VN909",
-        ticketQuantity: 150,
-        revenue: 185000000,
-        rate: 14.7,
-    },
-    {
-        key: 10,
-        flightCode: "VN010",
-        ticketQuantity: 90,
-        revenue: 105000000,
-        rate: 9.5,
-    },
+
+const reportData: MonthlyRevenueReport = {
+    year: 2025,
+    month: 4,
+    revenue: 1_353_000_000,
+    percentage: 12.3,
+    flightCount: 10,
+    flights: [
+        {
+            flightId: 1,
+            flightCode: "VN101",
+            ticketCount: 120,
+            revenue: 150_000_000,
+            percentage: 12.5,
+        },
+        {
+            flightId: 2,
+            flightCode: "VN202",
+            ticketCount: 95,
+            revenue: 113_000_000,
+            percentage: 10.8,
+        },
+        // ...các chuyến bay còn lại tương tự
+    ],
+};
+
+const excelData = [
+    ["Year", reportData.year],
+    ["Month", reportData.month],
+    ["Total Revenue", `${reportData.revenue.toLocaleString("vi-VN")} VND`],
+    ["Growth Percentage", `${reportData.percentage}%`],
+    ["Flight Count", reportData.flightCount],
+    [],
+    ["Flight ID", "Flight Code", "Ticket Count", "Revenue", "Percentage"],
+    ...reportData.flights.map((flight) => [
+        flight.flightId,
+        flight.flightCode,
+        flight.ticketCount,
+        `${flight.revenue.toLocaleString("vi-VN")} VND`,
+        `${flight.percentage}%`
+    ])
 ];
-const excelData = data.map((value) => {
-    return {
-        "Flight code": value.flightCode,
-        "Ticket quantiy": value.ticketQuantity,
-        "Revenue": value.revenue.toLocaleString("vi-VN") + " VND",
-        "Rate": value.rate + "%"
-    }
-})
-const columns: ProColumns<DataType>[] = [
+
+
+const columns: ProColumns<MonthlyRevenueReport["flights"][0]>[] = [
     {
-        title: 'No.',
-        dataIndex: 'key',
+        title: 'ID',
+        dataIndex: 'flightId',
     },
     {
-        title: 'Flight ',
+        title: 'Flight Code',
         dataIndex: 'flightCode',
-        key: 'flightCode',
-        copyable: true
+        copyable: true,
     },
     {
         title: 'Ticket Quantity',
-        dataIndex: 'ticketQuantity',
-        key: 'ticketQuantity',
-        sorter: true
+        dataIndex: 'ticketCount',
+        sorter: true,
     },
     {
         title: 'Revenue',
         dataIndex: 'revenue',
-        key: 'revenue',
         sorter: true,
-        render: (_, record) => <div>{record.revenue.toLocaleString("vi-VN") + " VND"}</div>
+        render: (_, record) => <div>{record.revenue.toLocaleString("vi-VN")} VND</div>,
     },
     {
-        title: 'Rate',
-        dataIndex: 'rate',
-        key: 'rate',
+        title: 'Percentage',
+        dataIndex: 'percentage',
         sorter: true,
-        render: (text) => <div className=''>{text}%</div>
+        render: (text) => <div>{text}%</div>,
     },
 ];
-
-
 
 const onChange: DatePickerProps['onChange'] = (date, dateString) => {
     console.log(date, dateString);
 }
 const TicketReport = () => {
     return (
-        <div className='flex-1 min-w-[400px] bg-white mt-[10px] shadow-md'>
-            <ProTable<DataType>
+        <div className="flex-1 min-w-[400px] bg-white mt-[10px] shadow-md">
+            {/* Thống kê tổng quan */}
+            <div className="p-4 border-b border-gray-200 text-[15px] font-medium">
+                <div>
+                    Date: {reportData.month}/{reportData.year}
+                </div>
+                <div>
+                    Total Revenue: {formatPrice(reportData.revenue)}
+                </div>
+                <div>
+                    Percentage: {reportData.percentage}%
+                </div>
+            </div>
+
+            {/* Bảng ProTable */}
+            <ProTable<MonthlyRevenueReport["flights"][0]>
                 style={{ width: "100%" }}
-                headerTitle={<div className='text-[18px] flex gap-[5px] underline underline-offset-1'>{icons.report}Flight Revenue Report</div>}
+                headerTitle={
+                    <div className="text-[18px] flex gap-[5px] underline underline-offset-1">
+                        {icons.report}Flight Revenue Report
+                    </div>
+                }
                 columns={columns}
-                dataSource={data}
-                rowKey="id"
+                dataSource={reportData.flights}
+                rowKey="flightId"
                 search={false}
                 pagination={{
                     pageSizeOptions: [5, 10, 20, 50],
@@ -147,20 +117,24 @@ const TicketReport = () => {
                 }}
                 options={{
                     reload: false,
-                    setting: false
+                    setting: false,
                 }}
-                toolBarRender={() => {
-                    return [
-                        <Button type='primary' style={{ marginLeft: "auto", marginRight: 10 }} onClick={() => exportToExcel(excelData, "Flight_Ticket_Sales_Report")}>
-                            {icons.export} Export
-                        </Button>,
-                        <DatePicker onChange={onChange} picker="month" />
-                    ];
-                }}
-                scroll={{ x: 'max-content' }}
+                toolBarRender={() => [
+                    <Button
+                        type="primary"
+                        style={{ marginLeft: "auto", marginRight: 10 }}
+                        onClick={() => exportToExcel(excelData, "Flight_Ticket_Sales_Report")}
+                    >
+                        {icons.export} Export
+                    </Button>,
+                    <DatePicker onChange={onChange} picker="month" />,
+                ]}
+                scroll={{ x: "max-content" }}
             />
         </div>
-    )
-}
+    );
+};
+
+
 
 export default TicketReport;

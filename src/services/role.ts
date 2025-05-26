@@ -1,7 +1,10 @@
 // services/role.ts
 import axiosInstance from "../configs/axiosConfig";
 
-export const fetchAllRoles = () => axiosInstance.get("/roles");
+export const fetchAllRoles = async () => {
+    const res = await axiosInstance.get("/roles");
+    return res.data
+}
 
 export const createRole = (data: { roleName: string; pages: number[] }) =>
     axiosInstance.post("/roles", data);

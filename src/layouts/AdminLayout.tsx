@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -7,40 +7,58 @@ import { Avatar, Button, Layout, Menu, theme } from 'antd';
 import { Link, Outlet, useLocation } from 'react-router';
 import icons from '../assets/icons';
 import { getUserRoleFromToken } from '../utils/decodeJwt';
+// import { useSelector } from 'react-redux';
+// import type { RootState } from '../redux/app/store';
+import { fetchAllRoles } from '../services/role';
 
 const { Header, Sider, Content } = Layout;
-const roles: Role[] = [
-    {
-        id: 9,
-        roleName: "USER",
-        pages: [
-            {
-                id: 1,
-                pageName: "airlines"
-            },
-            {
-                id: 2,
-                pageName: "accounts"
-            },
-            {
-                id: 3,
-                pageName: "roles"
-            },
-        ]
-    }
-]
+// const roles: Role[] = [
+//     {
+//         id: 9,
+//         roleName: "USER",
+//         pages: [
+//             {
+//                 id: 1,
+//                 pageName: "airlines"
+//             },
+//             {
+//                 id: 2,
+//                 pageName: "accounts"
+//             },
+//             {
+//                 id: 3,
+//                 pageName: "roles"
+//             },
+//         ]
+//     }
+// ]
 const AdminLayout = () => {
     const { pathname } = useLocation();
+    const [roles, setRoles] = useState<Role[]>();
+    // const roles = useSelector((state: RootState) => state.role)
+    console.log(roles)
     const endpoints = pathname.split('/').pop() as string;
     const [collapsed, setCollapsed] = useState(false);
     const {
         token: { colorBgContainer },
     } = theme.useToken();
     // buoc nay lay page tu account duoc luu trong context
-    const role = getUserRoleFromToken();
-    const currentRole = roles.find((r: Role) => `ROLE_${r.roleName.toUpperCase()}` === role);
+    const tokenData = getUserRoleFromToken();
+    const role = tokenData?.authorities?.[0]?.role ?? null;
+    console.log(role)
+    const currentRole = roles?.find((r: Role) => {
+        console.log(`ROLE_${r.roleName.toUpperCase()}`)
+        return `ROLE_${r.roleName.toUpperCase()}` === role
+    });
+    console.log(currentRole)
     const permittedPages = currentRole?.pages.map((value) => value.pageName)
-
+    useEffect(() => {
+        const fetchRoles = async () => {
+            const res = await fetchAllRoles() as Role[]
+            setRoles(res)
+        }
+        fetchRoles()
+    }, [])
     //
     const labelMap: Record<string, { label: React.ReactNode; icon: React.ReactNode }> = {
         dashboard: { label: <Link to="/admin">Dashboard</Link>, icon: icons.dashboard },

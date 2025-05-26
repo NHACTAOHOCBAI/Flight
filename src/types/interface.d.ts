@@ -114,8 +114,8 @@ interface FlightRequest {
 
 interface Ticket {
     id: number;
-    flight: Flight;
-    seat: Seat;
+    flight?: Flight;
+    seat?: Seat;
     passengerName: string;
     passengerEmail: string;
     passengerPhone: string;
@@ -173,4 +173,40 @@ interface Dashboard {
     airlineCount: number;
     airportCount: number;
     airlinePopularity: Record<string, number>;
+}
+
+interface BookingRate {
+    months: {
+        month: number,
+        maxTickets: number,
+        ticketsSold: number
+    }[],
+    year: number
+}
+
+interface AnnualRevenueReport {
+    year: number,
+    revenue: number,
+    flightCount: number,
+    months: {
+        month: number,
+        revenue: number,
+        percentage: number,
+        flightCount: number
+    }
+}
+
+interface MonthlyRevenueReport {
+    year: number,
+    month: number,
+    revenue: number,
+    percentage: number,
+    flightCount: number,
+    flights: {
+        flightId: number,
+        flightCode: string,
+        ticketCount: number,
+        revenue: number,
+        percentage: number,
+    }[]
 }

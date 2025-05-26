@@ -5,22 +5,34 @@ interface JwtPayload {
     sub: string;
     exp: number;
     iat: number;
-    projectcnpm?: {
-        principal?: {
-            username?: string;
-            authorities?: { role: string }[];
-        };
+    user?: {
+        id: number;
+        name: string;
+        username: string;
     };
+    permissions?: string[];
     [key: string]: any;
 }
 
-export const getUserRoleFromToken = (): string | null => {
+export const getUserRoleFromToken = (): {
+    id?: number;
+    name?: string;
+    username?: string;
+    permissions?: string[];
+} | null => {
     const token = localStorage.getItem("accessToken");
     if (!token) return null;
 
     try {
         const decoded = jwtDecode<JwtPayload>(token);
-        return decoded.projectcnpm?.principal?.authorities?.[0]?.role || null;
+        const { user, permissions } = decoded;
+
+        if (!user) return null;
+
+        return {
+            ...user,
+            permissions: permissions || [],
+        };
     } catch (error) {
         console.error("Token decoding failed:", error);
         return null;

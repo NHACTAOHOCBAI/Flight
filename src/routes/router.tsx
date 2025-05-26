@@ -17,10 +17,13 @@ import Resgister from "../pages/auth/Resgister";
 import NotFound from "../pages/errors/NotFound";
 import Booking from "../pages/admin/Booking";
 
+import FlightSearchPage from "../pages/test";
+import RegisterSuccess from "../pages/auth/ConfirmEmail";
+
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <div>Hello World</div>,
+        element: <FlightSearchPage />,
     },
     {
         path: '/login',
@@ -29,6 +32,10 @@ const router = createBrowserRouter([
     {
         path: '/register',
         element: <Resgister />
+    },
+    {
+        path: '/register/confirm',
+        element: <RegisterSuccess />
     },
     {
         path: "/admin",

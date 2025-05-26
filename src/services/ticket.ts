@@ -1,8 +1,19 @@
+
 import axiosInstance from "../configs/axiosConfig";
 
-const fetchAllTickets = () => axiosInstance.get("/tickets");
+export const fetchAllTickets = async (): Promise<Ticket[]> => {
+    const res = await axiosInstance.get('/tickets');
+    return res.data;
+};
 
-const createTicket = (data: TicketRequest) =>
-    axiosInstance.post("/tickets", data);
+export const createTicket = async (data: TicketRequest) => {
+    await axiosInstance.post('/tickets', data);
+};
 
-export { fetchAllTickets, createTicket };
+export const updateTicket = async (id: number, data: TicketRequest) => {
+    await axiosInstance.put(`/tickets/${id}`, data);
+};
+
+export const deleteTicket = async (id: number) => {
+    await axiosInstance.delete(`/tickets/${id}`);
+};

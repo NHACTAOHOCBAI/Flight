@@ -1,22 +1,42 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createTicket, fetchAllTickets } from "../services/ticket";
+import { createTicket, deleteTicket, fetchAllTickets, updateTicket } from "../services/ticket";
 
 
 export const useGetAllTickets = () => {
     return useQuery({
-        queryKey: ['get all tickets'],
-        queryFn: fetchAllTickets
-    })
-}
+        queryKey: ["get all tickets"],
+        queryFn: fetchAllTickets,
+    });
+};
 
 export const useCreateTicket = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: createTicket,
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ['get all tickets'] });
+            await queryClient.invalidateQueries({ queryKey: ["get all tickets"] });
         },
     });
 };
 
+type UpdateTicketVariables = { id: number; data: TicketRequest };
 
+export const useUpdateTicket = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, data }: UpdateTicketVariables) => updateTicket(id, data),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["get all tickets"] });
+        },
+    });
+};
+
+export const useDeleteTicket = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: deleteTicket,
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["get all tickets"] });
+        },
+    });
+};
