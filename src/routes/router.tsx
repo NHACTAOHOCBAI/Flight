@@ -19,6 +19,7 @@ import Booking from "../pages/admin/Booking";
 
 import FlightSearchPage from "../pages/customer/SearchFlight";
 import RegisterSuccess from "../pages/auth/ConfirmEmail";
+import MyProfile from "../pages/admin/Profile";
 
 const router = createBrowserRouter([
     {
@@ -51,10 +52,6 @@ const router = createBrowserRouter([
                 path: "",
                 element: <ProtectedRoute />,
                 children: [
-                    {
-                        index: true,
-                        element: <Dashboard />
-                    },
                     { path: "accounts", element: <Accounts /> },
                     { path: "airlines", element: <Airlines /> },
                     { path: "airports", element: <Airports /> },
@@ -67,6 +64,14 @@ const router = createBrowserRouter([
                     { path: "booking", element: <Booking /> },
                     { path: "tickets", element: <Tickets /> },
                 ]
+            },
+            {
+                index: true,
+                element: <Dashboard />
+            },
+            {
+                path: "my-profile",
+                element: <MyProfile />
             }
         ]
     },
