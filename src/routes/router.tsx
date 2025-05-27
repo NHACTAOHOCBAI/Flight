@@ -17,7 +17,7 @@ import Resgister from "../pages/auth/Resgister";
 import NotFound from "../pages/errors/NotFound";
 import Booking from "../pages/admin/Booking";
 
-import FlightSearchPage from "../pages/test";
+import FlightSearchPage from "../pages/customer/SearchFlight";
 import RegisterSuccess from "../pages/auth/ConfirmEmail";
 
 const router = createBrowserRouter([
@@ -36,6 +36,12 @@ const router = createBrowserRouter([
     {
         path: '/register/confirm',
         element: <RegisterSuccess />
+    },
+    {
+        path: '/booking',
+        element: <div className="p-[20px]">
+            <Booking />
+        </div>
     },
     {
         path: "/admin",
