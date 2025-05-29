@@ -48,8 +48,6 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
         const loadPages = async () => {
             try {
                 const res: Page[] = await fetchPages();
-
-                // Group pages by module
                 const grouped: Record<string, Page[]> = {};
                 res.forEach((page) => {
                     if (!grouped[page.module]) {
@@ -78,17 +76,19 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
                     </Form.Item>
                     <Form.Item label="Pages" name="pages" rules={[{ required: true }]}>
                         <Checkbox.Group style={{ width: "100%" }}>
-                            <div className="flex flex-col gap-2 max-h-[350px] overflow-y-auto pr-2">
+                            <div className="flex flex-col  overflow-y-auto pr-2">
                                 {Object.entries(pagesByModule).map(([module, pages]) => (
                                     <div key={module}>
                                         <Divider orientation="left" plain>
                                             {module}
                                         </Divider>
-                                        {pages.map((page) => (
-                                            <Checkbox key={page.id} value={page.id}>
-                                                {getActionTag(page.method)} {getFriendlyLabel(page)}
-                                            </Checkbox>
-                                        ))}
+                                        <div className="flex gap-[5px] ">
+                                            {pages.map((page) => (
+                                                <Checkbox key={page.id} value={page.id}>
+                                                    {getActionTag(page.method)}
+                                                </Checkbox>
+                                            ))}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -103,42 +103,6 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
             </div>
         </>
     );
-};
-const getFriendlyLabel = (page: Page) => {
-    const method = page.method.toUpperCase();
-    const path = page.apiPath.toLowerCase();
-
-    // Map technical entity names to readable ones
-    const entityMap: Record<string, string> = {
-        seats: "Seat",
-        airlines: "Airline",
-        airports: "Airport",
-        cities: "City",
-        planes: "Plane",
-        roles: "Role",
-        pages: "Page",
-        users: "User",
-        tickets: "Ticket",
-    };
-
-    // Extract main entity from path, like "seats", "airlines"
-    const parts = path.split("/").filter(Boolean);
-    const base = parts[0]?.replace(/{.*}/, "") || "";
-    const entity = entityMap[base] || base;
-
-    switch (method) {
-        case "GET":
-            return path.includes("{") ? `View ${entity}` : `List ${entity}s`;
-        case "POST":
-            return `Create ${entity}`;
-        case "PUT":
-        case "PATCH":
-            return `Update ${entity}`;
-        case "DELETE":
-            return `Delete ${entity}`;
-        default:
-            return `${method} ${entity}`;
-    }
 };
 
 export default NewRole;
