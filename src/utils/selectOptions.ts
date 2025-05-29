@@ -15,37 +15,37 @@ const useSelectOptions = () => {
     const { data: seats } = useGetAllSeats();
     const { data: roles } = useGetAllRoles();
 
-    const flightSelectOptions = flight?.data?.map((flight: Flight) => ({
+    const flightSelectOptions = flight?.data?.result?.map((flight: Flight) => ({
         value: flight.id,
         label: flight.flightCode
     })) ?? [];
 
-    const airlineSelectOptions = airlines?.data?.map((airline: Airline) => ({
+    const airlineSelectOptions = airlines?.data?.result?.map((airline: Airline) => ({
         value: airline.id,
         label: airline.airlineName
     })) ?? [];
 
-    const citySelectOptions = cities?.data?.map((city: City) => ({
+    const citySelectOptions = cities?.data?.result?.map((city: City) => ({
         value: city.id,
         label: city.cityName,
     })) ?? [];
 
-    const planeSelectOptions = planes?.data?.map((plane: Plane) => ({
+    const planeSelectOptions = planes?.data?.result?.map((plane: Plane) => ({
         value: plane.id,
         label: plane.planeName,
     })) ?? [];
 
-    const airportSelectOptions = airports?.data?.map((airport: Airport) => ({
+    const airportSelectOptions = airports?.data?.result?.map((airport: Airport) => ({
         value: airport.id,
         label: airport.airportName,
     })) ?? [];
 
-    const seatSelectOptions = seats?.data?.map((seat: Seat) => ({
+    const seatSelectOptions = seats?.data?.result?.map((seat: Seat) => ({
         value: seat.id,
         label: seat.seatName,
     })) ?? [];
 
-    const roleSelectOptions = roles?.data?.map((role: Role) => ({
+    const roleSelectOptions = roles?.data?.result?.map((role: Role) => ({
         value: role.id,
         label: role.roleName,
     })) ?? [];

@@ -45,7 +45,7 @@ const Airports = () => {
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllAirports();
-        setAirportsData(res.data);
+        setAirportsData(res.data.result);
         setIsLoadingData(false);
     };
 

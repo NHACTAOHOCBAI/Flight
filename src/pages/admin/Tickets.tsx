@@ -39,7 +39,7 @@ const Tickets = () => {
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllTickets();
-        setTicketsData(res);
+        setTicketsData(res?.result);
         setIsLoadingData(false);
     };
 

@@ -35,7 +35,7 @@ const Roles = () => {
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllRoles();
-        setRolesData(res.data);
+        setRolesData(res.data.result);
         setIsLoadingData(false);
     };
     const handleSearch = (value: Plane) => {
@@ -50,13 +50,13 @@ const Roles = () => {
             title: "Role Name",
             dataIndex: "roleName",
         },
-        {
-            title: "Pages",
-            render: (_, record) => {
-                console.log(record.pages)
-                return record.pages.map((value) => value.pageName).join(',')
-            }
-        },
+        // {
+        //     title: "Pages",
+        //     render: (_, record) => {
+        //         console.log(record.pages)
+        //         return record.pages.map((value) => value.pageName).join(',')
+        //     }
+        // },
         {
             title: "Action",
             render: (_, value) => (

@@ -38,7 +38,7 @@ const Airlines = () => {
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllAirlines();
-        setAirlinesData(res.data);
+        setAirlinesData(res.data.result);
         setIsLoadingData(false);
     };
 

@@ -51,7 +51,7 @@ const Accounts = () => {
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllAccounts();
-        setAccountsData(res.data);
+        setAccountsData(res.data.result);
         setIsLoadingData(false);
     };
 

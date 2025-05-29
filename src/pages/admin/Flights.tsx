@@ -123,7 +123,7 @@ const Flights = () => {
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllFlights();
-        setFlightsData(res.data)
+        setFlightsData(res.data.result)
         setIsLoadingData(false);
     }
 

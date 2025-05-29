@@ -34,7 +34,7 @@ const Cities = () => {
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllCities();
-        setCitiesData(res.data)
+        setCitiesData(res.data.result)
         setIsLoadingData(false);
     }
 

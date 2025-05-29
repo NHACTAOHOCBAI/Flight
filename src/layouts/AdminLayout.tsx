@@ -34,32 +34,32 @@ const { Header, Sider, Content } = Layout;
 // ]
 const AdminLayout = () => {
     const { pathname } = useLocation();
-    const [roles, setRoles] = useState<Role[]>();
-    // const roles = useSelector((state: RootState) => state.role)
-    console.log(roles)
+    // const [roles, setRoles] = useState<Role[]>();
+    // // const roles = useSelector((state: RootState) => state.role)
+    // console.log(roles)
     const endpoints = pathname.split('/').pop() as string;
     const [collapsed, setCollapsed] = useState(false);
     const {
         token: { colorBgContainer },
     } = theme.useToken();
     // buoc nay lay page tu account duoc luu trong context
-    const tokenData = getUserRoleFromToken();
-    const role = tokenData?.authorities?.[0]?.role ?? null;
-    console.log(role)
-    const currentRole = roles?.find((r: Role) => {
-        console.log(`ROLE_${r.roleName.toUpperCase()}`)
-        return `ROLE_${r.roleName.toUpperCase()}` === role
-    });
-    console.log(currentRole)
-    const permittedPages = currentRole?.pages.map((value) => value.pageName)
-    useEffect(() => {
-        const fetchRoles = async () => {
-            const res = await fetchAllRoles() as Role[]
-            setRoles(res)
-        }
-        fetchRoles()
-    }, [])
-    //
+    // const tokenData = getUserRoleFromToken();
+    // const role = tokenData?.authorities?.[0]?.role ?? null;
+    // console.log(role)
+    // const currentRole = roles?.find((r: Role) => {
+    //     console.log(`ROLE_${r.roleName.toUpperCase()}`)
+    //     return `ROLE_${r.roleName.toUpperCase()}` === role
+    // });
+    // console.log(currentRole)
+    // const permittedPages = currentRole?.pages.map((value) => value.pageName)
+    // useEffect(() => {
+    //     const fetchRoles = async () => {
+    //         const res = await fetchAllRoles() as Role[]
+    //         setRoles(res)
+    //     }
+    //     fetchRoles()
+    // }, [])
+
     const labelMap: Record<string, { label: React.ReactNode; icon: React.ReactNode }> = {
         dashboard: { label: <Link to="/admin">Dashboard</Link>, icon: icons.dashboard },
         accounts: { label: <Link to="/admin/accounts">Account</Link>, icon: icons.account },
@@ -73,6 +73,9 @@ const AdminLayout = () => {
         setting: { label: <Link to="/admin/setting">Setting</Link>, icon: icons.setting },
         tickets: { label: <Link to="/admin/tickets">Ticket</Link>, icon: icons.ticket },
     };
+
+    // Temporary: allow all pages for demonstration, replace with real permittedPages logic as needed
+    const permittedPages: string[] = Object.keys(labelMap);
 
     const menuItems = [
         {

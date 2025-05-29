@@ -38,7 +38,7 @@ const Seats = () => {
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllSeats();
-        setSeatsData(res.data);
+        setSeatsData(res.data.result);
         setIsLoadingData(false);
     }
 

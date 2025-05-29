@@ -5,19 +5,25 @@ interface JwtPayload {
     sub: string;
     exp: number;
     iat: number;
-    user?: {
-        id: number;
-        name: string;
-        username: string;
-    };
     permissions?: string[];
+    account?: {
+        id: number;
+        username: string;
+        fullName: string;
+        phone: string;
+        avatar: string | null;
+        role: string | null;
+    };
     [key: string]: any;
 }
 
 export const getUserRoleFromToken = (): {
     id?: number;
-    name?: string;
     username?: string;
+    fullName?: string;
+    phone?: string;
+    avatar?: string | null;
+    role?: string | null;
     permissions?: string[];
 } | null => {
     const token = localStorage.getItem("accessToken");
@@ -25,12 +31,12 @@ export const getUserRoleFromToken = (): {
 
     try {
         const decoded = jwtDecode<JwtPayload>(token);
-        const { user, permissions } = decoded;
+        const { account, permissions } = decoded;
 
-        if (!user) return null;
+        if (!account) return null;
 
         return {
-            ...user,
+            ...account,
             permissions: permissions || [],
         };
     } catch (error) {

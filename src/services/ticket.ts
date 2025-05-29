@@ -1,7 +1,7 @@
 
 import axiosInstance from "../configs/axiosConfig";
 
-export const fetchAllTickets = async (): Promise<Ticket[]> => {
+export const fetchAllTickets = async () => {
     const res = await axiosInstance.get('/tickets');
     return res.data;
 };

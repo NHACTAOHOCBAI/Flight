@@ -27,12 +27,12 @@ const Login = () => {
         }, {
             onSuccess: async (data) => {
                 setIsRedirecting(true);
-                localStorage.setItem('accessToken', data.data.accessToken);
+                localStorage.setItem('accessToken', data.data);
+                // localStorage.setItem('refreshToken','')
                 const tokenData = getUserRoleFromToken();
                 if (tokenData) {
                     dispath(login(tokenData));
                 }
-                console.log("Login successful:", tokenData);
                 setTimeout(() => {
                     navigate('/admin');
                 }, 500);

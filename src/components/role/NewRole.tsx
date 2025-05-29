@@ -24,7 +24,7 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
 
     useEffect(() => {
         fetchPages().then(res => {
-            setPages(res.data.map((p: any) => ({ value: p.id, label: p.pageName })));
+            setPages(res.map((p: any) => ({ value: p.id, label: p.pageName })));
         });
     }, []);
 

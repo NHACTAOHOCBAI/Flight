@@ -47,7 +47,7 @@ const Planes = () => {
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllPlanes();
-        setPlanesData(res.data);
+        setPlanesData(res.data.result);
         setIsLoadingData(false);
     };
 
