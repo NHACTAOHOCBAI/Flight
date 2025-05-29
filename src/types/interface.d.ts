@@ -210,3 +210,11 @@ interface MonthlyRevenueReport {
         percentage: number,
     }[]
 }
+
+interface Page {
+    id: number,
+    name: string,
+    apiPath: string,
+    method: string,
+    module: string
+}
