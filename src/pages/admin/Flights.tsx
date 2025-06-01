@@ -66,7 +66,7 @@ const Flights = () => {
         }]
     });
     const [isUpdateOpen, setIsUpdateOpen] = useState(false)
-    const [updateFlight, setUpdateFlight] = useState({
+    const [updateFlight, setUpdateFlight] = useState<Flight>({
         id: 0,
         flightCode: "",
         plane: {
@@ -110,7 +110,9 @@ const Flights = () => {
             quantity: 0,
             remainingTickets: 0,
             price: 0
-        }]
+        }],
+        canUpdate: false,
+        canDelete: false,
     })
     const [isNewOpen, setIsNewOpen] = useState(false)
     const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -197,47 +199,68 @@ const Flights = () => {
             sorter: (a, b) => a.originalPrice - b.originalPrice,
         },
         {
-            title: "Available Tickets",
+            title: "Status",
             render: (_text, record) => {
-                const ticketQuantity = record.seats.reduce((value, seat) =>
-                    value + seat.remainingTickets, 0)
-                return (<div>{ticketQuantity}</div>)
+                const departureDateTime = new Date(`${record.departureDate}T${record.departureTime}`);
+                const now = new Date();
+                const totalRemaining = record.seats.reduce((sum, seat) => sum + seat.remainingTickets, 0);
+
+                if (departureDateTime < now) {
+                    return <div className="text-red-500 font-semibold">Expired</div>;
+                }
+
+                if (totalRemaining === 0) {
+                    return <div className="text-yellow-500 font-semibold">Full</div>;
+                }
+
+                return <div className="text-green-500 font-semibold">Active</div>;
             }
         },
         {
             title: "Action",
-            render: (_, value) => (
-                <div className="flex flex-row gap-[10px] items-center">
-                    <div
-                        onClick={() => {
-                            setUpdateFlight(value)
-                            setIsUpdateOpen(true)
-                        }}
-                        className="text-yellow-400">
-                        {icons.edit}
+            render: (_, value) => {
+                const canBooking = value.seats.reduce((sum, seat) => sum + seat.remainingTickets, 0) > 0;
+                return (
+                    <div className="flex flex-row gap-[10px] items-center">
+                        <button
+                            onClick={() => {
+                                setUpdateFlight(value);
+                                setIsUpdateOpen(true);
+                            }}
+                            disabled={!value.canUpdate}
+                            className={` ${!value.canUpdate ? 'cursor-not-allowed opacity-40 text-blue-400' : 'cursor-pointer text-yellow-400'}`}
+                        >
+                            {icons.edit}
+                        </button>
+
+                        <Popconfirm
+                            disabled={!value.canDelete}
+                            title="Delete the city"
+                            description="Are you sure to delete this city?"
+                            onConfirm={() => { handleDelete(value.id) }}
+                            onCancel={() => { }}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <button
+                                className={` ${!value.canUpdate ? 'cursor-not-allowed opacity-40 text-blue-400' : 'cursor-pointer text-red-400'}`}
+                            >
+                                {icons.delete}
+                            </button>
+
+                        </Popconfirm>
+                        <Button
+                            disabled={!canBooking}
+                            type="dashed"
+                            onClick={() => {
+                                handleBooking(value)
+                            }}
+                            className="text-yellow-400">
+                            {icons.booking} Booking
+                        </Button>
                     </div>
-                    <Popconfirm
-                        title="Delete the city"
-                        description="Are you sure to delete this city?"
-                        onConfirm={() => { handleDelete(value.id) }}
-                        onCancel={() => { }}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <div className="text-red-400">
-                            {icons.delete}
-                        </div>
-                    </Popconfirm>
-                    <Button
-                        type="dashed"
-                        onClick={() => {
-                            handleBooking(value)
-                        }}
-                        className="text-yellow-400">
-                        {icons.booking} Booking
-                    </Button>
-                </div>
-            ),
+                )
+            },
         }
     ];
 
