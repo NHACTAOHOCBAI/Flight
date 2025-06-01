@@ -6,6 +6,7 @@ import type { UploadFile } from "antd/lib";
 
 interface Props {
     updatedAccount: Account;
+    setUpdatedAccount: (value: Account) => void
     isUpdateOpen: boolean;
     setIsUpdateOpen: (value: boolean) => void;
     refetchData: () => Promise<void>;
@@ -18,6 +19,7 @@ const UpdateAccount = ({
     setIsUpdateOpen,
     refetchData,
     roleOptions,
+    setUpdatedAccount
 }: Props) => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [form] = Form.useForm();
@@ -46,6 +48,19 @@ const UpdateAccount = ({
     };
 
     const handleCancel = () => {
+        setUpdatedAccount({
+            id: 0,
+            username: "",
+            password: "",
+            fullName: "",
+            phone: "",
+            avatar: "",
+            role: {
+                id: 0,
+                roleName: "",
+                pages: []
+            }
+        })
         setFileList([])
         setIsUpdateOpen(false);
         form.resetFields();
@@ -80,14 +95,11 @@ const UpdateAccount = ({
                     <Form.Item name="id" label="Id">
                         <Input disabled />
                     </Form.Item>
-                    <Form.Item name="username" label="Username" rules={[{ required: true }]}>
-                        <Input disabled={isPending} placeholder="Leave blank to keep current password" />
+                    <Form.Item name="username" label="Email" rules={[{ required: true }]}>
+                        <Input disabled placeholder="Leave blank to keep current password" />
                     </Form.Item>
                     <Form.Item name="password" label="Password" rules={[{ required: true }]}>
                         <Input.Password disabled={isPending} placeholder="Leave blank to keep current password" />
-                    </Form.Item>
-                    <Form.Item name="email" label="Email" rules={[{ required: true }]}>
-                        <Input disabled={isPending} />
                     </Form.Item>
                     <Form.Item name="fullName" label="Full Name" rules={[{ required: true }]}>
                         <Input disabled={isPending} />

@@ -23,7 +23,6 @@ const Accounts = () => {
         id: 0,
         username: "",
         password: "",
-        email: "",
         fullName: "",
         phone: "",
         avatar: "",
@@ -73,21 +72,21 @@ const Accounts = () => {
             dataIndex: "fullName",
         },
         {
-            title: "Email",
-            dataIndex: "email",
-        },
-        {
             title: "Phone",
             dataIndex: "phone",
         },
         {
             title: "Avatar",
             dataIndex: "logo",
-            render: (_, record) => <img style={{
-                objectFit: "cover",
-                width: 50, height: 30,
-                borderRadius: 9999
-            }} src={record.avatar} alt="avatar" />,
+            render: (_, record) => {
+                return (
+                    <img style={{
+                        objectFit: "cover",
+                        width: 50, height: 30,
+                        borderRadius: 9999
+                    }} src={record.avatar} alt="avatar" />
+                )
+            }
         },
         {
             title: "Role",
@@ -184,6 +183,7 @@ const Accounts = () => {
                 setIsNewOpen={setIsNewOpen}
             />
             <UpdateAccount
+                setUpdatedAccount={setUpdateAccount}
                 roleOptions={roleSelectOptions}
                 refetchData={refetchData}
                 updatedAccount={updateAccount}

@@ -42,7 +42,8 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
         <>
             {contextHolder}
             <Modal
-                title="Update Account"
+                okText='Create'
+                title="New Account"
                 open={isNewOpen}
                 onCancel={handleCancel}
                 onOk={() => form.submit()}
@@ -54,9 +55,6 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
                     </Form.Item>
                     <Form.Item name="password" label="Password" rules={[{ required: true }]}>
                         <Input.Password disabled={isPending} />
-                    </Form.Item>
-                    <Form.Item name="email" label="Email" rules={[{ required: true, type: "email" }]}>
-                        <Input disabled={isPending} />
                     </Form.Item>
                     <Form.Item name="fullName" label="Full Name" rules={[{ required: true }]}>
                         <Input disabled={isPending} />
