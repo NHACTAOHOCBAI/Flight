@@ -98,13 +98,23 @@ const UpdateAccount = ({
                     <Form.Item name="username" label="Email" rules={[{ required: true }]}>
                         <Input disabled placeholder="Leave blank to keep current password" />
                     </Form.Item>
-                    <Form.Item name="password" label="Password" rules={[{ required: true }]}>
-                        <Input.Password disabled={isPending} placeholder="Leave blank to keep current password" />
-                    </Form.Item>
-                    <Form.Item name="fullName" label="Full Name" rules={[{ required: true }]}>
+                    <Form.Item
+                        name="fullName"
+                        label="Full Name"
+                    >
                         <Input disabled={isPending} />
                     </Form.Item>
-                    <Form.Item name="phone" label="Phone" rules={[{ required: true }]}>
+
+                    <Form.Item
+                        name="phone"
+                        label="Phone"
+                        rules={[
+                            {
+                                pattern: /^\d{10,11}$/,
+                                message: 'Phone number must be 10 or 11 digits',
+                            },
+                        ]}
+                    >
                         <Input disabled={isPending} />
                     </Form.Item>
                     <Form.Item name="roleId" label="Role" rules={[{ required: true }]}>

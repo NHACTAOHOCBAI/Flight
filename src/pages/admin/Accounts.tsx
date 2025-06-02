@@ -82,7 +82,8 @@ const Accounts = () => {
                 return (
                     <img style={{
                         objectFit: "cover",
-                        width: 50, height: 30,
+                        width: 30, height: 30,
+                        borderWidth: 1,
                         borderRadius: 9999
                     }} src={record.avatar} alt="avatar" />
                 )
