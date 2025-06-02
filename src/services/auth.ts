@@ -9,4 +9,11 @@ const register = ({ account }: { account: { username: string, password: string, 
     return axiosInstance.post("/auth/register", formData);
 };
 
-export { login, register }
+const getCurrentUser = async () => {
+    return (await axiosInstance.get('/auth/user')).data
+}
+
+const logoutAPI = async () => {
+    return (await axiosInstance.post('/auth/logout'))
+}
+export { login, register, getCurrentUser, logoutAPI }

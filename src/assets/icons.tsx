@@ -7,6 +7,7 @@ import { VscAccount } from "react-icons/vsc";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { LiaTicketAltSolid } from "react-icons/lia";
 import { TbReportAnalytics } from "react-icons/tb";
+import { CgProfile } from "react-icons/cg";
 const size = 20;
 
 const icons = {
@@ -28,6 +29,7 @@ const icons = {
     booking: <IoTicketOutline />,
     export: <PiExportBold />,
     report: <TbReportAnalytics />,
-    google: <IoLogoGoogle size={16} />
+    google: <IoLogoGoogle size={16} />,
+    profile: <CgProfile size={size} />
 }
 export default icons;

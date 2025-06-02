@@ -14,7 +14,7 @@ const getBase64 = (file: FileType): Promise<string> =>
         reader.onerror = (error) => reject(error);
     });
 
-const UploadImage = ({ fileList, setFileList, isPending }: any) => {
+const UploadImage = ({ fileList, setFileList, isPending, circle = false }: any) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const handlePreview = async (file: UploadFile) => {
@@ -40,9 +40,10 @@ const UploadImage = ({ fileList, setFileList, isPending }: any) => {
     return (
         <>
             <Upload
+                style={{ width: 520, height: 520 }}
                 disabled={isPending}
                 beforeUpload={() => false}
-                listType="picture-card"
+                listType={circle ? "picture-circle" : "picture-card"}
                 fileList={fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
@@ -53,6 +54,7 @@ const UploadImage = ({ fileList, setFileList, isPending }: any) => {
             </Upload>
             {previewImage && (
                 <Image
+                    style={{ width: 520, height: 520 }}
                     wrapperStyle={{ display: 'none' }}
                     preview={{
                         visible: previewOpen,

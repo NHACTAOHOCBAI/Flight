@@ -28,8 +28,8 @@ const Login = () => {
             onSuccess: async (data) => {
                 setIsRedirecting(true);
                 localStorage.setItem('accessToken', data.data);
-                // localStorage.setItem('refreshToken','')
                 const tokenData = getUserRoleFromToken();
+                console.log(tokenData)
                 if (tokenData) {
                     dispath(login(tokenData));
                 }

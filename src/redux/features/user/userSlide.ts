@@ -5,7 +5,10 @@ interface User {
     fullName?: string;
     phone?: string;
     avatar?: string | null;
-    role?: string | null;
+    role?: {
+        id: number,
+        roleName: string,
+    }
     permissions?: string[];
 }
 interface UserState {
