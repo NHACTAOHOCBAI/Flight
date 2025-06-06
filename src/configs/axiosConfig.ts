@@ -62,8 +62,7 @@ axiosInstance.interceptors.response.use(
                     withCredentials: true, // cần thiết để cookies được gửi đi
                 });
 
-                const newAccessToken = response.data.data;
-                console.log(response.data)
+                const newAccessToken = response.data.data.accessToken;
                 localStorage.setItem('accessToken', newAccessToken);
 
                 processQueue(null, newAccessToken);
