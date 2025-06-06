@@ -1,5 +1,6 @@
 import axiosInstance from "../configs/axiosConfig";
 const login = ({ username, password }: { username: string, password: string }) => {
+    console.log(username, password);
     return axiosInstance.post('/auth/login', { username, password })
 }
 
