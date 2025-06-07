@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router';
 import { useLogin } from '../../hooks/useAuth';
 import { useState } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { getUserRoleFromToken } from '../../utils/decodeJwt';
 import { login } from '../../redux/features/user/userSlide';
 
 type FieldType = {
@@ -27,11 +26,7 @@ const Login = () => {
         }, {
             onSuccess: async (data) => {
                 setIsRedirecting(true);
-                localStorage.setItem('accessToken', data.data.accessToken);
-                const tokenData = getUserRoleFromToken();
-                if (tokenData) {
-                    dispath(login(tokenData));
-                }
+                dispath(login(data.data.account));
                 setTimeout(() => {
                     navigate('/admin');
                 }, 500);

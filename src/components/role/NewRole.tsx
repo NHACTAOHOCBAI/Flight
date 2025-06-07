@@ -1,7 +1,5 @@
 import { Button, Form, Input, Checkbox, message, Divider, Tag } from "antd";
 import { useCreateRole } from "../../hooks/useRoles";
-import { useEffect, useState } from "react";
-import { fetchPages } from "../../services/page";
 import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 interface Page {
     id: number;
@@ -9,30 +7,85 @@ interface Page {
     apiPath: string;
     method: string;
     module: string;
+    color?: string;
+    icon?: React.ReactNode;
 }
-
-const getActionTag = (method: string) => {
-    switch (method.toUpperCase()) {
-        case "GET":
-            return <Tag icon={<EyeOutlined />} color="blue">View</Tag>;
-        case "POST":
-            return <Tag icon={<PlusOutlined />} color="green">Create</Tag>;
-        case "PUT":
-        case "PATCH":
-            return <Tag icon={<EditOutlined />} color="orange">Update</Tag>;
-        case "DELETE":
-            return <Tag icon={<DeleteOutlined />} color="red">Delete</Tag>;
-        default:
-            return <Tag>{method}</Tag>;
-    }
+const hardcodedPagesByModule: Record<string, Page[]> = {
+    "Account": [
+        { id: 20, name: "View Accounts", apiPath: "/accounts", method: "GET", module: "Account", icon: <EyeOutlined />, color: "blue" },
+        { id: 21, name: "Create Account", apiPath: "/accounts", method: "POST", module: "Account", icon: <PlusOutlined />, color: "green" },
+        { id: 22, name: "Edit Account", apiPath: "/accounts/:id", method: "PUT", module: "Account", icon: <EditOutlined />, color: "orange" },
+        { id: 23, name: "Delete Account", apiPath: "/accounts/:id", method: "DELETE", module: "Account", icon: <DeleteOutlined />, color: "red" },
+    ],
+    "Airline": [
+        { id: 30, name: "View Airlines", apiPath: "/airlines", method: "GET", module: "Airline", icon: <EyeOutlined />, color: "blue" },
+        { id: 31, name: "Create Airline", apiPath: "/airlines", method: "POST", module: "Airline", icon: <PlusOutlined />, color: "green" },
+        { id: 32, name: "Edit Airline", apiPath: "/airlines/:id", method: "PUT", module: "Airline", icon: <EditOutlined />, color: "orange" },
+        { id: 33, name: "Delete Airline", apiPath: "/airlines/:id", method: "DELETE", module: "Airline", icon: <DeleteOutlined />, color: "red" },
+    ],
+    "Airport": [
+        { id: 40, name: "View Airports", apiPath: "/airports", method: "GET", module: "Airport", icon: <EyeOutlined />, color: "blue" },
+        { id: 41, name: "Create Airport", apiPath: "/airports", method: "POST", module: "Airport", icon: <PlusOutlined />, color: "green" },
+        { id: 42, name: "Edit Airport", apiPath: "/airports/:id", method: "PUT", module: "Airport", icon: <EditOutlined />, color: "orange" },
+        { id: 43, name: "Delete Airport", apiPath: "/airports/:id", method: "DELETE", module: "Airport", icon: <DeleteOutlined />, color: "red" },
+    ],
+    "City": [
+        { id: 50, name: "View Cities", apiPath: "/cities", method: "GET", module: "City", icon: <EyeOutlined />, color: "blue" },
+        { id: 51, name: "Create City", apiPath: "/cities", method: "POST", module: "City", icon: <PlusOutlined />, color: "green" },
+        { id: 52, name: "Edit City", apiPath: "/cities/:id", method: "PUT", module: "City", icon: <EditOutlined />, color: "orange" },
+        { id: 53, name: "Delete City", apiPath: "/cities/:id", method: "DELETE", module: "City", icon: <DeleteOutlined />, color: "red" },
+    ],
+    "Flight": [
+        { id: 60, name: "View Flights", apiPath: "/flights", method: "GET", module: "Flight", icon: <EyeOutlined />, color: "blue" },
+        { id: 61, name: "Create Flight", apiPath: "/flights", method: "POST", module: "Flight", icon: <PlusOutlined />, color: "green" },
+        { id: 62, name: "Edit Flight", apiPath: "/flights/:id", method: "PUT", module: "Flight", icon: <EditOutlined />, color: "orange" },
+        { id: 63, name: "Delete Flight", apiPath: "/flights/:id", method: "DELETE", module: "Flight", icon: <DeleteOutlined />, color: "red" },
+    ],
+    "Plane": [
+        { id: 70, name: "View Planes", apiPath: "/planes", method: "GET", module: "Plane", icon: <EyeOutlined />, color: "blue" },
+        { id: 71, name: "Create Plane", apiPath: "/planes", method: "POST", module: "Plane", icon: <PlusOutlined />, color: "green" },
+        { id: 72, name: "Edit Plane", apiPath: "/planes/:id", method: "PUT", module: "Plane", icon: <EditOutlined />, color: "orange" },
+        { id: 73, name: "Delete Plane", apiPath: "/planes/:id", method: "DELETE", module: "Plane", icon: <DeleteOutlined />, color: "red" },
+    ],
+    "Role": [
+        { id: 80, name: "View Roles", apiPath: "/roles", method: "GET", module: "Role Management", icon: <EyeOutlined />, color: "blue" },
+        { id: 81, name: "Create Role", apiPath: "/roles", method: "POST", module: "Role Management", icon: <PlusOutlined />, color: "green" },
+        { id: 82, name: "Edit Role", apiPath: "/roles/:id", method: "PUT", module: "Role Management", icon: <EditOutlined />, color: "orange" },
+        { id: 83, name: "Delete Role", apiPath: "/roles/:id", method: "DELETE", module: "Role Management", icon: <DeleteOutlined />, color: "red" },
+    ],
+    "Seat": [
+        { id: 90, name: "View Seats", apiPath: "/seats", method: "GET", module: "Seat", icon: <EyeOutlined />, color: "blue" },
+        { id: 91, name: "Create Seat", apiPath: "/seats", method: "POST", module: "Seat", icon: <PlusOutlined />, color: "green" },
+        { id: 92, name: "Edit Seat", apiPath: "/seats/:id", method: "PUT", module: "Seat", icon: <EditOutlined />, color: "orange" },
+        { id: 93, name: "Delete Seat", apiPath: "/seats/:id", method: "DELETE", module: "Seat", icon: <DeleteOutlined />, color: "red" },
+    ],
+    "Setting": [
+        { id: 100, name: "View Settings", apiPath: "/settings", method: "GET", module: "Setting", icon: <EyeOutlined />, color: "blue" },
+        { id: 101, name: "Update Settings", apiPath: "/settings", method: "PUT", module: "Setting", icon: <EditOutlined />, color: "orange" },
+    ],
+    "Ticket": [
+        { id: 110, name: "View Tickets", apiPath: "/tickets", method: "GET", module: "Ticket", icon: <EyeOutlined />, color: "blue" },
+        { id: 111, name: "Create Ticket", apiPath: "/tickets", method: "POST", module: "Ticket", icon: <PlusOutlined />, color: "green" },
+        { id: 112, name: "Edit Ticket", apiPath: "/tickets/:id", method: "PUT", module: "Ticket", icon: <EditOutlined />, color: "orange" },
+        { id: 113, name: "Delete Ticket", apiPath: "/tickets/:id", method: "DELETE", module: "Ticket", icon: <DeleteOutlined />, color: "red" },
+    ],
 };
-
 const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
     const { mutate, isPending } = useCreateRole();
-    const [pagesByModule, setPagesByModule] = useState<Record<string, Page[]>>({});
     const [messageApi, contextHolder] = message.useMessage();
 
     const handleNew = (value: { roleName: string; pages: number[] }) => {
+        const allPages = Object.values(hardcodedPagesByModule).flat();
+        const selectedEndpoints = allPages
+            .filter((page) => value.pages.includes(page.id))
+            .map((page) => ({
+                method: page.method,
+                path: page.apiPath,
+            }));
+
+        console.log("Selected endpoints:", selectedEndpoints);
+
+        // Bước 3: Gửi API tạo role
         mutate(value, {
             onSuccess: async () => {
                 await refetchData();
@@ -43,28 +96,6 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
             },
         });
     };
-
-    useEffect(() => {
-        const loadPages = async () => {
-            try {
-                const res: Page[] = await fetchPages();
-                const grouped: Record<string, Page[]> = {};
-                res.forEach((page) => {
-                    if (!grouped[page.module]) {
-                        grouped[page.module] = [];
-                    }
-                    grouped[page.module].push(page);
-                });
-
-                setPagesByModule(grouped);
-            } catch {
-                messageApi.error("Failed to fetch pages");
-            }
-        };
-
-        loadPages();
-    }, []);
-
     return (
         <>
             {contextHolder}
@@ -76,16 +107,16 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
                     </Form.Item>
                     <Form.Item label="Pages" name="pages" rules={[{ required: true }]}>
                         <Checkbox.Group style={{ width: "100%" }}>
-                            <div className="flex flex-col  overflow-y-auto pr-2">
-                                {Object.entries(pagesByModule).map(([module, pages]) => (
+                            <div className="flex flex-col overflow-y-auto pr-2">
+                                {Object.entries(hardcodedPagesByModule).map(([module, pages]) => (
                                     <div key={module}>
                                         <Divider orientation="left" plain>
                                             {module}
                                         </Divider>
-                                        <div className="flex gap-[5px] ">
+                                        <div className="flex gap-[5px]">
                                             {pages.map((page) => (
                                                 <Checkbox key={page.id} value={page.id}>
-                                                    {getActionTag(page.method)}
+                                                    <Tag icon={page.icon} color={page.color}>{page.name}</Tag>
                                                 </Checkbox>
                                             ))}
                                         </div>
