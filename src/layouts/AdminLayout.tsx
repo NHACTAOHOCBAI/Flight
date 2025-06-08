@@ -40,7 +40,6 @@ const AdminLayout = () => {
         token: { colorBgContainer },
     } = theme.useToken();
     useEffect(() => {
-        console.log(myAccount)
         const fetchUserInf = async () => {
             const response = await getCurrentUser();
             console.log(response)
