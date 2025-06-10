@@ -15,9 +15,10 @@ interface Props {
     MIN_FLIGHT_TIME: number,
     MIN_STOP_TIME: number,
     MAX_STOP_TIME: number,
+    MAX_INTER_QUANTITY: number
 }
 const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
-    MIN_FLIGHT_TIME, MAX_STOP_TIME, MIN_STOP_TIME,
+    MIN_FLIGHT_TIME, MAX_STOP_TIME, MIN_STOP_TIME, MAX_INTER_QUANTITY,
     planeSelectOptions, airportSelectOptions, seatSelectOptions }: Props) => {
     const [form] = Form.useForm();
     const { mutate, isPending } = useCreateFlight();
@@ -27,6 +28,7 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
         setIsNewOpen(false);
         form.resetFields();
     }
+    console.log(MIN_FLIGHT_TIME)
     const handleNew = (values: any) => {
         const departureDate = dayjs(values.departureDate).format('YYYY-MM-DD');
         const arrivalDate = dayjs(values.arrivalDate).format('YYYY-MM-DD');
@@ -140,7 +142,7 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
                                             if (!value) return Promise.resolve();
                                             const diffMinutes = value.diff(departure, 'minute');
                                             if (diffMinutes < MIN_FLIGHT_TIME) {
-                                                return Promise.reject(new Error('Flight duration must be at least 300 minutes (5 hours)'));
+                                                return Promise.reject(new Error(`Flight duration must be at least ${MIN_FLIGHT_TIME} minutes`));
                                             }
                                             return Promise.resolve();
                                         },
@@ -330,7 +332,7 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
                                                 block
                                                 icon={<PlusOutlined />}
                                                 disabled={
-                                                    currentInterAirports.length >= 3 ||
+                                                    currentInterAirports.length >= MAX_INTER_QUANTITY ||
                                                     !allFieldsFilled ||
                                                     !departureDate ||
                                                     !arrivalDate ||

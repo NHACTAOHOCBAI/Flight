@@ -48,6 +48,7 @@ const Planes = () => {
         setIsLoadingData(true);
         const res = await fetchAllPlanes();
         setPlanesData(res.data.result);
+        console.log(res.data.result);
         setIsLoadingData(false);
     };
 
@@ -70,7 +71,7 @@ const Planes = () => {
         },
         {
             title: "Airline",
-            render: (_, record) => <div>{record.airline.airlineName}</div>,
+            render: (_, record) => <div>{record.airlineName}</div>,
         },
         {
             title: "Action",

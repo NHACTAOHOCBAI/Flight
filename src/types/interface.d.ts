@@ -219,3 +219,13 @@ interface Page {
     method: string,
     module: string
 }
+
+interface Parameter {
+    maxInterQuantity: number;
+    minFlightTime: number;
+    minStopTime: number;
+    maxFlightTime: number;
+    latestBookingDay: number;
+    latestCancelDay: number;
+    maxStopTime: number;
+}

@@ -6,6 +6,8 @@ import { useLogin } from '../../hooks/useAuth';
 import { useState } from 'react';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { login } from '../../redux/features/user/userSlide';
+import { setParams } from '../../redux/features/params/paramsSlide';
+import { getAllParamaters } from '../../services/parameter';
 
 type FieldType = {
     username?: string;
@@ -26,7 +28,9 @@ const Login = () => {
         }, {
             onSuccess: async (data) => {
                 setIsRedirecting(true);
+                const params = await getAllParamaters()
                 dispath(login(data.data.account));
+                dispath(setParams(params.data))
                 setTimeout(() => {
                     navigate('/admin');
                 }, 500);

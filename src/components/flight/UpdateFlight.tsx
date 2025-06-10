@@ -18,9 +18,10 @@ interface Props {
     MIN_FLIGHT_TIME: number,
     MIN_STOP_TIME: number,
     MAX_STOP_TIME: number,
+    MAX_INTER_QUANTITY: number
 }
 const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFlight, setUpdateFlight,
-    MIN_FLIGHT_TIME, MAX_STOP_TIME, MIN_STOP_TIME,
+    MIN_FLIGHT_TIME, MAX_STOP_TIME, MIN_STOP_TIME, MAX_INTER_QUANTITY,
     planeSelectOptions, airportSelectOptions, seatSelectOptions }: Props) => {
     const [form] = Form.useForm();
     const { mutate, isPending } = useUpdateFlight();
@@ -411,7 +412,7 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
                                                 block
                                                 icon={<PlusOutlined />}
                                                 disabled={
-                                                    currentInterAirports.length >= 3 ||
+                                                    currentInterAirports.length >= MAX_INTER_QUANTITY ||
                                                     !allFieldsFilled ||
                                                     !departureDate ||
                                                     !arrivalDate ||

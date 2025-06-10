@@ -1,11 +1,14 @@
 import axiosInstance from "../configs/axiosConfig";
-const updateProfile = ({ account, avatar }: { account: AccountRequest, avatar?: File }) => {
+interface Profile {
+    fullName: string;
+    phone: string;
+}
+const updateProfile = ({ profile, avatar }: { profile: Profile, avatar?: File }) => {
     const formData = new FormData();
-    formData.append("account", new Blob([JSON.stringify(account)], { type: 'application/json' }));
+    formData.append("profile", new Blob([JSON.stringify(profile)], { type: 'application/json' }));
+    console.log("Profile data:", formData.get("profile"));
     if (avatar)
         formData.append("avatar", avatar);
     return axiosInstance.put("/auth/profile", formData);
 };
-// const updateProfile = ({ fullName, phone }: { fullName: string, phone: string }) =>
-//     axiosInstance.put("/auth/profile", { fullName, phone });
 export { updateProfile };

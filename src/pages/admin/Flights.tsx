@@ -11,11 +11,17 @@ import UpdateFlight from "../../components/flight/UpdateFlight";
 import useSelectOptions from "../../utils/selectOptions";
 import { useNavigate } from "react-router";
 import Filter from "../../components/flight/Filter";
-
-const MIN_FLIGHT_TIME = 300;
-const MIN_STOP_TIME = 60;
-const MAX_STOP_TIME = 100
+import { getAllParamaters } from "../../services/parameter";
 const Flights = () => {
+    const [params, setParams] = useState<Parameter>({
+        maxInterQuantity: 0,
+        minFlightTime: 0,
+        minStopTime: 0,
+        maxFlightTime: 0,
+        latestBookingDay: 0,
+        latestCancelDay: 0,
+        maxStopTime: 0,
+    })
     const navigate = useNavigate();
     const { planeSelectOptions, airportSelectOptions, seatSelectOptions } = useSelectOptions();
     const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -124,6 +130,8 @@ const Flights = () => {
     const { mutate } = useDeleteFlight();
     const refetchData = async () => {
         setIsLoadingData(true);
+        const response = await getAllParamaters();
+        setParams(response.data);
         const res = await fetchAllFlights();
         setFlightsData(res.data.result)
         setIsLoadingData(false);
@@ -265,6 +273,7 @@ const Flights = () => {
     ];
 
     useEffect(() => {
+
         refetchData();
     }, [])
     return (
@@ -325,20 +334,22 @@ const Flights = () => {
                 planeSelectOptions={planeSelectOptions}
                 airportSelectOptions={airportSelectOptions}
                 seatSelectOptions={seatSelectOptions}
-                MIN_FLIGHT_TIME={MIN_FLIGHT_TIME}
-                MIN_STOP_TIME={MIN_STOP_TIME}
-                MAX_STOP_TIME={MAX_STOP_TIME}
+                MAX_INTER_QUANTITY={params.maxInterQuantity}
+                MIN_FLIGHT_TIME={params.minFlightTime}
+                MIN_STOP_TIME={params.minStopTime}
+                MAX_STOP_TIME={params.maxStopTime}
                 refetchData={refetchData}
                 setIsNewOpen={setIsNewOpen}
                 isNewOpen={isNewOpen}
             />
             <UpdateFlight
+                MAX_INTER_QUANTITY={params.maxInterQuantity}
                 planeSelectOptions={planeSelectOptions}
                 airportSelectOptions={airportSelectOptions}
                 seatSelectOptions={seatSelectOptions}
-                MIN_FLIGHT_TIME={MIN_FLIGHT_TIME}
-                MIN_STOP_TIME={MIN_STOP_TIME}
-                MAX_STOP_TIME={MAX_STOP_TIME}
+                MIN_FLIGHT_TIME={params.minFlightTime}
+                MIN_STOP_TIME={params.minStopTime}
+                MAX_STOP_TIME={params.maxStopTime}
                 isUpdateOpen={isUpdateOpen}
                 setIsUpdateOpen={setIsUpdateOpen}
                 updatedFlight={updateFlight}

@@ -1,5 +1,5 @@
-import { Avatar, Button, Form, Input, message } from "antd"
-import { UserOutlined } from '@ant-design/icons';
+import { Button, Form, Input, message } from "antd"
+// import { UserOutlined } from '@ant-design/icons';
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/app/store";
 import { useEffect, useState } from "react";
@@ -7,7 +7,10 @@ import { updateProfile } from "../../services/profile";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { getCurrentUser } from "../../services/auth";
 import { login } from "../../redux/features/user/userSlide";
+import type { UploadFile } from "antd/lib";
+import UploadImage from "../../components/airline/test";
 const MyProfile = () => {
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [isPending, setIsPending] = useState(false);
     const dispath = useAppDispatch()
     const [messageApi, contextHolder] = message.useMessage();
@@ -18,7 +21,10 @@ const MyProfile = () => {
     const handleUpdateProfile = async (values: { fullName: string; phone: string }) => {
         try {
             setIsPending(true);
-            await updateProfile(values);
+            await updateProfile({
+                profile: values,
+                avatar: fileList && fileList.length > 0 ? fileList[0].originFileObj as File : undefined
+            });
             await fetchUserInf()
             messageApi.success("Update profile successfully");
         }
@@ -33,17 +39,15 @@ const MyProfile = () => {
     }
     const [form] = Form.useForm();
     const myAccount = useSelector((state: RootState) => state.user).user
-    const [infoUser, setInfoUser] = useState({
-        fullName: "",
-        username: "",
-        roleName: ""
-    })
     useEffect(() => {
-        setInfoUser({
-            fullName: myAccount.fullName as string,
-            username: myAccount.username as string,
-            roleName: myAccount.role?.roleName as string
-        })
+        setFileList([
+            {
+                uid: '-1',
+                name: 'airline_logo.jpg',
+                status: 'done',
+                url: myAccount.avatar || '',
+            },
+        ])
         form.setFieldsValue({
             fullName: myAccount.fullName,
             phone: myAccount.phone
@@ -57,10 +61,18 @@ const MyProfile = () => {
                 <div className="flex w-full h-full">
                     <div className="flex-2 flex items-center justify-center text-center">
                         <div>
-                            <Avatar shape="circle" size={164} icon={<UserOutlined />} />
-                            <p className="text-[18px] font-bold">{infoUser.fullName}</p>
-                            <p>{infoUser.username}</p>
-                            <p>{infoUser.roleName}</p>
+                            {/* <Avatar shape="circle" size={164} icon={<UserOutlined />} /> */}
+                            <div className="mb-[10px]">
+                                <UploadImage
+                                    circle={true}
+                                    isPending={isPending}
+                                    fileList={fileList}
+                                    setFileList={setFileList}
+                                />
+                            </div>
+                            <p className="text-[18px] font-bold">{myAccount.fullName}</p>
+                            <p>{myAccount.username}</p>
+                            <p>{myAccount.role?.roleName}</p>
                         </div>
                     </div>
                     <div className="flex-3">
