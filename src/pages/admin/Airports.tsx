@@ -8,10 +8,13 @@ import { fetchAllAirports } from "../../services/airport";
 import NewAirport from "../../components/airport/NewAirport";
 import UpdateAirport from "../../components/airport/UpdateAirport";
 import useSelectOptions from "../../utils/selectOptions";
-
-
+import { hasPermission } from "../../utils/checkPermission";
 
 const Airports = () => {
+    const canCreate = hasPermission("Airports", "POST");
+    const canUpdate = hasPermission("Airports", "PUT");
+    const canDelete = hasPermission("Airports", "DELETE");
+
     const { citySelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
@@ -50,7 +53,7 @@ const Airports = () => {
     };
 
     const handleSearch = (value: Airport) => {
-        console.log(value); // Filter logic optional
+        console.log(value); // Optional: filter logic
     };
 
     const columns: ProColumns<Airport>[] = [
@@ -70,31 +73,36 @@ const Airports = () => {
             title: "Located At",
             render: (_text, record) => <div>{record.city.cityName}</div>,
         },
-        {
-            title: "Action",
-            render: (_, value) => (
-                <div className="flex gap-[10px]">
-                    <div
-                        onClick={() => {
-                            setUpdateAirport(value);
-                            setIsUpdateOpen(true);
-                        }}
-                        className="text-yellow-400"
-                    >
-                        {icons.edit}
+        ...(canUpdate || canDelete
+            ? [{
+                title: "Action",
+                render: (_: React.ReactNode, value: Airport) => (
+                    <div className="flex gap-[10px]">
+                        {canUpdate && (
+                            <div
+                                onClick={() => {
+                                    setUpdateAirport(value);
+                                    setIsUpdateOpen(true);
+                                }}
+                                className="text-yellow-400"
+                            >
+                                {icons.edit}
+                            </div>
+                        )}
+                        {canDelete && (
+                            <Popconfirm
+                                title="Delete the airport"
+                                description="Are you sure?"
+                                onConfirm={() => handleDelete(value.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <div className="text-red-400">{icons.delete}</div>
+                            </Popconfirm>
+                        )}
                     </div>
-                    <Popconfirm
-                        title="Delete the airport"
-                        description="Are you sure?"
-                        onConfirm={() => handleDelete(value.id)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <div className="text-red-400">{icons.delete}</div>
-                    </Popconfirm>
-                </div>
-            ),
-        }
+                )
+            }] : [])
     ];
 
     useEffect(() => {
@@ -105,7 +113,7 @@ const Airports = () => {
         <>
             {contextHolder}
             <div className="flex gap-[14px] w-full h-full">
-                <div className="flex  drop-shadow-xs flex-col flex-1 w-[60%] gap-[10px]">
+                <div className="flex drop-shadow-xs flex-col flex-1 w-[60%] gap-[10px]">
                     <div className="w-full bg-white p-[20px] rounded-[8px]">
                         <Form layout="inline" form={searchForm} onFinish={handleSearch}>
                             <Form.Item label="Code" name="airportCode">
@@ -135,9 +143,12 @@ const Airports = () => {
                         scroll={{ x: 'max-content' }}
                     />
                 </div>
-                <NewAirport
-                    citySelectOptions={citySelectOptions}
-                    refetchData={refetchData} />
+                {canCreate && (
+                    <NewAirport
+                        citySelectOptions={citySelectOptions}
+                        refetchData={refetchData}
+                    />
+                )}
             </div>
             <UpdateAirport
                 citySelectOptions={citySelectOptions}
