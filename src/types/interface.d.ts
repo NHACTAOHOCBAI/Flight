@@ -108,14 +108,15 @@ interface Ticket {
     passengerIDCard: string;
 }
 
-
 interface TicketRequest {
     flightId: number
-    seatId: number
-    passengerName: string
-    passengerPhone: string
-    passengerIDCard: string
-    passengerEmail: string
+    tickets: {
+        seatId: number,
+        passengerName: string,
+        passengerPhone: string,
+        passengerIDCard: string,
+        passengerEmail: string
+    }[]
 }
 
 interface Role {

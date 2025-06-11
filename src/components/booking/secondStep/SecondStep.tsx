@@ -6,7 +6,7 @@ const SecondStep = () => {
     console.log("Tickets in SecondStep:", tickets);
     return (
         <div className="w-full flex flex-col gap-[10px]">
-            {tickets && tickets.map((item) => (
+            {tickets && tickets.tickets.map((item) => (
                 <Ticket
                     item={item}
                 />

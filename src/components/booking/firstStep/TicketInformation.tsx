@@ -15,7 +15,8 @@ const TicketInformation = () => {
   const { tickets, setTickets } = useTicketsContext();
   const [api, contextHolder] = notification.useNotification();
   const { seatSelectOptions } = useSelectOptions();
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
+  const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
   const onFinish: FormProps<FormValues>['onFinish'] = ({ tickets }: any) => {
     if (tickets.length === 0) {
       api.error({
@@ -23,7 +24,10 @@ const TicketInformation = () => {
         description: "You haven't booked any tickets"
       });
     }
-    setTickets(tickets)
+    setTickets({
+      flightId: flight.id,
+      tickets
+    })
     localStorage.setItem('tickets', JSON.stringify(tickets));
   }
   useEffect(() => {

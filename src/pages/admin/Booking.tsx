@@ -4,14 +4,17 @@ import FirstStep from '../../components/booking/firstStep/FirstStep';
 import SecondStep from '../../components/booking/secondStep/SecondStep';
 import { useCreateTicket } from '../../hooks/useTickets';
 import DetailTicket from '../../components/booking/detailTicket/DetailTicket';
-import { useTicketsContext } from '../../context/TicketsContext';
 import { useNavigate } from 'react-router';
 
 
 const Booking = () => {
     const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
     const navigate = useNavigate();
-    const { tickets } = useTicketsContext();
+    const ticketsData = JSON.parse(localStorage.getItem('tickets') as string);
+    const tickets: TicketRequest = {
+        flightId: flight.id,
+        tickets: ticketsData || []
+    }
     const { mutate } = useCreateTicket();
     const [messageApi, contextHolder] = message.useMessage();
     const { token } = theme.useToken();
@@ -50,23 +53,9 @@ const Booking = () => {
             messageApi.error("You haven't booked any tickets");
             return;
         }
-        const ticketRequest: TicketRequest = {
-            flightId: flight.id,
-            seatId: tickets[0].seatId,
-            passengerName: tickets[0].passengerName,
-            passengerPhone: tickets[0].passengerPhone,
-            passengerIDCard: tickets[0].passengerIDCard,
-            passengerEmail: tickets[0].passengerEmail
-        }
-        console.log({
-            flightId: flight.id,
-            tickets: tickets
-        })
-        mutate(ticketRequest, {
+        mutate(tickets, {
             onSuccess: async () => {
-                messageApi.success("booking flight successfully");
-                localStorage.removeItem("tickets");
-                localStorage.removeItem("booked_flight");
+                await messageApi.success("booking flight successfully");
                 navigate("/admin/flights")
             },
             onError: (error) => {

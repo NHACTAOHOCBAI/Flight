@@ -29,7 +29,7 @@ const Price = () => {
     const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
     const seatList = seatsData?.data.result || [];
     console.log('seatList', seatList);
-    const data = convertTicketsToDataType(tickets, seatList, flight?.originalPrice);
+    const data = convertTicketsToDataType(tickets.tickets, seatList, flight?.originalPrice);
     const totalPrice = data.reduce((result, value) => result + value.price * value.quantity, 0)
     return (
         <div className="w-full p-[10px] rounded-[10px] bg-white drop-shadow-xs">
@@ -51,7 +51,13 @@ interface DataType {
     quantity: number,
     price: number
 }
-function convertTicketsToDataType(tickets: TicketRequest[], seatMap: Seat[], originalPrice: number): DataType[] {
+function convertTicketsToDataType(tickets: {
+    seatId: number;
+    passengerName: string;
+    passengerPhone: string;
+    passengerEmail: string;
+    passengerIDCard: string;
+}[], seatMap: Seat[], originalPrice: number): DataType[] {
     const grouped: Record<number, number> = {};
     for (const ticket of tickets) {
         grouped[ticket.seatId] = (grouped[ticket.seatId] || 0) + 1;
