@@ -6,6 +6,10 @@ export const fetchAllTickets = async () => {
     return res.data;
 };
 
+export const getRevenue = async (period: "year" | "month") => {
+    const res = await axiosInstance.get(`/tickets/revenue?period=${period}`);
+    return res.data;
+};
 export const createTicket = async (data: TicketRequest) => {
     await axiosInstance.post('/tickets', data);
 };

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFlight, deleteFlight, fetchAllFlights, updateFlight } from "../services/flight";
+import { createFlight, deleteFlight, fetchAllFlights, getFlightCount, updateFlight } from "../services/flight";
 
 export const useGetAllFlights = () => {
     return useQuery({
@@ -7,6 +7,13 @@ export const useGetAllFlights = () => {
         queryFn: fetchAllFlights
     });
 };
+
+export const useGetFlightCount = (period: "year" | "month") => {
+    return useQuery({
+        queryKey: ['get flights count', period],
+        queryFn: () => getFlightCount(period)
+    });
+}
 
 export const useCreateFlight = () => {
     const queryClient = useQueryClient();

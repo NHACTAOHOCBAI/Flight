@@ -12,4 +12,7 @@ const updateFlight = ({ id, updateFlight }: { id: number, updateFlight: FlightRe
 const deleteFlight = (id: number) => {
     return axiosInstance.delete(`flights/${id}`)
 }
-export { fetchAllFlights, createFlight, updateFlight, deleteFlight }
+const getFlightCount = async (period: "year" | "month") => {
+    return await axiosInstance.get(`/flights/flightcount?period=${period}`)
+}
+export { fetchAllFlights, createFlight, updateFlight, deleteFlight, getFlightCount }

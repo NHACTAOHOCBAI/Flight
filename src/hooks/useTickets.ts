@@ -1,11 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createTicket, deleteTicket, fetchAllTickets, updateTicket } from "../services/ticket";
+import { createTicket, deleteTicket, fetchAllTickets, getRevenue, updateTicket } from "../services/ticket";
 
 
 export const useGetAllTickets = () => {
     return useQuery({
         queryKey: ["get all tickets"],
         queryFn: fetchAllTickets,
+    });
+};
+
+export const useGetRevenue = (period: "year" | "month") => {
+    return useQuery({
+        queryKey: ["get revenue", period],
+        queryFn: () => getRevenue(period),
     });
 };
 

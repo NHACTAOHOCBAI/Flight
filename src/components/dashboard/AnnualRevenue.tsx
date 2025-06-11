@@ -27,14 +27,15 @@ const data: DataType[] = [
     { key: 12, month: 12, flightQuantity: 170, revenue: 190000000, rate: 9.1 }
 ];
 
-const excelData = data.map((value) => {
-    return {
-        "Month": value.month,
-        "Flight quantity": value.flightQuantity,
-        "Revenue": value.revenue.toLocaleString("vi-VN") + " VND",
-        "Rate": value.rate + "%"
-    }
-})
+const excelData: unknown[][] = [
+    ["Month", "Flight quantity", "Revenue", "Rate"],
+    ...data.map((value) => [
+        value.month,
+        value.flightQuantity,
+        value.revenue.toLocaleString("vi-VN") + " VND",
+        value.rate + "%"
+    ])
+];
 const columns: ProColumns<DataType>[] = [
     {
         title: 'Month',
