@@ -16,6 +16,6 @@ const items: TabsProps['items'] = [
     },
 ];
 
-const Profile: React.FC = () => <Tabs defaultActiveKey="1" items={items} />;
+const Profile: React.FC = () => <Tabs defaultActiveKey="2" items={items} />;
 
 export default Profile;

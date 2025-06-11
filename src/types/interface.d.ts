@@ -100,14 +100,23 @@ interface FlightRequest {
 
 interface Ticket {
     id: number;
-    flight?: Flight;
-    seat?: Seat;
+    flight: Flight;
+    seat: Seat;
     passengerName: string;
     passengerEmail: string;
     passengerPhone: string;
     passengerIDCard: string;
 }
+interface TicketCard {
+    id?: number;
+    flight: Flight;
+    seatId: number;
+    passengerName: string;
+    passengerEmail: string;
+    passengerPhone: string;
+    passengerIDCard: string;
 
+}
 interface TicketRequest {
     flightId: number
     tickets: {
