@@ -28,7 +28,6 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
         setIsNewOpen(false);
         form.resetFields();
     }
-    console.log(MIN_FLIGHT_TIME)
     const handleNew = (values: any) => {
         const departureDate = dayjs(values.departureDate).format('YYYY-MM-DD');
         const arrivalDate = dayjs(values.arrivalDate).format('YYYY-MM-DD');

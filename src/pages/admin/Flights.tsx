@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
 import icons from "../../assets/icons";
@@ -12,6 +13,7 @@ import useSelectOptions from "../../utils/selectOptions";
 import { useNavigate } from "react-router";
 import Filter from "../../components/flight/Filter";
 import { getAllParamaters } from "../../services/parameter";
+import dayjs from "dayjs";
 const Flights = () => {
     const [params, setParams] = useState<Parameter>({
         maxInterQuantity: 0,
@@ -32,16 +34,32 @@ const Flights = () => {
             id: 0,
             planeCode: "",
             planeName: "",
+            airline: {
+                id: 0,
+                airlineCode: "",
+                airlineName: "",
+                logo: ""
+            }
         },
         departureAirport: {
             id: 0,
             airportCode: "",
-            airportName: ""
+            airportName: "",
+            city: {
+                id: 0,
+                cityCode: "",
+                cityName: "",
+            }
         },
         arrivalAirport: {
             id: 0,
             airportCode: "",
-            airportName: ""
+            airportName: "",
+            city: {
+                id: 0,
+                cityCode: "",
+                cityName: "",
+            }
         },
         departureDate: "",
         arrivalDate: "",
@@ -52,7 +70,12 @@ const Flights = () => {
             airport: {
                 id: 0,
                 airportCode: "",
-                airportName: ""
+                airportName: "",
+                city: {
+                    id: 0,
+                    cityCode: "",
+                    cityName: "",
+                }
             },
             departureDateTime: "",
             arrivalDateTime: "",
@@ -69,7 +92,9 @@ const Flights = () => {
             quantity: 0,
             remainingTickets: 0,
             price: 0
-        }]
+        }],
+        canUpdate: false,
+        canDelete: false,
     });
     const [isUpdateOpen, setIsUpdateOpen] = useState(false)
     const [updateFlight, setUpdateFlight] = useState<Flight>({
@@ -79,16 +104,32 @@ const Flights = () => {
             id: 0,
             planeCode: "",
             planeName: "",
+            airline: {
+                id: 0,
+                airlineCode: "",
+                airlineName: "",
+                logo: ""
+            }
         },
         departureAirport: {
             id: 0,
             airportCode: "",
-            airportName: ""
+            airportName: "",
+            city: {
+                id: 0,
+                cityCode: "",
+                cityName: "",
+            }
         },
         arrivalAirport: {
             id: 0,
             airportCode: "",
-            airportName: ""
+            airportName: "",
+            city: {
+                id: 0,
+                cityCode: "",
+                cityName: "",
+            }
         },
         departureDate: "",
         arrivalDate: "",
@@ -99,7 +140,12 @@ const Flights = () => {
             airport: {
                 id: 0,
                 airportCode: "",
-                airportName: ""
+                airportName: "",
+                city: {
+                    id: 0,
+                    cityCode: "",
+                    cityName: "",
+                }
             },
             departureDateTime: "",
             arrivalDateTime: "",
@@ -128,11 +174,20 @@ const Flights = () => {
     const [flightsData, setFlightsData] = useState<Flight[]>([]);
     //
     const { mutate } = useDeleteFlight();
-    const refetchData = async () => {
+    const refetchData = async (filter: {
+        from?: string;
+        to?: string;
+        departureDate?: string;
+        arrivalDate?: string;
+        straight?: boolean;
+        seats?: number[];
+        airlines?: number[];
+    } = {}) => {
         setIsLoadingData(true);
         const response = await getAllParamaters();
         setParams(response.data);
-        const res = await fetchAllFlights();
+
+        const res = await fetchAllFlights(filter);
         setFlightsData(res.data.result)
         setIsLoadingData(false);
     }
@@ -281,7 +336,9 @@ const Flights = () => {
             {contextHolder}
             <div className="flex flex-row gap-[14px] w-full h-full">
                 <div className="flex drop-shadow-xs flex-col flex-1 gap-[10px]">
-                    <Search />
+                    <Search
+                        refetchData={refetchData}
+                    />
                     <ProTable<Flight>
                         loading={isLoadingData}
                         columns={columns}
@@ -327,6 +384,7 @@ const Flights = () => {
                 detailFlight={detailFlight}
             />
             <Filter
+                refetchData={refetchData}
                 isFilterOpen={isFilterOpen}
                 setIsFilterOpen={setIsFilterOpen}
             />
@@ -359,12 +417,28 @@ const Flights = () => {
         </>
     );
 };
-const Search = () => {
+const Search = ({ refetchData }: { refetchData: any }) => {
     const { RangePicker } = DatePicker;
     const { citySelectOptions } = useSelectOptions();
     const [searchForm] = Form.useForm();
-    const handleSearch = (value: Flight) => {
-        console.log(value)
+    const handleSearch = (value: any) => {
+        const departureDate = dayjs(value.date[0]).format('YYYY-MM-DD');
+        const arrivalDate = dayjs(value.date[1]).format('YYYY-MM-DD');
+        const params: {
+            from?: string;
+            to?: string;
+            departureDate?: string;
+            arrivalDate?: string;
+            straight?: boolean;
+            seats?: number[];
+            airlines?: number[];
+        } = {
+            from: value.from,
+            to: value.to,
+            departureDate,
+            arrivalDate
+        }
+        refetchData(params);
     }
     return (
         <div className="w-full bg-white p-[20px] rounded-[8px]">

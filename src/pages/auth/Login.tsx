@@ -32,6 +32,8 @@ const Login = () => {
                 const params = await getAllParamaters()
                 dispath(login(data.data.account));
                 dispath(setParams(params.data))
+                console.log(data.data.account.role);
+                localStorage.setItem('permission', JSON.stringify(data.data.account.role));
                 dispath(setRoles(data.data.account.role))
                 setTimeout(() => {
                     navigate('/admin');

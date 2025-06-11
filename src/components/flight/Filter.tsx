@@ -4,9 +4,10 @@ import useSelectOptions from "../../utils/selectOptions";
 interface IProps {
     isFilterOpen: boolean,
     setIsFilterOpen: (value: boolean) => void
+    refetchData: any
 }
 
-const Filter = ({ isFilterOpen, setIsFilterOpen }: IProps) => {
+const Filter = ({ isFilterOpen, setIsFilterOpen, refetchData }: IProps) => {
     const [form] = Form.useForm();
     const { airlineSelectOptions, seatSelectOptions } = useSelectOptions();
     const handleOk = () => {

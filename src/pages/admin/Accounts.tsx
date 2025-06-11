@@ -10,8 +10,11 @@ import { fetchAllAccounts } from "../../services/account";
 import NewAccount from "../../components/account/NewAccount";
 import UpdateAccount from "../../components/account/UpdateAccount";
 import useSelectOptions from "../../utils/selectOptions";
+import { useAppSelector } from "../../hooks/useAppSelector";
 
 const Accounts = () => {
+    const { roles } = useAppSelector((state) => state.role);
+    const permittedPages = roles?.pages || [];
     const { roleSelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();
     const [searchForm] = Form.useForm();
@@ -162,18 +165,25 @@ const Accounts = () => {
                         headerTitle="Account Table"
                         scroll={{ x: "max-content" }}
                         toolBarRender={() => {
-                            return [
-                                <Button
-                                    type="primary"
-                                    key="save"
-                                    onClick={() => {
-                                        setIsNewOpen(true);
-                                    }}
-                                >
-                                    New Account
-                                </Button>,
-                            ];
+                            const canCreate = permittedPages.some(
+                                (p) => p.module === "Accounts" && p.method === "POST"
+                            );
+                            return canCreate
+                                ? [
+                                    <Button
+                                        type="primary"
+                                        key="save"
+                                        onClick={() => {
+                                            setIsNewOpen(true);
+                                        }}
+                                    >
+                                        New Account
+                                    </Button>,
+                                ]
+                                : [];
                         }}
+
+
                     />
                 </div>
             </div>

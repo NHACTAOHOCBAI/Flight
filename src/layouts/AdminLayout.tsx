@@ -16,7 +16,9 @@ const { Header, Sider, Content } = Layout;
 const AdminLayout = () => {
     const navigator = useNavigate();
     const dispath = useAppDispatch()
-    const { roles } = useSelector((state: RootState) => state.role)
+    // const { roles } = useSelector((state: RootState) => state.role)
+    // console.log(roles);
+    const roles: Role = JSON.parse(localStorage.getItem('permission') || '{}') || {};
     const [messageApi, contextHolder] = message.useMessage();
     const [isPendingLogout, setIsPendingLogout] = useState(false)
     const handleLogout = async () => {
