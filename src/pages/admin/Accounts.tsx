@@ -101,7 +101,7 @@ const Accounts = () => {
             ?
             [{
                 title: "Action",
-                render: (_: any, value: Account) => (
+                render: (_: React.ReactNode, value: Account) => (
                     <div className="flex gap-[10px]">
                         {canUpdate && (
                             <div
@@ -129,8 +129,6 @@ const Accounts = () => {
                 ),
             }]
             : []
-
-
     ];
 
     useEffect(() => {
