@@ -10,9 +10,13 @@ import { fetchAllSeats } from "../../services/seat";
 import NewSeat from "../../components/seat/NewSeat";
 import UpdateSeat from "../../components/seat/UpdateSeat";
 import DetailSeat from "../../components/seat/DetailSeat";
+import { hasPermission } from "../../utils/checkPermission";
 
 
 const Seats = () => {
+    const canCreate = hasPermission("Seats", "POST");
+    const canUpdate = hasPermission("Seats", "PUT");
+    const canDelete = hasPermission("Seats", "DELETE");
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -65,31 +69,34 @@ const Seats = () => {
             title: "Price",
             render: (_text, record) => <div>{`${record.price} %`}</div>,
         },
-        {
-            title: "Action",
-            render: (_, record) => (
-                <div className="flex flex-row gap-[10px]">
-                    <div
-                        onClick={() => {
-                            setUpdateSeat(record);
-                            setIsUpdateOpen(true);
-                        }}
-                        className="text-yellow-400"
-                    >
-                        {icons.edit}
+        ...(canUpdate || canDelete)
+            ?
+            [{
+                title: "Action",
+                render: (_: React.ReactNode, record: Seat) => (
+                    <div className="flex flex-row gap-[10px]">
+                        <div
+                            onClick={() => {
+                                setUpdateSeat(record);
+                                setIsUpdateOpen(true);
+                            }}
+                            className="text-yellow-400"
+                        >
+                            {icons.edit}
+                        </div>
+                        <Popconfirm
+                            title="Delete the seat"
+                            description="Are you sure to delete this seat?"
+                            onConfirm={() => handleDelete(record.id)}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <div className="text-red-400">{icons.delete}</div>
+                        </Popconfirm>
                     </div>
-                    <Popconfirm
-                        title="Delete the seat"
-                        description="Are you sure to delete this seat?"
-                        onConfirm={() => handleDelete(record.id)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <div className="text-red-400">{icons.delete}</div>
-                    </Popconfirm>
-                </div>
-            ),
-        }
+                ),
+            }]
+            : []
     ];
 
     useEffect(() => {
@@ -130,7 +137,7 @@ const Seats = () => {
                         scroll={{ x: 'max-content' }}
                     />
                 </div>
-                <NewSeat refetchData={refetchData} />
+                {canCreate && <NewSeat refetchData={refetchData} />}
             </div>
             <UpdateSeat
                 refetchData={refetchData}
