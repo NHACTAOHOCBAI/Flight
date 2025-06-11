@@ -3,7 +3,10 @@ import { useCreatePlane } from "../../hooks/usePlanes";
 
 interface Props {
     refetchData: () => Promise<void>;
-    airlineSelectOptions: { value: number, label: React.ReactNode }[];
+    airlineSelectOptions: {
+        value: string;
+        label: string;
+    }[]
 }
 
 const NewPlane = ({ refetchData, airlineSelectOptions }: Props) => {

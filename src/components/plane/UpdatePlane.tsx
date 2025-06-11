@@ -7,7 +7,10 @@ interface Props {
     isUpdateOpen: boolean;
     setIsUpdateOpen: (value: boolean) => void;
     refetchData: () => Promise<void>;
-    airlineSelectOptions: { value: number, label: React.ReactNode }[];
+    airlineSelectOptions: {
+        value: string;
+        label: string;
+    }[]
 }
 
 const UpdatePlane = ({ updatedPlane, isUpdateOpen, setIsUpdateOpen, refetchData, airlineSelectOptions }: Props) => {

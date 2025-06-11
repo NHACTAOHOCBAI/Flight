@@ -10,8 +10,12 @@ import { fetchAllPlanes } from "../../services/plane";
 import UpdatePlane from "../../components/plane/UpdatePlane";
 import NewPlane from "../../components/plane/NewPlane";
 import useSelectOptions from "../../utils/selectOptions";
+import { hasPermission } from "../../utils/checkPermission";
 
 const Planes = () => {
+    const canCreate = hasPermission("Planes", "POST");
+    const canUpdate = hasPermission("Planes", "PUT");
+    const canDelete = hasPermission("Planes", "DELETE");
     const { airlineSelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
@@ -71,33 +75,36 @@ const Planes = () => {
         },
         {
             title: "Airline",
-            render: (_, record) => <div>{record.airlineName}</div>,
+            render: (_, record) => <div>{record.airline.airlineName}</div>,
         },
-        {
-            title: "Action",
-            render: (_, value) => (
-                <div className="flex gap-[10px]">
-                    <div
-                        onClick={() => {
-                            setUpdatePlane(value);
-                            setIsUpdateOpen(true);
-                        }}
-                        className="text-yellow-400"
-                    >
-                        {icons.edit}
+        ...(canUpdate || canDelete)
+            ?
+            [{
+                title: "Action",
+                render: (_: React.ReactNode, value: Plane) => (
+                    <div className="flex gap-[10px]">
+                        <div
+                            onClick={() => {
+                                setUpdatePlane(value);
+                                setIsUpdateOpen(true);
+                            }}
+                            className="text-yellow-400"
+                        >
+                            {icons.edit}
+                        </div>
+                        <Popconfirm
+                            title="Delete the plane"
+                            description="Are you sure?"
+                            onConfirm={() => handleDelete(value.id)}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <div className="text-red-400">{icons.delete}</div>
+                        </Popconfirm>
                     </div>
-                    <Popconfirm
-                        title="Delete the plane"
-                        description="Are you sure?"
-                        onConfirm={() => handleDelete(value.id)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <div className="text-red-400">{icons.delete}</div>
-                    </Popconfirm>
-                </div>
-            ),
-        }
+                ),
+            }]
+            : []
     ];
 
     useEffect(() => {
@@ -138,9 +145,9 @@ const Planes = () => {
                         scroll={{ x: 'max-content' }}
                     />
                 </div>
-                <NewPlane
+                {canCreate && <NewPlane
                     airlineSelectOptions={airlineSelectOptions}
-                    refetchData={refetchData} />
+                    refetchData={refetchData} />}
             </div>
             <UpdatePlane
                 airlineSelectOptions={airlineSelectOptions}
