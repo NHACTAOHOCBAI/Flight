@@ -1,17 +1,21 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 interface RoleState {
-    roles: Role[]
+    roles: Role
 }
 
 const initialState: RoleState = {
-    roles: []
+    roles: {
+        id: 0,
+        roleName: "",
+        pages: []
+    }
 }
 
 const roleSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        setRoles(state, action: PayloadAction<Role[]>) {
+        setRoles(state, action: PayloadAction<Role>) {
             state.roles = action.payload
         },
     },

@@ -8,6 +8,7 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { login } from '../../redux/features/user/userSlide';
 import { setParams } from '../../redux/features/params/paramsSlide';
 import { getAllParamaters } from '../../services/parameter';
+import { setRoles } from '../../redux/features/role/roleSlide';
 
 type FieldType = {
     username?: string;
@@ -31,6 +32,7 @@ const Login = () => {
                 const params = await getAllParamaters()
                 dispath(login(data.data.account));
                 dispath(setParams(params.data))
+                dispath(setRoles(data.data.account.role))
                 setTimeout(() => {
                     navigate('/admin');
                 }, 500);

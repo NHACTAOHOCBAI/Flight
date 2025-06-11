@@ -133,7 +133,9 @@ interface Role {
     roleName: string,
     pages: {
         id: number,
-        pageName: string
+        pageName: string,
+        module: string,
+        method: string
     }[]
 }
 

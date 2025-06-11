@@ -16,6 +16,7 @@ const { Header, Sider, Content } = Layout;
 const AdminLayout = () => {
     const navigator = useNavigate();
     const dispath = useAppDispatch()
+    const { roles } = useSelector((state: RootState) => state.role)
     const [messageApi, contextHolder] = message.useMessage();
     const [isPendingLogout, setIsPendingLogout] = useState(false)
     const handleLogout = async () => {
@@ -42,11 +43,12 @@ const AdminLayout = () => {
     useEffect(() => {
         const fetchUserInf = async () => {
             const response = await getCurrentUser();
-            console.log(response)
             dispath(login(response));
         }
         fetchUserInf()
     }, [])
+    const permittedPages = roles?.pages || [];
+
     const labelMap: Record<string, { label: React.ReactNode; icon: React.ReactNode }> = {
         dashboard: { label: <Link to="/admin">Dashboard</Link>, icon: icons.dashboard },
         accounts: { label: <Link to="/admin/accounts">Account</Link>, icon: icons.account },
@@ -61,27 +63,31 @@ const AdminLayout = () => {
         tickets: { label: <Link to="/admin/tickets">Ticket</Link>, icon: icons.ticket },
         profile: { label: <Link to="/admin/profile">Profile</Link>, icon: icons.profile },
     };
-
-    // Temporary: allow all pages for demonstration, replace with real permittedPages logic as needed
-    const permittedPages: string[] = Object.keys(labelMap);
-
+    const permittedModules = new Set<string>();
+    permittedPages.forEach((page) => {
+        const moduleKey = page.module?.toLowerCase(); // convert to lowercase để khớp với labelMap keys
+        if (moduleKey && moduleKey in labelMap) {
+            permittedModules.add(moduleKey);
+        }
+    });
     const menuItems = [
         {
-            key: '',
+            key: 'dashboard',
             icon: labelMap['dashboard'].icon,
             label: labelMap['dashboard'].label,
         },
-        ...(permittedPages?.filter(p => p !== 'dashboard' && p !== 'profile').map((value) => ({
-            key: value,
-            icon: labelMap[value].icon,
-            label: labelMap[value].label
-        })) || []),
+        ...Array.from(permittedModules).filter((key) => key !== 'dashboard' && key !== 'profile').map((key) => ({
+            key,
+            icon: labelMap[key].icon,
+            label: labelMap[key].label,
+        })),
         {
             key: 'profile',
             icon: labelMap['profile'].icon,
             label: labelMap['profile'].label,
         },
     ];
+
 
     const content = () => {
         return (
