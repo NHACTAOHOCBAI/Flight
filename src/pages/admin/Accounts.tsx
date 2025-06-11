@@ -10,11 +10,12 @@ import { fetchAllAccounts } from "../../services/account";
 import NewAccount from "../../components/account/NewAccount";
 import UpdateAccount from "../../components/account/UpdateAccount";
 import useSelectOptions from "../../utils/selectOptions";
-import { useAppSelector } from "../../hooks/useAppSelector";
+import { hasPermission } from "../../utils/checkPermission";
 
 const Accounts = () => {
-    const { roles } = useAppSelector((state) => state.role);
-    const permittedPages = roles?.pages || [];
+    const canCreate = hasPermission("Accounts", "POST");
+    const canUpdate = hasPermission("Accounts", "PUT");
+    const canDelete = hasPermission("Accounts", "DELETE");
     const { roleSelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();
     const [searchForm] = Form.useForm();
@@ -96,31 +97,40 @@ const Accounts = () => {
             title: "Role",
             render: (_, record) => <div>{record.role?.roleName}</div>,
         },
-        {
-            title: "Action",
-            render: (_, value) => (
-                <div className="flex gap-[10px]">
-                    <div
-                        onClick={() => {
-                            setUpdateAccount(value);
-                            setIsUpdateOpen(true);
-                        }}
-                        className="text-yellow-400"
-                    >
-                        {icons.edit}
+        ...(canUpdate || canDelete)
+            ?
+            [{
+                title: "Action",
+                render: (_: any, value: Account) => (
+                    <div className="flex gap-[10px]">
+                        {canUpdate && (
+                            <div
+                                onClick={() => {
+                                    setUpdateAccount(value);
+                                    setIsUpdateOpen(true);
+                                }}
+                                className="text-yellow-400 cursor-pointer"
+                            >
+                                {icons.edit}
+                            </div>
+                        )}
+                        {canDelete && (
+                            <Popconfirm
+                                title="Delete the account"
+                                description="Are you sure?"
+                                onConfirm={() => handleDelete(value.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <div className="text-red-400 cursor-pointer">{icons.delete}</div>
+                            </Popconfirm>
+                        )}
                     </div>
-                    <Popconfirm
-                        title="Delete the account"
-                        description="Are you sure?"
-                        onConfirm={() => handleDelete(value.id)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <div className="text-red-400">{icons.delete}</div>
-                    </Popconfirm>
-                </div>
-            ),
-        },
+                ),
+            }]
+            : []
+
+
     ];
 
     useEffect(() => {
@@ -165,11 +175,8 @@ const Accounts = () => {
                         headerTitle="Account Table"
                         scroll={{ x: "max-content" }}
                         toolBarRender={() => {
-                            const canCreate = permittedPages.some(
-                                (p) => p.module === "Accounts" && p.method === "POST"
-                            );
-                            return canCreate
-                                ? [
+                            if (canCreate)
+                                return [
                                     <Button
                                         type="primary"
                                         key="save"
@@ -179,11 +186,9 @@ const Accounts = () => {
                                     >
                                         New Account
                                     </Button>,
-                                ]
-                                : [];
+                                ];
+                            return [];
                         }}
-
-
                     />
                 </div>
             </div>
