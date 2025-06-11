@@ -14,7 +14,11 @@ import { useNavigate } from "react-router";
 import Filter from "../../components/flight/Filter";
 import { getAllParamaters } from "../../services/parameter";
 import dayjs from "dayjs";
+import { hasPermission } from "../../utils/checkPermission";
 const Flights = () => {
+    const canCreate = hasPermission("Flights", "POST");
+    const canUpdate = hasPermission("Flights", "PUT");
+    const canDelete = hasPermission("Flights", "DELETE");
     const [params, setParams] = useState<Parameter>({
         maxInterQuantity: 0,
         minFlightTime: 0,
@@ -285,7 +289,7 @@ const Flights = () => {
                 const canBooking = value.seats.reduce((sum, seat) => sum + seat.remainingTickets, 0) > 0;
                 return (
                     <div className="flex flex-row gap-[10px] items-center">
-                        <button
+                        {canUpdate && <button
                             onClick={() => {
                                 setUpdateFlight(value);
                                 setIsUpdateOpen(true);
@@ -294,24 +298,27 @@ const Flights = () => {
                             className={` ${!value.canUpdate ? 'cursor-not-allowed opacity-40 text-blue-400' : 'cursor-pointer text-yellow-400'}`}
                         >
                             {icons.edit}
-                        </button>
+                        </button>}
 
-                        <Popconfirm
-                            disabled={!value.canDelete}
-                            title="Delete the city"
-                            description="Are you sure to delete this city?"
-                            onConfirm={() => { handleDelete(value.id) }}
-                            onCancel={() => { }}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                            <button
-                                className={` ${!value.canUpdate ? 'cursor-not-allowed opacity-40 text-blue-400' : 'cursor-pointer text-red-400'}`}
+                        {
+                            canDelete &&
+                            <Popconfirm
+                                disabled={!value.canDelete}
+                                title="Delete the city"
+                                description="Are you sure to delete this city?"
+                                onConfirm={() => { handleDelete(value.id) }}
+                                onCancel={() => { }}
+                                okText="Yes"
+                                cancelText="No"
                             >
-                                {icons.delete}
-                            </button>
+                                <button
+                                    className={` ${!value.canUpdate ? 'cursor-not-allowed opacity-40 text-blue-400' : 'cursor-pointer text-red-400'}`}
+                                >
+                                    {icons.delete}
+                                </button>
 
-                        </Popconfirm>
+                            </Popconfirm>
+                        }
                         <Button
                             disabled={!canBooking}
                             type="dashed"
@@ -354,27 +361,37 @@ const Flights = () => {
                         headerTitle="Flight Table"
                         scroll={{ x: 'max-content' }}
                         toolBarRender={() => {
-                            return [
-                                <Button
-                                    type="primary"
-                                    key="save"
-                                    onClick={() => {
-                                        setIsNewOpen(true);
-                                    }}
-                                >
-                                    New Flight
-                                </Button>,
+                            const buttons = [];
+
+                            if (canCreate) {
+                                buttons.push(
+                                    <Button
+                                        type="primary"
+                                        key="new"
+                                        onClick={() => {
+                                            setIsNewOpen(true);
+                                        }}
+                                    >
+                                        New Flight
+                                    </Button>
+                                );
+                            }
+
+                            buttons.push(
                                 <Button
                                     type="default"
-                                    key="save"
+                                    key="filter"
                                     onClick={() => {
                                         setIsFilterOpen(true);
                                     }}
                                 >
                                     Filter
-                                </Button>,
-                            ];
+                                </Button>
+                            );
+
+                            return buttons;
                         }}
+
                     />
                 </div>
             </div>
