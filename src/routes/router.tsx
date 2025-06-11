@@ -19,7 +19,7 @@ import Booking from "../pages/admin/Booking";
 
 import FlightSearchPage from "../pages/customer/SearchFlight";
 import RegisterSuccess from "../pages/auth/ConfirmEmail";
-import MyProfile from "../pages/admin/Profile";
+import Profile from "../pages/admin/Profile";
 
 const router = createBrowserRouter([
     {
@@ -71,7 +71,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "profile",
-                element: <MyProfile />
+                element: <Profile />
             }
         ]
     },

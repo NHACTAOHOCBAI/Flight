@@ -20,7 +20,7 @@ const useSelectOptions = () => {
         label: flight.flightCode
     })) ?? [];
 
-    const airlineSelectOptions = airlines?.data?.result?.map((airline: Airline) => ({
+    const airlineSelectOptions: { value: string, label: string }[] = airlines?.data?.result?.map((airline: Airline) => ({
         value: airline.id,
         label: airline.airlineName
     })) ?? [];

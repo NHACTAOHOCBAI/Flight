@@ -24,7 +24,7 @@ const TicketInformation = () => {
       });
     }
     setTickets(tickets)
-    // localStorage.setItem('tickets', JSON.stringify(tickets));
+    localStorage.setItem('tickets', JSON.stringify(tickets));
   }
   useEffect(() => {
     if (tickets) {

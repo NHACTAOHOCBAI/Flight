@@ -27,7 +27,8 @@ const Price = () => {
         },
     ];
     const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
-    const seatList = seatsData?.data || [];
+    const seatList = seatsData?.data.result || [];
+    console.log('seatList', seatList);
     const data = convertTicketsToDataType(tickets, seatList, flight?.originalPrice);
     const totalPrice = data.reduce((result, value) => result + value.price * value.quantity, 0)
     return (

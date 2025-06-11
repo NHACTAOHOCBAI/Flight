@@ -46,32 +46,16 @@ interface Seat {
 interface Flight {
     id: number,
     flightCode: string,
-    plane: {
-        id: number,
-        planeCode: string,
-        planeName: string,
-    }
-    departureAirport: {
-        id: number,
-        airportCode: string,
-        airportName: string
-    }
-    arrivalAirport: {
-        id: number,
-        airportCode: string,
-        airportName: string
-    }
+    plane: Plane
+    departureAirport: Airport
+    arrivalAirport: Airport
     departureDate: string
     arrivalDate: string
     departureTime: string
     arrivalTime: string
     originalPrice: number,
     interAirports: {
-        airport: {
-            id: number,
-            airportCode: string,
-            airportName: string
-        }
+        airport: Airport
         departureDateTime: string
         arrivalDateTime: string
         note: string
