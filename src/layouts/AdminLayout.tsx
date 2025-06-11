@@ -16,8 +16,6 @@ const { Header, Sider, Content } = Layout;
 const AdminLayout = () => {
     const navigator = useNavigate();
     const dispath = useAppDispatch()
-    // const { roles } = useSelector((state: RootState) => state.role)
-    // console.log(roles);
     const roles: Role = JSON.parse(localStorage.getItem('permission') || '{}') || {};
     const [messageApi, contextHolder] = message.useMessage();
     const [isPendingLogout, setIsPendingLogout] = useState(false)
@@ -78,19 +76,52 @@ const AdminLayout = () => {
             icon: labelMap['dashboard'].icon,
             label: labelMap['dashboard'].label,
         },
+        {
+            key: 'airline',
+            icon: labelMap['airlines'].icon,
+            label: labelMap['airlines'].label,
+        },
+        {
+            key: 'plane',
+            icon: labelMap['planes'].icon,
+            label: labelMap['planes'].label,
+        },
+        {
+            key: 'city',
+            icon: labelMap['cities'].icon,
+            label: labelMap['cities'].label,
+        },
+        {
+            key: 'airport',
+            icon: labelMap['airports'].icon,
+            label: labelMap['airports'].label,
+        },
+        {
+            key: 'flight',
+            icon: labelMap['flights'].icon,
+            label: labelMap['flights'].label,
+        },
+        {
+            key: 'seats',
+            icon: labelMap['seats'].icon,
+            label: labelMap['seats'].label,
+        },
         ...Array.from(permittedModules).filter((key) => key !== 'dashboard' && key !== 'profile').map((key) => ({
             key,
             icon: labelMap[key].icon,
             label: labelMap[key].label,
         })),
         {
+            key: 'setting',
+            icon: labelMap['setting'].icon,
+            label: labelMap['setting'].label,
+        },
+        {
             key: 'profile',
             icon: labelMap['profile'].icon,
             label: labelMap['profile'].label,
         },
     ];
-
-
     const content = () => {
         return (
             <div className='flex  flex-col gap-[10px]'>
