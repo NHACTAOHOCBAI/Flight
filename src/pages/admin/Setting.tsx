@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { getAllParamaters, updateParameter } from "../../services/parameter";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setParams } from "../../redux/features/params/paramsSlide";
+import { has } from "lodash";
 
 export default function Setting() {
+    const canUpdate = has("Parameters", "PUT");
     const [isPending, setIsPending] = useState(false);
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
@@ -66,7 +68,7 @@ export default function Setting() {
                                 name="maxInterQuantity"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber />
+                                <InputNumber disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -74,7 +76,7 @@ export default function Setting() {
                                 name="minFlightTime"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber />
+                                <InputNumber disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -82,7 +84,7 @@ export default function Setting() {
                                 name="minStopTime"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={isPending} />
+                                <InputNumber disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -90,7 +92,7 @@ export default function Setting() {
                                 name="maxStopTime"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={isPending} />
+                                <InputNumber disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -98,7 +100,7 @@ export default function Setting() {
                                 name="latestBookingDay"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={isPending} />
+                                <InputNumber disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -106,17 +108,19 @@ export default function Setting() {
                                 name="latestCancelDay"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={isPending} />
+                                <InputNumber disabled={!canUpdate} />
                             </Form.Item>
-
-                            <div className="2-full flex gap-[10px] justify-end">
-                                <Button onClick={() => refetchParameters()}>
-                                    Reset
-                                </Button>
-                                <Button type="primary" onClick={() => form.submit()}>
-                                    Save
-                                </Button>
-                            </div>
+                            {
+                                canUpdate &&
+                                <div className="2-full flex gap-[10px] justify-end">
+                                    <Button onClick={() => refetchParameters()}>
+                                        Reset
+                                    </Button>
+                                    <Button type="primary" onClick={() => form.submit()}>
+                                        Save
+                                    </Button>
+                                </div>
+                            }
                         </Form>
                     </div>
             }
