@@ -1,15 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-interface Role {
-    id: number,
-    roleName: string,
-    roleDescription: string,
-    pages: {
-        id: number,
-        pageName: string,
-        module: string,
-        method: string
-    }[]
-}
 const hasPermission = (module: string, method: string) => {
     const roles: Role = JSON.parse(localStorage.getItem("permission") || "{}");
     const permittedPages = roles?.pages || [];
@@ -78,10 +67,8 @@ function checkPermission(permissionToCheck: string, roles?: Role): boolean {
         const key = `${page.method}_${page.apiPath}`;
         return permissionMap[key];
     });
-    console.log("pages", JSON.stringify(pages))
-    console.log("permissions", (permissions))
     return permissions.includes(permissionToCheck);
 }
-export { hasPermission, checkPermission }
+export { hasPermission, checkPermission, permissionMap }
 
 

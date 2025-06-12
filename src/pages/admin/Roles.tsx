@@ -2,7 +2,7 @@
 import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
 import { useEffect, useState } from "react";
-import { Button, Form, Input, message, Popconfirm } from "antd";
+import { message, Popconfirm } from "antd";
 import icons from "../../assets/icons";
 import { useDeleteRole } from "../../hooks/useRoles";
 import { fetchAllRoles } from "../../services/role";
@@ -31,7 +31,6 @@ const Roles = () => {
         pages: [],
         roleDescription: ""
     });
-    const [searchForm] = Form.useForm();
     const { mutate } = useDeleteRole();
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [rolesData, setRolesData] = useState<Role[]>([]);
@@ -53,9 +52,6 @@ const Roles = () => {
         const res = await fetchAllRoles();
         setRolesData(res.data.result);
         setIsLoadingData(false);
-    };
-    const handleSearch = (value: Plane) => {
-        console.log(value); // Optional filter logic
     };
     const columns: ProColumns<Role>[] = [
         {
@@ -113,19 +109,6 @@ const Roles = () => {
             {contextHolder}
             <div className="flex gap-[14px] w-full h-full">
                 <div className="flex  drop-shadow-xs flex-col flex-1 w-[60%] gap-[10px]">
-                    <div className="w-full bg-white p-[20px] rounded-[8px]">
-                        <Form layout="inline" form={searchForm} onFinish={handleSearch}>
-                            <Form.Item label="Code" name="planeCode">
-                                <Input placeholder="Enter plane code" />
-                            </Form.Item>
-                            <Form.Item label="Name" name="planeName">
-                                <Input placeholder="Enter plane name" />
-                            </Form.Item>
-                            <Button icon={icons.search} type="primary" htmlType="submit" style={{ marginLeft: 'auto' }}>
-                                Search
-                            </Button>
-                        </Form>
-                    </div>
                     <ProTable<Role>
                         loading={isLoadingData}
                         columns={columns}
