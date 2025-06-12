@@ -4,10 +4,7 @@ import { useCreateAirport } from "../../hooks/useAiports";
 
 interface Props {
     refetchData: () => Promise<void>;
-    citySelectOptions: {
-        value: number,
-        label: React.ReactNode
-    }[]
+    citySelectOptions: { value: number, label: string }[]
 }
 
 const NewAirport = ({ refetchData, citySelectOptions }: Props) => {

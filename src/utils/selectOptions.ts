@@ -15,32 +15,32 @@ const useSelectOptions = () => {
     const { data: seats } = useGetAllSeats();
     const { data: roles } = useGetAllRoles();
 
-    const flightSelectOptions = flight?.data?.result?.map((flight: Flight) => ({
+    const flightSelectOptions: { value: number, label: string }[] = flight?.data?.result?.map((flight: Flight) => ({
         value: flight.id,
         label: flight.flightCode
     })) ?? [];
 
-    const airlineSelectOptions: { value: string, label: string }[] = airlines?.data?.result?.map((airline: Airline) => ({
+    const airlineSelectOptions: { value: number, label: string }[] = airlines?.data?.result?.map((airline: Airline) => ({
         value: airline.id,
         label: airline.airlineName
     })) ?? [];
 
-    const citySelectOptions = cities?.data?.result?.map((city: City) => ({
+    const citySelectOptions: { value: number, label: string }[] = cities?.data?.result?.map((city: City) => ({
         value: city.id,
         label: city.cityName,
     })) ?? [];
 
-    const planeSelectOptions = planes?.data?.result?.map((plane: Plane) => ({
+    const planeSelectOptions: { value: number, label: string }[] = planes?.data?.result?.map((plane: Plane) => ({
         value: plane.id,
         label: plane.planeName,
     })) ?? [];
 
-    const airportSelectOptions = airports?.data?.result?.map((airport: Airport) => ({
+    const airportSelectOptions: { value: number, label: string }[] = airports?.data?.result?.map((airport: Airport) => ({
         value: airport.id,
         label: airport.airportName,
     })) ?? [];
 
-    const seatSelectOptions = seats?.data?.result?.map((seat: Seat) => ({
+    const seatSelectOptions: { value: number, label: string }[] = seats?.data?.result?.map((seat: Seat) => ({
         value: seat.id,
         label: seat.seatName,
     })) ?? [];

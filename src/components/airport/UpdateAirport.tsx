@@ -8,10 +8,7 @@ interface Props {
     isUpdateOpen: boolean;
     setIsUpdateOpen: (value: boolean) => void;
     refetchData: () => Promise<void>;
-    citySelectOptions: {
-        value: number,
-        label: React.ReactNode
-    }[]
+    citySelectOptions: { value: number, label: string }[]
 }
 
 const UpdateAirport = ({ updatedAirport, isUpdateOpen, setIsUpdateOpen, refetchData, citySelectOptions }: Props) => {
