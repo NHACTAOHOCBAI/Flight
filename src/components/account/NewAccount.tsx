@@ -124,16 +124,4 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
         </>
     );
 };
-// const NotificationModal = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (value: boolean) => void }) => {
-//     return (
-//         <Modal
-//             okText='Create'
-//             title="New Account"
-//             open={isOpen}
-//             onCancel={() => setIsOpen(false)}
-//             onOk={() => setIsOpen(false)}
-//         >
-//         </Modal>
-//     )
-// }
 export default NewAccount;

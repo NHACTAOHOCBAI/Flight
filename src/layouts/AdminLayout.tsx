@@ -11,12 +11,12 @@ import type { RootState } from '../redux/app/store';
 import { getCurrentUser, logoutAPI } from '../services/auth';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { login, logout } from '../redux/features/user/userSlide';
+import { hasPermission } from '../utils/checkPermission';
 
 const { Header, Sider, Content } = Layout;
 const AdminLayout = () => {
     const navigator = useNavigate();
     const dispath = useAppDispatch()
-    const roles: Role = JSON.parse(localStorage.getItem('permission') || '{}') || {};
     const [messageApi, contextHolder] = message.useMessage();
     const [isPendingLogout, setIsPendingLogout] = useState(false)
     const handleLogout = async () => {
@@ -47,81 +47,80 @@ const AdminLayout = () => {
         }
         fetchUserInf()
     }, [])
-    const permittedPages = roles?.pages || [];
+
 
     const labelMap: Record<string, { label: React.ReactNode; icon: React.ReactNode }> = {
-        dashboard: { label: <Link to="/admin">Dashboard</Link>, icon: icons.dashboard },
-        accounts: { label: <Link to="/admin/accounts">Account</Link>, icon: icons.account },
-        airlines: { label: <Link to="/admin/airlines">Airline</Link>, icon: icons.airline },
-        airports: { label: <Link to="/admin/airports">Airport</Link>, icon: icons.airport },
-        cities: { label: <Link to="/admin/cities">City</Link>, icon: icons.city },
-        flights: { label: <Link to="/admin/flights">Flight</Link>, icon: icons.flight },
-        planes: { label: <Link to="/admin/planes">Plane</Link>, icon: icons.plane },
-        roles: { label: <Link to="/admin/roles">Role</Link>, icon: icons.role },
-        seats: { label: <Link to="/admin/seats">Seat</Link>, icon: icons.seat },
-        setting: { label: <Link to="/admin/setting">Setting</Link>, icon: icons.setting },
-        tickets: { label: <Link to="/admin/tickets">Ticket</Link>, icon: icons.ticket },
-        profile: { label: <Link to="/admin/profile">Profile</Link>, icon: icons.profile },
+        Dashboard: { label: <Link to="/admin">Dashboard</Link>, icon: icons.dashboard },
+        Accounts: { label: <Link to="/admin/accounts">Account</Link>, icon: icons.account },
+        Airlines: { label: <Link to="/admin/airlines">Airline</Link>, icon: icons.airline },
+        Airports: { label: <Link to="/admin/airports">Airport</Link>, icon: icons.airport },
+        Cities: { label: <Link to="/admin/cities">City</Link>, icon: icons.city },
+        Flights: { label: <Link to="/admin/flights">Flight</Link>, icon: icons.flight },
+        Planes: { label: <Link to="/admin/planes">Plane</Link>, icon: icons.plane },
+        Roles: { label: <Link to="/admin/roles">Role</Link>, icon: icons.role },
+        Seats: { label: <Link to="/admin/seats">Seat</Link>, icon: icons.seat },
+        Setting: { label: <Link to="/admin/setting">Setting</Link>, icon: icons.setting },
+        Tickets: { label: <Link to="/admin/tickets">Ticket</Link>, icon: icons.ticket },
+        Profile: { label: <Link to="/admin/profile">Profile</Link>, icon: icons.profile },
     };
-    const permittedModules = new Set<string>();
-    permittedPages.forEach((page) => {
-        const moduleKey = page.module?.toLowerCase(); // convert to lowercase để khớp với labelMap keys
-        if (moduleKey && moduleKey in labelMap) {
-            permittedModules.add(moduleKey);
-        }
-    });
+    const dynamicItems = Object.entries(labelMap)
+        .filter(([key]) => hasPermission(key, 'GET'))
+        .map(([key, value]) => ({
+            key: key.toLowerCase(),
+            icon: value.icon,
+            label: value.label,
+        }));
+    console.log(dynamicItems)
     const menuItems = [
         {
             key: 'dashboard',
-            icon: labelMap['dashboard'].icon,
-            label: labelMap['dashboard'].label,
+            icon: labelMap['Dashboard'].icon,
+            label: labelMap['Dashboard'].label,
         },
         {
             key: 'airline',
-            icon: labelMap['airlines'].icon,
-            label: labelMap['airlines'].label,
+            icon: labelMap['Airlines'].icon,
+            label: labelMap['Airlines'].label,
         },
         {
             key: 'plane',
-            icon: labelMap['planes'].icon,
-            label: labelMap['planes'].label,
+            icon: labelMap['Planes'].icon,
+            label: labelMap['Planes'].label,
         },
         {
             key: 'city',
-            icon: labelMap['cities'].icon,
-            label: labelMap['cities'].label,
+            icon: labelMap['Cities'].icon,
+            label: labelMap['Cities'].label,
         },
         {
             key: 'airport',
-            icon: labelMap['airports'].icon,
-            label: labelMap['airports'].label,
+            icon: labelMap['Airports'].icon,
+            label: labelMap['Airports'].label,
         },
         {
             key: 'flight',
-            icon: labelMap['flights'].icon,
-            label: labelMap['flights'].label,
+            icon: labelMap['Flights'].icon,
+            label: labelMap['Flights'].label,
         },
         {
             key: 'seats',
-            icon: labelMap['seats'].icon,
-            label: labelMap['seats'].label,
+            icon: labelMap['Seats'].icon,
+            label: labelMap['Seats'].label,
         },
-        ...Array.from(permittedModules).filter((key) => key !== 'dashboard' && key !== 'profile').map((key) => ({
-            key,
-            icon: labelMap[key].icon,
-            label: labelMap[key].label,
-        })),
+
+        ...dynamicItems,
         {
             key: 'setting',
-            icon: labelMap['setting'].icon,
-            label: labelMap['setting'].label,
+            icon: labelMap['Setting'].icon,
+            label: labelMap['Setting'].label,
         },
         {
             key: 'profile',
-            icon: labelMap['profile'].icon,
-            label: labelMap['profile'].label,
+            icon: labelMap['Profile'].icon,
+            label: labelMap['Profile'].label,
         },
     ];
+    console.log("menu", menuItems)
     const content = () => {
         return (
             <div className='flex  flex-col gap-[10px]'>

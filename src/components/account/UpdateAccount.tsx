@@ -31,7 +31,7 @@ const UpdateAccount = ({
             id: updatedAccount.id,
             account: value,
             ...(fileList && fileList.length > 0 && {
-                logo: fileList[0].originFileObj as File,
+                avatar: fileList[0].originFileObj as File,
             })
         },
             {

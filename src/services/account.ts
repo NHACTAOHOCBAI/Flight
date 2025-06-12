@@ -3,7 +3,6 @@ import axiosInstance from "../configs/axiosConfig";
 export const fetchAllAccounts = () => axiosInstance.get("/accounts");
 
 export const createAccount = ({ account, avatar, }: { account: AccountRequest; avatar?: File; }) => {
-    console.log(avatar)
     const formData = new FormData();
     formData.append("account", new Blob([JSON.stringify(account)], { type: "application/json", }));
     if (avatar)
