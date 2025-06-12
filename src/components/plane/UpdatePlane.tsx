@@ -8,7 +8,7 @@ interface Props {
     setIsUpdateOpen: (value: boolean) => void;
     refetchData: () => Promise<void>;
     airlineSelectOptions: {
-        value: string;
+        value: number;
         label: string;
     }[]
 }

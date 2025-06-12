@@ -1,16 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
-import { useEffect, useState } from "react";
-import { Button, Form, Input, message, Popconfirm } from "antd";
+import { useEffect, useState, useCallback } from "react";
+import { Button, Input, message, Popconfirm } from "antd";
 import icons from "../../assets/icons";
-
-
 import { useDeletePlane } from "../../hooks/usePlanes";
 import { fetchAllPlanes } from "../../services/plane";
 import UpdatePlane from "../../components/plane/UpdatePlane";
 import NewPlane from "../../components/plane/NewPlane";
 import useSelectOptions from "../../utils/selectOptions";
 import { hasPermission } from "../../utils/checkPermission";
+import debounce from "lodash.debounce";
 
 const Planes = () => {
     const canCreate = hasPermission("Planes", "POST");
@@ -21,21 +21,30 @@ const Planes = () => {
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [updatePlane, setUpdatePlane] = useState<Plane>({
         id: 0,
-        planeCode: '',
-        planeName: '',
+        planeCode: "",
+        planeName: "",
         airline: {
             id: 0,
-            airlineCode: '',
-            airlineName: '',
-            logo: ''
-        }
+            airlineCode: "",
+            airlineName: "",
+            logo: "",
+        },
     });
-    const [searchForm] = Form.useForm();
-    const { mutate } = useDeletePlane();
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [planesData, setPlanesData] = useState<Plane[]>([]);
+    const [planeCode, setPlaneCode] = useState("");
+    const [planeName, setPlaneName] = useState("");
 
-
+    const { mutate } = useDeletePlane();
+    const filterAirlines: {
+        text: string,
+        value: number
+    }[] = airlineSelectOptions.map((value) => {
+        return {
+            text: value.label,
+            value: value.value
+        }
+    })
     const handleDelete = (id: number) => {
         mutate(id, {
             onSuccess: async () => {
@@ -44,7 +53,7 @@ const Planes = () => {
             },
             onError: (error) => {
                 messageApi.error(error.message);
-            }
+            },
         });
     };
 
@@ -52,13 +61,24 @@ const Planes = () => {
         setIsLoadingData(true);
         const res = await fetchAllPlanes();
         setPlanesData(res.data.result);
-        console.log(res.data.result);
         setIsLoadingData(false);
     };
 
-    const handleSearch = (value: Plane) => {
-        console.log(value); // Optional filter logic
-    };
+    const debouncedSearch = useCallback(
+        debounce(async (code: string, name: string) => {
+            setIsLoadingData(true);
+            const res = await fetchAllPlanes();
+            const filtered = res.data.result.filter((plane: Plane) => {
+                return (
+                    plane.planeCode.toLowerCase().includes(code.toLowerCase()) &&
+                    plane.planeName.toLowerCase().includes(name.toLowerCase())
+                );
+            });
+            setPlanesData(filtered);
+            setIsLoadingData(false);
+        }, 500),
+        []
+    );
 
     const columns: ProColumns<Plane>[] = [
         {
@@ -76,35 +96,44 @@ const Planes = () => {
         {
             title: "Airline",
             render: (_, record) => <div>{record.airline.airlineName}</div>,
+            filters: filterAirlines,
+            filterMode: 'tree',
+            filterSearch: true,
+            onFilter: (value, record) => record.airline.id === value
         },
-        ...(canUpdate || canDelete)
-            ?
-            [{
-                title: "Action",
-                render: (_: React.ReactNode, value: Plane) => (
-                    <div className="flex gap-[10px]">
-                        <div
-                            onClick={() => {
-                                setUpdatePlane(value);
-                                setIsUpdateOpen(true);
-                            }}
-                            className="text-yellow-400"
-                        >
-                            {icons.edit}
+        ...(canUpdate || canDelete
+            ? [
+                {
+                    title: "Action",
+                    render: (_: React.ReactNode, value: Plane) => (
+                        <div className="flex gap-[10px]">
+                            {canUpdate && (
+                                <div
+                                    onClick={() => {
+                                        setUpdatePlane(value);
+                                        setIsUpdateOpen(true);
+                                    }}
+                                    className="text-yellow-400"
+                                >
+                                    {icons.edit}
+                                </div>
+                            )}
+                            {canDelete && (
+                                <Popconfirm
+                                    title="Delete the plane"
+                                    description="Are you sure?"
+                                    onConfirm={() => handleDelete(value.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <div className="text-red-400">{icons.delete}</div>
+                                </Popconfirm>
+                            )}
                         </div>
-                        <Popconfirm
-                            title="Delete the plane"
-                            description="Are you sure?"
-                            onConfirm={() => handleDelete(value.id)}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                            <div className="text-red-400">{icons.delete}</div>
-                        </Popconfirm>
-                    </div>
-                ),
-            }]
-            : []
+                    ),
+                },
+            ]
+            : []),
     ];
 
     useEffect(() => {
@@ -115,19 +144,47 @@ const Planes = () => {
         <>
             {contextHolder}
             <div className="flex gap-[14px] w-full h-full">
-                <div className="flex  drop-shadow-xs flex-col flex-1 w-[60%] gap-[10px]">
-                    <div className="w-full bg-white p-[20px] rounded-[8px]">
-                        <Form layout="inline" form={searchForm} onFinish={handleSearch}>
-                            <Form.Item label="Code" name="planeCode">
-                                <Input placeholder="Enter plane code" />
-                            </Form.Item>
-                            <Form.Item label="Name" name="planeName">
-                                <Input placeholder="Enter plane name" />
-                            </Form.Item>
-                            <Button icon={icons.search} type="primary" htmlType="submit" style={{ marginLeft: 'auto' }}>
-                                Search
-                            </Button>
-                        </Form>
+                <div className="flex drop-shadow-xs flex-col flex-1 w-[60%] gap-[10px]">
+                    <div className="flex gap-[30px] drop-shadow-xs bg-white p-[20px] rounded-[8px]">
+                        <div className="flex gap-[10px] items-center">
+                            <p>Code:</p>
+                            <Input
+                                addonBefore={icons.search}
+                                value={planeCode}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setPlaneCode(val);
+                                    debouncedSearch(val, planeName);
+                                }}
+                                placeholder="Enter plane code"
+                                style={{ width: 200 }}
+                            />
+                        </div>
+                        <div className="flex gap-[10px] items-center">
+                            <p>Name:</p>
+                            <Input
+                                addonBefore={icons.search}
+                                value={planeName}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setPlaneName(val);
+                                    debouncedSearch(planeCode, val);
+                                }}
+                                placeholder="Enter plane name"
+                                style={{ width: 200 }}
+                            />
+                        </div>
+                        <Button
+                            style={{ marginLeft: "auto" }}
+                            type="primary"
+                            onClick={() => {
+                                setPlaneCode("");
+                                setPlaneName("");
+                                refetchData();
+                            }}
+                        >
+                            {icons.reset} Reset
+                        </Button>
                     </div>
                     <ProTable<Plane>
                         loading={isLoadingData}
@@ -142,12 +199,15 @@ const Planes = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="Plane Table"
-                        scroll={{ x: 'max-content' }}
+                        scroll={{ x: "max-content" }}
                     />
                 </div>
-                {canCreate && <NewPlane
-                    airlineSelectOptions={airlineSelectOptions}
-                    refetchData={refetchData} />}
+                {canCreate && (
+                    <NewPlane
+                        airlineSelectOptions={airlineSelectOptions}
+                        refetchData={refetchData}
+                    />
+                )}
             </div>
             <UpdatePlane
                 airlineSelectOptions={airlineSelectOptions}

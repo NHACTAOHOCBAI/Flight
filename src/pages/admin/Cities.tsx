@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
-import { useEffect, useState } from "react";
-import { Button, Form, Input, message, Popconfirm } from "antd";
+import { useEffect, useState, useCallback } from "react";
+import { Button, Input, message, Popconfirm } from "antd";
 import icons from "../../assets/icons";
 import { useDeleteCity } from "../../hooks/useCities";
 import { fetchAllCities } from "../../services/city";
 import NewCity from "../../components/city/NewCity";
 import UpdateCity from "../../components/city/UpdateCity";
 import { hasPermission } from "../../utils/checkPermission";
+import debounce from "lodash.debounce";
 
 const Cities = () => {
     const canCreate = hasPermission("Cities", "POST");
@@ -16,18 +18,13 @@ const Cities = () => {
 
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-    const [updateCity, setUpdateCity] = useState<City>({ id: 0, cityCode: '', cityName: '' });
-    const [searchForm] = Form.useForm();
-    const { mutate } = useDeleteCity();
+    const [updateCity, setUpdateCity] = useState<City>({ id: 0, cityCode: "", cityName: "" });
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [citiesData, setCitiesData] = useState<City[]>([]);
+    const [cityCode, setCityCode] = useState("");
+    const [cityName, setCityName] = useState("");
 
-    const refetchData = async () => {
-        setIsLoadingData(true);
-        const res = await fetchAllCities();
-        setCitiesData(res.data.result);
-        setIsLoadingData(false);
-    };
+    const { mutate } = useDeleteCity();
 
     const handleDelete = (id: number) => {
         mutate(id, {
@@ -41,9 +38,28 @@ const Cities = () => {
         });
     };
 
-    const handleSearch = (value: City) => {
-        console.log(value); // optional: filter logic
+    const refetchData = async () => {
+        setIsLoadingData(true);
+        const res = await fetchAllCities();
+        setCitiesData(res.data.result);
+        setIsLoadingData(false);
     };
+
+    const debouncedSearch = useCallback(
+        debounce(async (code: string, name: string) => {
+            setIsLoadingData(true);
+            const res = await fetchAllCities();
+            const filtered = res.data.result.filter((city: City) => {
+                return (
+                    city.cityCode.toLowerCase().includes(code.toLowerCase()) &&
+                    city.cityName.toLowerCase().includes(name.toLowerCase())
+                );
+            });
+            setCitiesData(filtered);
+            setIsLoadingData(false);
+        }, 500),
+        []
+    );
 
     const columns: ProColumns<City>[] = [
         {
@@ -59,35 +75,38 @@ const Cities = () => {
             dataIndex: "cityName",
         },
         ...(canUpdate || canDelete
-            ? [{
-                title: "Action",
-                render: (_: React.ReactNode, record: City) => (
-                    <div className="flex gap-[10px]">
-                        {canUpdate && (
-                            <div
-                                onClick={() => {
-                                    setUpdateCity(record);
-                                    setIsUpdateOpen(true);
-                                }}
-                                className="text-yellow-400"
-                            >
-                                {icons.edit}
-                            </div>
-                        )}
-                        {canDelete && (
-                            <Popconfirm
-                                title="Delete the city"
-                                description="Are you sure to delete this city?"
-                                onConfirm={() => handleDelete(record.id)}
-                                okText="Yes"
-                                cancelText="No"
-                            >
-                                <div className="text-red-400">{icons.delete}</div>
-                            </Popconfirm>
-                        )}
-                    </div>
-                ),
-            }] : [])
+            ? [
+                {
+                    title: "Action",
+                    render: (_: React.ReactNode, record: City) => (
+                        <div className="flex gap-[10px]">
+                            {canUpdate && (
+                                <div
+                                    onClick={() => {
+                                        setUpdateCity(record);
+                                        setIsUpdateOpen(true);
+                                    }}
+                                    className="text-yellow-400"
+                                >
+                                    {icons.edit}
+                                </div>
+                            )}
+                            {canDelete && (
+                                <Popconfirm
+                                    title="Delete the city"
+                                    description="Are you sure to delete this city?"
+                                    onConfirm={() => handleDelete(record.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <div className="text-red-400">{icons.delete}</div>
+                                </Popconfirm>
+                            )}
+                        </div>
+                    ),
+                },
+            ]
+            : []),
     ];
 
     useEffect(() => {
@@ -99,18 +118,46 @@ const Cities = () => {
             {contextHolder}
             <div className="flex gap-[14px] w-full h-full">
                 <div className="flex drop-shadow-xs flex-col flex-1 w-[60%] gap-[10px]">
-                    <div className="w-full bg-white p-[20px] rounded-[8px]">
-                        <Form layout="inline" form={searchForm} onFinish={handleSearch}>
-                            <Form.Item label="Code" name="cityCode">
-                                <Input placeholder="Enter city code" />
-                            </Form.Item>
-                            <Form.Item label="City" name="cityName">
-                                <Input placeholder="Enter city name" />
-                            </Form.Item>
-                            <Button icon={icons.search} type="primary" htmlType="submit" style={{ marginLeft: 'auto' }}>
-                                Search
-                            </Button>
-                        </Form>
+                    <div className="flex gap-[30px] drop-shadow-xs bg-white p-[20px] rounded-[8px]">
+                        <div className="flex gap-[10px] items-center">
+                            <p>Code:</p>
+                            <Input
+                                addonBefore={icons.search}
+                                value={cityCode}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setCityCode(val);
+                                    debouncedSearch(val, cityName);
+                                }}
+                                placeholder="Enter city code"
+                                style={{ width: 200 }}
+                            />
+                        </div>
+                        <div className="flex gap-[10px] items-center">
+                            <p>Name:</p>
+                            <Input
+                                addonBefore={icons.search}
+                                value={cityName}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setCityName(val);
+                                    debouncedSearch(cityCode, val);
+                                }}
+                                placeholder="Enter city name"
+                                style={{ width: 200 }}
+                            />
+                        </div>
+                        <Button
+                            style={{ marginLeft: "auto" }}
+                            type="primary"
+                            onClick={() => {
+                                setCityCode("");
+                                setCityName("");
+                                refetchData();
+                            }}
+                        >
+                            {icons.reset} Reset
+                        </Button>
                     </div>
                     <ProTable<City>
                         loading={isLoadingData}
@@ -125,7 +172,7 @@ const Cities = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="City Table"
-                        scroll={{ x: 'max-content' }}
+                        scroll={{ x: "max-content" }}
                     />
                 </div>
                 {canCreate && <NewCity refetchData={refetchData} />}

@@ -4,7 +4,7 @@ import { useCreatePlane } from "../../hooks/usePlanes";
 interface Props {
     refetchData: () => Promise<void>;
     airlineSelectOptions: {
-        value: string;
+        value: number;
         label: string;
     }[]
 }
