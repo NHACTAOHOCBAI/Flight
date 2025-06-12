@@ -1,7 +1,9 @@
+import React from "react";
 import { Button, Form, Input, Checkbox, message, Divider, Tag } from "antd";
-import { useCreateRole } from "../../hooks/useRoles";
 import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
+import { useCreateRole } from "../../hooks/useRoles";
+
 interface Page {
     id: number;
     name: string;
@@ -11,11 +13,16 @@ interface Page {
     color?: string;
     icon?: React.ReactNode;
 }
+
+const VIEW_ACCOUNT_ID = 20;
+const VIEW_ROLE_ID = 80;
+
 const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
+    const [form] = Form.useForm();
     const { mutate, isPending } = useCreateRole();
     const [messageApi, contextHolder] = message.useMessage();
 
-    const handleNew = (value: { roleName: string; roleDescription: string, pages: number[] }) => {
+    const handleNew = (value: { roleName: string; roleDescription: string; pages: number[] }) => {
         const allPages = Object.values(hardcodedPagesByModule).flat();
         const selectedEndpoints = allPages
             .filter((page) => value.pages.includes(page.id))
@@ -23,11 +30,13 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
                 method: page.method,
                 apiPath: page.apiPath,
             }));
+
         const input = {
             roleName: value.roleName,
             roleDescription: value.roleDescription || "",
             pageInfos: selectedEndpoints,
-        }
+        };
+
         mutate(input, {
             onSuccess: async () => {
                 await refetchData();
@@ -38,16 +47,29 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
             },
         });
     };
+
     return (
         <>
             {contextHolder}
             <div className="bg-white drop-shadow-xs p-[24px] w-[50%] h-full rounded-[8px] overflow-y-auto">
                 <div className="font-medium text-[16px] mb-[10px]">Create Role</div>
-                <Form layout="vertical" onFinish={handleNew}>
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={handleNew}
+                    onValuesChange={(changedValues, allValues) => {
+                        // Nếu chọn "View Account" nhưng chưa có "View Role" thì thêm "View Role"
+                        if (changedValues.pages && changedValues.pages.includes(VIEW_ACCOUNT_ID)) {
+                            const currentPages = new Set(allValues.pages);
+                            currentPages.add(VIEW_ROLE_ID);
+                            form.setFieldsValue({ pages: Array.from(currentPages) });
+                        }
+                    }}
+                >
                     <Form.Item label="Role Name" name="roleName" rules={[{ required: true }]}>
                         <Input disabled={isPending} />
                     </Form.Item>
-                    <Form.Item label="Description" name="roleDescription" >
+                    <Form.Item label="Description" name="roleDescription">
                         <TextArea rows={4} maxLength={100} />
                     </Form.Item>
                     <Form.Item label="Permission" name="pages" rules={[{ required: true }]}>
@@ -58,10 +80,12 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
                                         <Divider orientation="left" plain>
                                             {module}
                                         </Divider>
-                                        <div className="flex gap-[5px]">
+                                        <div className="flex gap-[5px] flex-wrap">
                                             {pages.map((page) => (
                                                 <Checkbox key={page.id} value={page.id}>
-                                                    <Tag icon={page.icon} color={page.color}>{page.name}</Tag>
+                                                    <Tag icon={page.icon} color={page.color}>
+                                                        {page.name}
+                                                    </Tag>
                                                 </Checkbox>
                                             ))}
                                         </div>
@@ -80,6 +104,9 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
         </>
     );
 };
+
+// hardcodedPagesByModule giữ nguyên
+
 const hardcodedPagesByModule: Record<string, Page[]> = {
     "Account": [
         { id: 20, name: "View Account", apiPath: "/accounts/**", method: "GET", module: "Account", icon: <EyeOutlined />, color: "blue" },

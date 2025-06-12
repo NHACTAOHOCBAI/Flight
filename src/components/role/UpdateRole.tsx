@@ -14,6 +14,9 @@ interface Page {
     color?: string;
     icon?: React.ReactNode;
 }
+
+const VIEW_ACCOUNT_ID = 20;
+const VIEW_ROLE_ID = 80;
 const UpdateRole = ({ updatedRole, isUpdateOpen, setIsUpdateOpen, refetchData }: any) => {
     console.log("UpdateRole", updatedRole);
     const [form] = Form.useForm();
@@ -76,7 +79,15 @@ const UpdateRole = ({ updatedRole, isUpdateOpen, setIsUpdateOpen, refetchData }:
                 onOk={() => form.submit()}
                 width={700} // hoặc '80%'
             >
-                <Form layout="vertical" form={form} onFinish={handleUpdate} style={{ width: '100%' }}>
+                <Form layout="vertical" form={form} onFinish={handleUpdate} style={{ width: '100%' }}
+                    onValuesChange={(changedValues, allValues) => {
+                        // Nếu chọn "View Account" nhưng chưa có "View Role" thì thêm "View Role"
+                        if (changedValues.pages && changedValues.pages.includes(VIEW_ACCOUNT_ID)) {
+                            const currentPages = new Set(allValues.pages);
+                            currentPages.add(VIEW_ROLE_ID);
+                            form.setFieldsValue({ pages: Array.from(currentPages) });
+                        }
+                    }}>
                     <Form.Item label="Id" name="id">
                         <Input disabled />
                     </Form.Item>
@@ -95,7 +106,7 @@ const UpdateRole = ({ updatedRole, isUpdateOpen, setIsUpdateOpen, refetchData }:
                                         <Divider orientation="left" plain>
                                             {module}
                                         </Divider>
-                                        <div className="flex gap-[5px]">
+                                        <div className="flex gap-[5px] flex-wrap">
                                             {pages.map((page) => (
                                                 <Checkbox key={page.id} value={page.id}>
                                                     <Tag icon={page.icon} color={page.color}>{page.name}</Tag>

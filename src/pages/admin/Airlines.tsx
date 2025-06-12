@@ -1,28 +1,29 @@
 import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
-import { useEffect, useState } from "react";
-import { Button, Form, Input, message, Popconfirm } from "antd";
+import { useCallback, useEffect, useState } from "react";
+import { Button, Input, message, Popconfirm } from "antd";
 import icons from "../../assets/icons";
 import { useDeleteAirline } from "../../hooks/useAirlines";
 import { fetchAllAirlines } from "../../services/airline";
 import NewAirline from "../../components/airline/NewAirline";
 import UpdateAirline from "../../components/airline/UpdateAirline";
 import { hasPermission } from "../../utils/checkPermission";
-
+import debounce from "lodash.debounce";
 
 const Airlines = () => {
     const canCreate = hasPermission("Airlines", "POST");
     const canUpdate = hasPermission("Airlines", "PUT");
     const canDelete = hasPermission("Airlines", "DELETE");
+    const [airlineCode, setAirlineCode] = useState("");
+    const [airlineName, setAirlineName] = useState("");
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [updateAirline, setUpdateAirline] = useState<Airline>({
         id: 0,
-        airlineCode: '',
-        airlineName: '',
-        logo: ''
+        airlineCode: "",
+        airlineName: "",
+        logo: "",
     });
-    const [searchForm] = Form.useForm();
     const { mutate } = useDeleteAirline();
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [airlinesData, setAirlinesData] = useState<Airline[]>([]);
@@ -35,7 +36,7 @@ const Airlines = () => {
             },
             onError: (error) => {
                 messageApi.error(error.message);
-            }
+            },
         });
     };
 
@@ -46,14 +47,10 @@ const Airlines = () => {
         setIsLoadingData(false);
     };
 
-    const handleSearch = (value: Airline) => {
-        console.log(value); // Filter logic optional
-    };
-
     const columns: ProColumns<Airline>[] = [
         {
-            title: "No.",
-            render: (_text, _record, index) => <div className="text-blue-400">{index + 1}</div>,
+            title: "ID",
+            dataIndex: "id",
         },
         {
             title: "Code",
@@ -66,41 +63,68 @@ const Airlines = () => {
         {
             title: "Logo",
             dataIndex: "logo",
-            render: (_, record) => <img style={{
-                objectFit: "cover",
-                width: 50, height: 30
-            }} src={record.logo} alt="logo" />,
+            render: (_, record) => {
+                if (record.logo)
+                    return (
+                        <img
+                            style={{
+                                objectFit: "cover",
+                                width: 50,
+                                height: 30,
+                            }}
+                            src={record.logo}
+                            alt="logo"
+                        />
+                    )
+                return <div className="text-red-300">Not updated yet...</div>
+            },
         },
         ...(canUpdate || canDelete)
-            ?
-            [{
-                title: "Action",
-                render: (_: React.ReactNode, value: Airline) => (
-                    <div className="flex gap-[10px]">
-                        <div
-                            onClick={() => {
-                                setUpdateAirline(value);
-                                setIsUpdateOpen(true);
-                            }}
-                            className="text-yellow-400"
-                        >
-                            {icons.edit}
+            ? [
+                {
+                    title: "Action",
+                    render: (_: React.ReactNode, value: Airline) => (
+                        <div className="flex gap-[10px]">
+                            <div
+                                onClick={() => {
+                                    setUpdateAirline(value);
+                                    setIsUpdateOpen(true);
+                                }}
+                                className="text-yellow-400"
+                            >
+                                {icons.edit}
+                            </div>
+                            <Popconfirm
+                                title="Delete the airline"
+                                description="Are you sure?"
+                                onConfirm={() => handleDelete(value.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <div className="text-red-400">{icons.delete}</div>
+                            </Popconfirm>
                         </div>
-                        <Popconfirm
-                            title="Delete the airline"
-                            description="Are you sure?"
-                            onConfirm={() => handleDelete(value.id)}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                            <div className="text-red-400">{icons.delete}</div>
-                        </Popconfirm>
-                    </div>
-                ),
-            }]
-            : []
-
+                    ),
+                },
+            ]
+            : [],
     ];
+
+    const debouncedSearch = useCallback(
+        debounce(async (code: string, name: string) => {
+            setIsLoadingData(true);
+            const res = await fetchAllAirlines();
+            const filtered = res.data.result.filter((airline: Airline) => {
+                return (
+                    airline.airlineCode.toLowerCase().includes(code.toLowerCase()) &&
+                    airline.airlineName.toLowerCase().includes(name.toLowerCase())
+                );
+            });
+            setAirlinesData(filtered);
+            setIsLoadingData(false);
+        }, 500),
+        []
+    );
 
     useEffect(() => {
         refetchData();
@@ -111,19 +135,48 @@ const Airlines = () => {
             {contextHolder}
             <div className="flex gap-[14px] w-full h-full">
                 <div className="flex drop-shadow-xs flex-col flex-1 w-[60%] gap-[10px]">
-                    <div className="w-full bg-white p-[20px] rounded-[8px]">
-                        <Form layout="inline" form={searchForm} onFinish={handleSearch}>
-                            <Form.Item label="Code" name="airlineCode">
-                                <Input placeholder="Enter airline code" />
-                            </Form.Item>
-                            <Form.Item label="Name" name="airlineName">
-                                <Input placeholder="Enter airline name" />
-                            </Form.Item>
-                            <Button icon={icons.search} type="primary" htmlType="submit" style={{ marginLeft: 'auto' }}>
-                                Search
-                            </Button>
-                        </Form>
+                    <div className="flex gap-[30px] drop-shadow-xs bg-white p-[20px] rounded-[8px]">
+                        <div className="flex gap-[10px] items-center">
+                            <p>Code:</p>
+                            <Input
+                                addonBefore={icons.search}
+                                value={airlineCode}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setAirlineCode(val);
+                                    debouncedSearch(val, airlineName); // Sử dụng airlineName hiện tại
+                                }}
+                                placeholder="Enter Code"
+                                style={{ width: 200 }}
+                            />
+                        </div>
+                        <div className="flex gap-[10px] items-center">
+                            <p>Name:</p>
+                            <Input
+                                addonBefore={icons.search}
+                                value={airlineName}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setAirlineName(val);
+                                    debouncedSearch(airlineCode, val); // Sử dụng airlineCode hiện tại
+                                }}
+                                placeholder="Enter Name"
+                                style={{ width: 200 }}
+                            />
+                        </div>
+                        <Button
+                            style={{ marginLeft: "auto" }}
+                            type="primary"
+                            onClick={() => {
+                                setAirlineCode("");
+                                setAirlineName("");
+                                refetchData();
+                            }}
+                        >
+                            {icons.reset} Reset
+                        </Button>
                     </div>
+
                     <ProTable<Airline>
                         loading={isLoadingData}
                         columns={columns}
@@ -137,7 +190,7 @@ const Airlines = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="Airline Table"
-                        scroll={{ x: 'max-content' }}
+                        scroll={{ x: "max-content" }}
                     />
                 </div>
                 {canCreate && <NewAirline refetchData={refetchData} />}
@@ -154,3 +207,4 @@ const Airlines = () => {
 };
 
 export default Airlines;
+
