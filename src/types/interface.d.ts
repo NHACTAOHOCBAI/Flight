@@ -100,8 +100,8 @@ interface FlightRequest {
 
 interface Ticket {
     id: number;
-    flight: Flight;
-    seat: Seat;
+    flight: Flight | undefined;
+    seat: Seat | undefined;
     passengerName: string;
     passengerEmail: string;
     passengerPhone: string;
@@ -127,17 +127,19 @@ interface TicketRequest {
         passengerEmail: string
     }[]
 }
+interface Page {
+    id: number;
+    name: string;
+    apiPath: string;
+    method: string;
+    module: string;
+}
 
 interface Role {
     id: number,
     roleName: string,
     roleDescription: string,
-    pages: {
-        id: number,
-        pageName: string,
-        module: string,
-        method: string
-    }[]
+    pages: Page[]
 }
 
 interface Account {

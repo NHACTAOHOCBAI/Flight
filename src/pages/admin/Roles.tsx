@@ -8,14 +8,14 @@ import { useDeleteRole } from "../../hooks/useRoles";
 import { fetchAllRoles } from "../../services/role";
 import NewRole from "../../components/role/NewRole";
 import UpdateRole from "../../components/role/UpdateRole";
-import { hasPermission } from "../../utils/checkPermission";
+import { checkPermission } from "../../utils/checkPermission";
 import DetailRole from "../../components/role/DetailRole";
 import { LuEye } from "react-icons/lu";
 
 const Roles = () => {
-    const canCreate = hasPermission("Roles", "POST");
-    const canUpdate = hasPermission("Roles", "PUT");
-    const canDelete = hasPermission("Roles", "DELETE");
+    const canCreate = checkPermission("Create Role");
+    const canUpdate = checkPermission("Update Role");
+    const canDelete = checkPermission("Delete Role");
     const [messageApi, contextHolder] = message.useMessage();
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [detailRole, setDetailRole] = useState<Role>({

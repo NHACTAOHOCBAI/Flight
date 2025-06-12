@@ -7,13 +7,13 @@ import { useDeleteAirline } from "../../hooks/useAirlines";
 import { fetchAllAirlines } from "../../services/airline";
 import NewAirline from "../../components/airline/NewAirline";
 import UpdateAirline from "../../components/airline/UpdateAirline";
-import { hasPermission } from "../../utils/checkPermission";
+import { checkPermission } from "../../utils/checkPermission";
 import debounce from "lodash.debounce";
 
 const Airlines = () => {
-    const canCreate = hasPermission("Airlines", "POST");
-    const canUpdate = hasPermission("Airlines", "PUT");
-    const canDelete = hasPermission("Airlines", "DELETE");
+    const canCreate = checkPermission("Create Airline");
+    const canUpdate = checkPermission("Update Airline");
+    const canDelete = checkPermission("Delete Airline");
     const [airlineCode, setAirlineCode] = useState("");
     const [airlineName, setAirlineName] = useState("");
     const [messageApi, contextHolder] = message.useMessage();

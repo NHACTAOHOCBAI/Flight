@@ -4,7 +4,7 @@ import icons from "../../assets/icons";
 
 
 import { useEffect, useState } from "react";
-import { Button, Form, Input, message, Popconfirm } from "antd";
+import { message, Popconfirm } from "antd";
 import { useDeleteSeat } from "../../hooks/useSeats";
 import { fetchAllSeats } from "../../services/seat";
 import NewSeat from "../../components/seat/NewSeat";
@@ -22,7 +22,7 @@ const Seats = () => {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [updateSeat, setUpdateSeat] = useState<Seat>({ id: 0, seatCode: '', seatName: '', price: 0, description: '' });
     const [detailSeat, setDetailSeat] = useState<Seat>({ id: 0, seatCode: '', seatName: '', price: 0, description: '' });
-    const [searchForm] = Form.useForm();
+
     const { mutate } = useDeleteSeat();
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [seatsData, setSeatsData] = useState<Seat[]>([]);
@@ -46,9 +46,6 @@ const Seats = () => {
         setIsLoadingData(false);
     }
 
-    const handleSearch = (value: Partial<Seat>) => {
-        console.log(value);
-    }
 
     const columns: ProColumns<Seat>[] = [
         {
@@ -68,6 +65,7 @@ const Seats = () => {
         {
             title: "Price",
             render: (_text, record) => <div>{`${record.price} %`}</div>,
+            sorter: (a, b) => a.price - b.price,
         },
         ...(canUpdate || canDelete)
             ?
@@ -108,19 +106,6 @@ const Seats = () => {
             {contextHolder}
             <div className="flex flex-row gap-[14px] w-full h-full">
                 <div className="flex flex-col  drop-shadow-xs flex-1 w-[60%] gap-[10px]">
-                    <div className="w-full bg-white p-[20px] rounded-[8px]">
-                        <Form layout="inline" form={searchForm} onFinish={handleSearch}>
-                            <Form.Item label="Code" name="seatCode">
-                                <Input placeholder="please input seat code" />
-                            </Form.Item>
-                            <Form.Item label="Name" name="seatName">
-                                <Input placeholder="please input seat name" />
-                            </Form.Item>
-                            <Button style={{ marginLeft: 'auto' }} icon={icons.search} type="primary" htmlType="submit">
-                                Search
-                            </Button>
-                        </Form>
-                    </div>
                     <ProTable<Seat>
                         loading={isLoadingData}
                         columns={columns}

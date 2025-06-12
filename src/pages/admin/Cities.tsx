@@ -8,13 +8,13 @@ import { useDeleteCity } from "../../hooks/useCities";
 import { fetchAllCities } from "../../services/city";
 import NewCity from "../../components/city/NewCity";
 import UpdateCity from "../../components/city/UpdateCity";
-import { hasPermission } from "../../utils/checkPermission";
+import { checkPermission } from "../../utils/checkPermission";
 import debounce from "lodash.debounce";
 
 const Cities = () => {
-    const canCreate = hasPermission("Cities", "POST");
-    const canUpdate = hasPermission("Cities", "PUT");
-    const canDelete = hasPermission("Cities", "DELETE");
+    const canCreate = checkPermission("Create City");
+    const canUpdate = checkPermission("Update City");
+    const canDelete = checkPermission("Delete City");
 
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);

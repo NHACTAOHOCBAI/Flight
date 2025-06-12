@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
-import { useEffect, useState } from "react";
-import { Button, Form, Input, message, Popconfirm } from "antd";
+import { useEffect, useState, useCallback } from "react";
+import { Button, Input, message, Popconfirm } from "antd";
 import icons from "../../assets/icons";
 import { useDeleteTicket } from "../../hooks/useTickets";
 import { fetchAllTickets } from "../../services/ticket";
 import UpdateTicket from "../../components/ticket/UpdateTicket";
 import useSelectOptions from "../../utils/selectOptions";
+import debounce from "lodash.debounce";
 
 const Tickets = () => {
     const { flightSelectOptions, seatSelectOptions } = useSelectOptions();
@@ -17,12 +19,16 @@ const Tickets = () => {
         passengerName: "",
         passengerEmail: "",
         passengerPhone: "",
-        passengerIDCard: ""
+        passengerIDCard: "",
+        flight: undefined,
+        seat: undefined,
     });
-    const [searchForm] = Form.useForm();
-    const { mutate } = useDeleteTicket();
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [ticketsData, setTicketsData] = useState<Ticket[]>([]);
+    const [flightCode, setFlightCode] = useState("");
+    const [passengerEmail, setPassengerEmail] = useState("");
+
+    const { mutate } = useDeleteTicket();
 
     const handleDelete = (id: number) => {
         mutate(id, {
@@ -32,20 +38,35 @@ const Tickets = () => {
             },
             onError: (error) => {
                 messageApi.error(error.message);
-            }
+            },
         });
     };
 
     const refetchData = async () => {
         setIsLoadingData(true);
         const res = await fetchAllTickets();
-        setTicketsData(res?.result);
+        setTicketsData(res?.result || []);
         setIsLoadingData(false);
     };
 
-    const handleSearch = (value: Partial<Ticket>) => {
-        console.log(value); // Optional search handling
-    };
+    const debouncedSearch = useCallback(
+        debounce(async (flightCode: string, email: string) => {
+            setIsLoadingData(true);
+            const res = await fetchAllTickets();
+            const filtered = (res?.result || []).filter((ticket: Ticket) => {
+                const matchesFlightCode = ticket.flight?.flightCode
+                    ?.toLowerCase()
+                    .includes(flightCode.toLowerCase()) ?? true;
+                const matchesEmail = ticket.passengerEmail
+                    ?.toLowerCase()
+                    .includes(email.toLowerCase()) ?? true;
+                return matchesFlightCode && matchesEmail;
+            });
+            setTicketsData(filtered);
+            setIsLoadingData(false);
+        }, 500),
+        []
+    );
 
     const columns: ProColumns<Ticket>[] = [
         {
@@ -54,11 +75,11 @@ const Tickets = () => {
         },
         {
             title: "Flight",
-            render: (_, record) => record.flight?.flightCode,
+            render: (_, record) => record.flight?.flightCode || "-",
         },
         {
             title: "Seat",
-            render: (_, record) => record.seat?.seatCode,
+            render: (_, record) => record.seat?.seatCode || "-",
         },
         {
             title: "Name",
@@ -100,7 +121,7 @@ const Tickets = () => {
                     </Popconfirm>
                 </div>
             ),
-        }
+        },
     ];
 
     useEffect(() => {
@@ -112,18 +133,46 @@ const Tickets = () => {
             {contextHolder}
             <div className="flex gap-[14px] w-full h-full">
                 <div className="flex drop-shadow-xs flex-col flex-1 w-full gap-[10px]">
-                    <div className="w-full bg-white p-[20px] rounded-[8px]">
-                        <Form layout="inline" form={searchForm} onFinish={handleSearch}>
-                            <Form.Item label="Name" name="passengerName">
-                                <Input placeholder="Enter passenger name" />
-                            </Form.Item>
-                            <Form.Item label="Phone" name="passengerPhone">
-                                <Input placeholder="Enter phone number" />
-                            </Form.Item>
-                            <Button icon={icons.search} type="primary" htmlType="submit" style={{ marginLeft: 'auto' }}>
-                                Search
-                            </Button>
-                        </Form>
+                    <div className="flex gap-[30px] drop-shadow-xs bg-white p-[20px] rounded-[8px]">
+                        <div className="flex gap-[10px] items-center">
+                            <p>Flight Code:</p>
+                            <Input
+                                addonBefore={icons.search}
+                                value={flightCode}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setFlightCode(val);
+                                    debouncedSearch(val, passengerEmail);
+                                }}
+                                placeholder="Enter flight code"
+                                style={{ width: 200 }}
+                            />
+                        </div>
+                        <div className="flex gap-[10px] items-center">
+                            <p>Email:</p>
+                            <Input
+                                addonBefore={icons.search}
+                                value={passengerEmail}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setPassengerEmail(val);
+                                    debouncedSearch(flightCode, val);
+                                }}
+                                placeholder="Enter passenger email"
+                                style={{ width: 200 }}
+                            />
+                        </div>
+                        <Button
+                            style={{ marginLeft: "auto" }}
+                            type="primary"
+                            onClick={() => {
+                                setFlightCode("");
+                                setPassengerEmail("");
+                                refetchData();
+                            }}
+                        >
+                            {icons.reset} Reset
+                        </Button>
                     </div>
                     <ProTable<Ticket>
                         loading={isLoadingData}
@@ -138,7 +187,7 @@ const Tickets = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="Ticket Table"
-                        scroll={{ x: 'max-content' }}
+                        scroll={{ x: "max-content" }}
                     />
                 </div>
             </div>

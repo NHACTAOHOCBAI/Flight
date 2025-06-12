@@ -9,13 +9,13 @@ import { fetchAllAirports } from "../../services/airport";
 import NewAirport from "../../components/airport/NewAirport";
 import UpdateAirport from "../../components/airport/UpdateAirport";
 import useSelectOptions from "../../utils/selectOptions";
-import { hasPermission } from "../../utils/checkPermission";
+import { checkPermission } from "../../utils/checkPermission";
 import debounce from "lodash.debounce";
 
 const Airports = () => {
-    const canCreate = hasPermission("Airports", "POST");
-    const canUpdate = hasPermission("Airports", "PUT");
-    const canDelete = hasPermission("Airports", "DELETE");
+    const canCreate = checkPermission("Create Airport");
+    const canUpdate = checkPermission("Update Airport");
+    const canDelete = checkPermission("Delete Airport");
 
     const { citySelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();

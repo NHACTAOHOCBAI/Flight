@@ -17,13 +17,6 @@ interface Page {
     module: string;
 }
 
-interface Role {
-    id: number;
-    roleName: string;
-    roleDescription: string;
-    pages: Page[];
-}
-
 interface Props {
     isDetailOpen: boolean;
     setIsDetailOpen: (value: boolean) => void;

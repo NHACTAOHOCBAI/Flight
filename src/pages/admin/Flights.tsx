@@ -14,11 +14,11 @@ import { useNavigate } from "react-router";
 import Filter from "../../components/flight/Filter";
 import { getAllParamaters } from "../../services/parameter";
 import dayjs from "dayjs";
-import { hasPermission } from "../../utils/checkPermission";
+import { checkPermission } from "../../utils/checkPermission";
 const Flights = () => {
-    const canCreate = hasPermission("Flights", "POST");
-    const canUpdate = hasPermission("Flights", "PUT");
-    const canDelete = hasPermission("Flights", "DELETE");
+    const canCreate = checkPermission("Create Flight");
+    const canUpdate = checkPermission("Update Flight");
+    const canDelete = checkPermission("Delete Flight");
     const [params, setParams] = useState<Parameter>({
         maxInterQuantity: 0,
         minFlightTime: 0,
