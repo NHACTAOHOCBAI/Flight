@@ -6,12 +6,11 @@ import {
 import { Avatar, Button, Layout, Menu, message, Popover, Spin, theme } from 'antd';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import icons from '../assets/icons';
-import { useSelector } from 'react-redux';
-import type { RootState } from '../redux/app/store';
 import { getCurrentUser, logoutAPI } from '../services/auth';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { login, logout } from '../redux/features/user/userSlide';
-import { hasPermission } from '../utils/checkPermission';
+import { checkPermission } from '../utils/checkPermission';
+import { useAppSelector } from '../hooks/useAppSelector';
 
 const { Header, Sider, Content } = Layout;
 const AdminLayout = () => {
@@ -19,6 +18,14 @@ const AdminLayout = () => {
     const dispath = useAppDispatch()
     const [messageApi, contextHolder] = message.useMessage();
     const [isPendingLogout, setIsPendingLogout] = useState(false)
+    const myAccount = useAppSelector((state) => state.user)
+    const { pathname } = useLocation();
+    const endpoints = pathname.split('/').pop() as string;
+    const [collapsed, setCollapsed] = useState(false);
+    const {
+        token: { colorBgContainer },
+    } = theme.useToken();
+
     const handleLogout = async () => {
         setIsPendingLogout(true)
         try {
@@ -33,13 +40,7 @@ const AdminLayout = () => {
         }
         setIsPendingLogout(false)
     }
-    const myAccount = useSelector((state: RootState) => state.user)
-    const { pathname } = useLocation();
-    const endpoints = pathname.split('/').pop() as string;
-    const [collapsed, setCollapsed] = useState(false);
-    const {
-        token: { colorBgContainer },
-    } = theme.useToken();
+
     useEffect(() => {
         const fetchUserInf = async () => {
             const response = await getCurrentUser();
@@ -63,14 +64,10 @@ const AdminLayout = () => {
         Tickets: { label: <Link to="/admin/tickets">Ticket</Link>, icon: icons.ticket },
         Profile: { label: <Link to="/admin/profile">Profile</Link>, icon: icons.profile },
     };
-    const dynamicItems = Object.entries(labelMap)
-        .filter(([key]) => hasPermission(key, 'GET'))
-        .map(([key, value]) => ({
-            key: key.toLowerCase(),
-            icon: value.icon,
-            label: value.label,
-        }));
-    console.log(dynamicItems)
+    const canViewAccount = checkPermission("View Account");
+    const canViewRole = checkPermission("View Role");
+    const canViewTicket = checkPermission("View Ticket");
+
     const menuItems = [
         {
             key: 'dashboard',
@@ -107,8 +104,24 @@ const AdminLayout = () => {
             icon: labelMap['Seats'].icon,
             label: labelMap['Seats'].label,
         },
-
-        ...dynamicItems,
+        ...(canViewAccount
+            ? [{
+                key: 'accounts',
+                icon: labelMap['Accounts'].icon,
+                label: labelMap['Accounts'].label,
+            }] : []),
+        ...(canViewRole
+            ? [{
+                key: 'roles',
+                icon: labelMap['Roles'].icon,
+                label: labelMap['Roles'].label,
+            }] : []),
+        ...(canViewTicket
+            ? [{
+                key: 'tickets',
+                icon: labelMap['Tickets'].icon,
+                label: labelMap['Tickets'].label,
+            }] : []),
         {
             key: 'setting',
             icon: labelMap['Setting'].icon,
@@ -120,7 +133,6 @@ const AdminLayout = () => {
             label: labelMap['Profile'].label,
         },
     ];
-    console.log("menu", menuItems)
     const content = () => {
         return (
             <div className='flex  flex-col gap-[10px]'>

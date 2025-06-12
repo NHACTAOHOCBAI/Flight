@@ -11,9 +11,11 @@ import { useGetFlightCount } from "../../hooks/useFlights";
 import { useGetRevenue } from "../../hooks/useTickets";
 import formatPrice from "../../utils/formatVNprice";
 import { getPoplarAirlines } from "../../services/airline";
-
+import { checkPermission } from "../../utils/checkPermission";
 
 const Dashboard = () => {
+    const canUpdateAccount = checkPermission("Create Role")
+    console.log(canUpdateAccount)
     const { data: airlineData } = useGetAllAirlines();
     const { data: airportData } = useGetAllAirports();
     return (

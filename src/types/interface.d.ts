@@ -131,6 +131,7 @@ interface TicketRequest {
 interface Role {
     id: number,
     roleName: string,
+    roleDescription: string,
     pages: {
         id: number,
         pageName: string,

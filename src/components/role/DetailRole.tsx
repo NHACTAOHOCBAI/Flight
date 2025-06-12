@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// components/role/UpdateRole.tsx
-import { Checkbox, Divider, Form, Input, Modal, Tag, message } from "antd";
-import { useEffect } from "react";
-import { useUpdateRole } from "../../hooks/useRoles";
-import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import TextArea from "antd/es/input/TextArea";
+import { Drawer, Descriptions, Divider, Tag } from "antd";
+import {
+    EyeOutlined,
+    PlusOutlined,
+    EditOutlined,
+    DeleteOutlined,
+} from "@ant-design/icons";
 interface Page {
     id: number;
     name: string;
@@ -14,102 +14,62 @@ interface Page {
     color?: string;
     icon?: React.ReactNode;
 }
-const UpdateRole = ({ updatedRole, isUpdateOpen, setIsUpdateOpen, refetchData }: any) => {
-    console.log("UpdateRole", updatedRole);
-    const [form] = Form.useForm();
-    const { mutate, isPending } = useUpdateRole();
+interface Props {
+    isDetailOpen: boolean;
+    setIsDetailOpen: (value: boolean) => void;
+    detailRole: Role;
+}
 
-    const [messageApi, contextHolder] = message.useMessage();
 
-    useEffect(() => {
-        const allPages = Object.values(hardcodedPagesByModule).flat();
-        const initialPermissions = updatedRole.pages
-            .map((p: { apiPath: string; method: string }) =>
-                allPages.find(page => page.apiPath === p.apiPath && page.method === p.method)
-            )
-            .filter((page: any): page is Page => page !== undefined)
-            .map((page: any) => page.id);
-        form.setFieldsValue({
-            id: updatedRole.id,
-            roleName: updatedRole.roleName,
-            roleDescription: updatedRole.roleDescription || "",
-            pages: initialPermissions,
-        });
-    }, [updatedRole, form]);
-    const handleUpdate = (value: { roleName: string; roleDescription: string, pages: number[] }) => {
-        const allPages = Object.values(hardcodedPagesByModule).flat();
-        const selectedEndpoints = allPages
-            .filter((page) => value.pages.includes(page.id))
-            .map((page) => ({
-                method: page.method,
-                apiPath: page.apiPath,
-            }));
-        const input = {
-            id: updatedRole.id,
-            updateRole: {
-                roleName: value.roleName,
-                roleDescription: value.roleDescription || "",
-                pageInfos: selectedEndpoints,
-            }
-        }
-        mutate(input, {
-            onSuccess: async () => {
-                await refetchData();
-                messageApi.success("Create role successfully");
-            },
-            onError: (error) => {
-                messageApi.error(error.message);
-            },
-            onSettled: () => {
-                setIsUpdateOpen(false);
-            },
-        });
-    };
+const DetailRole = ({ isDetailOpen, setIsDetailOpen, detailRole }: Props) => {
+    console.log(detailRole)
+    // Lấy danh sách ID các page mà role hiện tại đang có
+    const rolePageIds = new Set(detailRole.pages.map((p) => p.id));
+
+    // Lọc theo hardcodedPagesByModule, chỉ giữ những page nào có trong role
+    const filteredModules = Object.entries(hardcodedPagesByModule)
+        .map(([module, pages]) => {
+            const matchedPages = pages.filter((p) => rolePageIds.has(p.id));
+            return matchedPages.length > 0 ? { module, pages: matchedPages } : null;
+        })
+        .filter(Boolean) as { module: string; pages: Page[] }[];
 
     return (
-        <>
-            {contextHolder}
-            <Modal
-                title="Update Role"
-                open={isUpdateOpen}
-                onCancel={() => setIsUpdateOpen(false)}
-                onOk={() => form.submit()}
-                width={700} // hoặc '80%'
-            >
-                <Form layout="vertical" form={form} onFinish={handleUpdate} style={{ width: '100%' }}>
-                    <Form.Item label="Id" name="id">
-                        <Input disabled />
-                    </Form.Item>
-                    <Form.Item label="Role Name" name="roleName" rules={[{ required: true }]}>
-                        <Input disabled={isPending} />
-                    </Form.Item>
-                    <Form.Item label="Description" name="roleDescription" >
-                        <TextArea rows={4} maxLength={100} style={{ width: '100%' }} />
+        <Drawer
+            title="Detail Role"
+            closable
+            onClose={() => setIsDetailOpen(false)}
+            open={isDetailOpen}
+            width={700}
+        >
+            <Descriptions title="Role Info" bordered column={1}>
+                <Descriptions.Item label="ID">{detailRole.id}</Descriptions.Item>
+                <Descriptions.Item label="Role Name">{detailRole.roleName}</Descriptions.Item>
+                <Descriptions.Item label="Description">
+                    {detailRole.roleDescription || "No description"}
+                </Descriptions.Item>
+            </Descriptions>
 
-                    </Form.Item>
-                    <Form.Item label="Permission" name="pages" rules={[{ required: true }]}>
-                        <Checkbox.Group style={{ width: "100%" }}>
-                            <div className="flex flex-col overflow-y-auto pr-2">
-                                {Object.entries(hardcodedPagesByModule).map(([module, pages]) => (
-                                    <div key={module}>
-                                        <Divider orientation="left" plain>
-                                            {module}
-                                        </Divider>
-                                        <div className="flex gap-[5px]">
-                                            {pages.map((page) => (
-                                                <Checkbox key={page.id} value={page.id}>
-                                                    <Tag icon={page.icon} color={page.color}>{page.name}</Tag>
-                                                </Checkbox>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
+            <Divider orientation="left">Permissions</Divider>
+
+            {filteredModules.map(({ module, pages }) => (
+                <div key={module} style={{ marginBottom: 24 }}>
+                    <h3 className="font-medium mb-[10px] text-blue-300">{module}</h3>
+                    <div className="flex flex-col gap-[10px]">
+                        {pages.map((page) => (
+                            <div
+                                key={page.id}
+                            >
+                                <Tag color={page.color} style={{ display: "flex", alignItems: "center", gap: 8, width: 200 }}>
+                                    {page.icon}
+                                    <p>{page.name}</p>
+                                </Tag>
                             </div>
-                        </Checkbox.Group>
-                    </Form.Item>
-                </Form>
-            </Modal>
-        </>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </Drawer>
     );
 };
 const hardcodedPagesByModule: Record<string, Page[]> = {
@@ -172,4 +132,4 @@ const hardcodedPagesByModule: Record<string, Page[]> = {
         { id: 121, name: "Get Monthly Revenue Report", apiPath: "/reports/monthly-revenue/**/**", method: "GET", module: "Report", icon: <EyeOutlined />, color: "lime" },
     ],
 };
-export default UpdateRole;
+export default DetailRole;

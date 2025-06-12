@@ -8,13 +8,29 @@ import { useDeleteRole } from "../../hooks/useRoles";
 import { fetchAllRoles } from "../../services/role";
 import NewRole from "../../components/role/NewRole";
 import UpdateRole from "../../components/role/UpdateRole";
-
-
+import { hasPermission } from "../../utils/checkPermission";
+import DetailRole from "../../components/role/DetailRole";
+import { LuEye } from "react-icons/lu";
 
 const Roles = () => {
+    const canCreate = hasPermission("Roles", "POST");
+    const canUpdate = hasPermission("Roles", "PUT");
+    const canDelete = hasPermission("Roles", "DELETE");
     const [messageApi, contextHolder] = message.useMessage();
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [detailRole, setDetailRole] = useState<Role>({
+        id: 0,
+        roleName: "",
+        pages: [],
+        roleDescription: ""
+    });
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-    const [updateRole, setUpdateRole] = useState<Role>({ id: 0, roleName: "", pages: [] });
+    const [updateRole, setUpdateRole] = useState<Role>({
+        id: 0,
+        roleName: "",
+        pages: [],
+        roleDescription: ""
+    });
     const [searchForm] = Form.useForm();
     const { mutate } = useDeleteRole();
     const [isLoadingData, setIsLoadingData] = useState(false);
@@ -48,20 +64,22 @@ const Roles = () => {
         },
         {
             title: "Role Name",
-            dataIndex: "roleName",
+            dataIndex: "roleName"
         },
-        // {
-        //     title: "Pages",
-        //     render: (_, record) => {
-        //         console.log(record.pages)
-        //         return record.pages.map((value) => value.pageName).join(',')
-        //     }
-        // },
+
         {
             title: "Action",
-            render: (_, value) => (
-                <div className="flex gap-[10px]">
-                    <div
+            render: (_: React.ReactNode, value: Role) => (
+                <div className="flex gap-[10px] items-center">
+                    <div className="text-blue-400"
+                        onClick={() => {
+                            setDetailRole(value);
+                            setIsDetailOpen(true);
+                        }}
+                    >
+                        <LuEye />
+                    </div>
+                    {canUpdate && <div
                         onClick={() => {
                             setUpdateRole(value);
                             setIsUpdateOpen(true);
@@ -69,18 +87,21 @@ const Roles = () => {
                         className="text-yellow-400"
                     >
                         {icons.edit}
-                    </div>
-                    <Popconfirm
-                        title="Delete the role"
-                        onConfirm={() => handleDelete(value.id)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <div className="text-red-400">{icons.delete}</div>
-                    </Popconfirm>
+                    </div>}
+                    {
+                        canDelete &&
+                        <Popconfirm
+                            title="Delete the role"
+                            onConfirm={() => handleDelete(value.id)}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <div className="text-red-400">{icons.delete}</div>
+                        </Popconfirm>
+                    }
                 </div>
             ),
-        },
+        }
     ];
 
     useEffect(() => {
@@ -116,13 +137,18 @@ const Roles = () => {
                         scroll={{ x: 'max-content' }}
                     />
                 </div>
-                <NewRole refetchData={refetchData} />
+                {canCreate && <NewRole refetchData={refetchData} />}
             </div>
             <UpdateRole
                 refetchData={refetchData}
                 updatedRole={updateRole}
                 setIsUpdateOpen={setIsUpdateOpen}
                 isUpdateOpen={isUpdateOpen}
+            />
+            <DetailRole
+                isDetailOpen={isDetailOpen}
+                setIsDetailOpen={setIsDetailOpen}
+                detailRole={detailRole}
             />
         </>
     );
