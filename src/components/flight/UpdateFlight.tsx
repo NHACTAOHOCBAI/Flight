@@ -10,8 +10,8 @@ interface Props {
     isUpdateOpen: boolean;
     setIsUpdateOpen: (value: boolean) => void;
     refetchData: () => Promise<void>;
-    updatedFlight: Flight,
-    setUpdateFlight: (value: Flight) => void,
+    updatedFlight: Flight | undefined,
+    setUpdateFlight: (value: Flight | undefined) => void,
     planeSelectOptions: { value: number, label: React.ReactNode }[],
     airportSelectOptions: { value: number, label: React.ReactNode }[],
     seatSelectOptions: { value: number, label: React.ReactNode }[],
@@ -30,52 +30,7 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
     const handleCancel = () => {
         setIsUpdateOpen(false);
         form.resetFields();
-        setUpdateFlight({
-            id: 0,
-            flightCode: "",
-            plane: {
-                id: 0,
-                planeCode: "",
-                planeName: "",
-            },
-            departureAirport: {
-                id: 0,
-                airportCode: "",
-                airportName: ""
-            },
-            arrivalAirport: {
-                id: 0,
-                airportCode: "",
-                airportName: ""
-            },
-            departureDate: "",
-            arrivalDate: "",
-            departureTime: "",
-            arrivalTime: "",
-            originalPrice: 0,
-            interAirports: [{
-                airport: {
-                    id: 0,
-                    airportCode: "",
-                    airportName: ""
-                },
-                departureDateTime: "",
-                arrivalDateTime: "",
-                note: ""
-            }],
-            seats: [{
-                seat: {
-                    id: 0,
-                    seatCode: "",
-                    seatName: "",
-                    price: 0,
-                    description: ""
-                },
-                quantity: 0,
-                remainingTickets: 0,
-                price: 0
-            }]
-        })
+        setUpdateFlight(undefined)
     }
     const handleUpdate = (values: any) => {
         const departureDate = dayjs(values.departureDate).format('YYYY-MM-DD');
@@ -105,7 +60,7 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
             interAirports: interAirports,
             seats: values.seats
         }
-        mutate({ id: updatedFlight.id, updateFlight }, {
+        mutate({ id: updatedFlight?.id as number, updateFlight }, {
             onSuccess: async () => {
                 await refetchData();
                 messageApi.success("update flight successfully");
@@ -120,9 +75,9 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
     };
     useEffect(() => {
         const format = "YYYY-MM-DD HH:mm";
-        const departureDateStr = updatedFlight.departureDate + " " + updatedFlight.departureTime;
-        const arrivalDateStr = updatedFlight.arrivalDate + " " + updatedFlight.arrivalTime;
-        const interAirports = updatedFlight.interAirports.map((value) => {
+        const departureDateStr = updatedFlight?.departureDate + " " + updatedFlight?.departureTime;
+        const arrivalDateStr = updatedFlight?.arrivalDate + " " + updatedFlight?.arrivalTime;
+        const interAirports = updatedFlight?.interAirports.map((value) => {
             return {
                 airportId: value.airport.id,
                 arrivalDate: dayjs(value.arrivalDateTime, "YYYY-MM-DD"),
@@ -130,23 +85,23 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
                 note: value.note
             }
         })
-        const seats = updatedFlight.seats.map((value) => {
+        const seats = updatedFlight?.seats.map((value) => {
             return {
                 seatId: value.seat.id,
                 quantity: value.quantity
             }
         })
         form.setFieldsValue({
-            id: updatedFlight.id,
-            flightCode: updatedFlight.flightCode,
-            planeId: updatedFlight.plane.id,
-            departureAirportId: updatedFlight.departureAirport.id,
-            arrivalAirportId: updatedFlight.arrivalAirport.id,
+            id: updatedFlight?.id,
+            flightCode: updatedFlight?.flightCode,
+            planeId: updatedFlight?.plane.id,
+            departureAirportId: updatedFlight?.departureAirport.id,
+            arrivalAirportId: updatedFlight?.arrivalAirport.id,
             departureDate: dayjs(departureDateStr, format),
             arrivalDate: dayjs(arrivalDateStr, format),
             interAirports: interAirports,
             seats: seats,
-            originalPrice: updatedFlight.originalPrice
+            originalPrice: updatedFlight?.originalPrice
         });
     }, [updatedFlight, form])
     return (
@@ -468,10 +423,10 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
                                                             { required: true, message: 'Enter quantity' },
                                                             {
                                                                 validator: (_, value) => {
-                                                                    if (index + 1 > updatedFlight.seats.length)
+                                                                    if (index + 1 > (updatedFlight?.seats?.length ?? 0))
                                                                         return Promise.resolve();
-                                                                    const remaining = updatedFlight.seats[index].remainingTickets;
-                                                                    if (value >= remaining) {
+                                                                    const remaining = updatedFlight?.seats?.[index]?.remainingTickets;
+                                                                    if (remaining === undefined || value >= remaining) {
                                                                         return Promise.resolve();
                                                                     }
                                                                     return Promise.reject(

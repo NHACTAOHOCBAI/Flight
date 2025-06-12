@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 interface Props {
     isDetailOpen: boolean
     setIsDetailOpen: (value: boolean) => void
-    detailFlight: Flight
+    detailFlight: Flight | undefined
 }
 interface InterAirportDataType {
     airport: {
@@ -33,55 +33,55 @@ const DetailFlight = ({ isDetailOpen, setIsDetailOpen, detailFlight }: Props) =>
         {
             key: '1',
             label: 'ID',
-            children: detailFlight.id,
+            children: detailFlight?.id,
             span: "filled"
         },
         {
             key: '2',
             label: 'Flight Code',
-            children: detailFlight.flightCode,
+            children: detailFlight?.flightCode,
         },
         {
             key: '3',
             label: 'Plane',
-            children: `${detailFlight.plane.planeName}(${detailFlight.plane.planeCode})`,
+            children: `${detailFlight?.plane.planeName}(${detailFlight?.plane.planeCode})`,
         },
         {
             key: '4',
             label: 'Departure Airport',
-            children: detailFlight.departureAirport.airportName,
+            children: detailFlight?.departureAirport.airportName,
         },
         {
             key: '5',
             label: 'Arrival Airport',
-            children: detailFlight.arrivalAirport.airportName,
+            children: detailFlight?.arrivalAirport.airportName,
         },
         {
             key: '6',
             label: 'Departure Date',
-            children: detailFlight.departureTime + " | " + detailFlight.departureDate,
+            children: detailFlight?.departureTime + " | " + detailFlight?.departureDate,
         },
         {
             key: '7',
             label: 'Arrival Date',
-            children: detailFlight.arrivalTime + " | " + detailFlight.arrivalDate,
+            children: detailFlight?.arrivalTime + " | " + detailFlight?.arrivalDate,
         },
         {
             key: '8',
             label: 'Quantity Tickets',
-            children: detailFlight.seats.reduce((result, value) =>
+            children: detailFlight?.seats.reduce((result, value) =>
                 result + value.quantity, 0),
         },
         {
             key: '9',
             label: 'Available Tickets',
-            children: detailFlight.seats.reduce((result, value) =>
+            children: detailFlight?.seats.reduce((result, value) =>
                 result + value.remainingTickets, 0),
         },
         {
             key: '10',
             label: 'Original Price',
-            children: new Intl.NumberFormat('en-US').format(detailFlight.originalPrice) + " VND"
+            children: new Intl.NumberFormat('en-US').format(detailFlight?.originalPrice ?? 0) + " VND"
         },
     ];
 
@@ -143,10 +143,10 @@ const DetailFlight = ({ isDetailOpen, setIsDetailOpen, detailFlight }: Props) =>
             <Descriptions bordered items={items} column={2} />
             <Table<InterAirportDataType>
                 pagination={false}
-                style={{ marginTop: 20 }} bordered columns={interAirportsColumns} dataSource={detailFlight.interAirports} />
+                style={{ marginTop: 20 }} bordered columns={interAirportsColumns} dataSource={detailFlight?.interAirports} />
             <Table<SeatsDataType>
                 pagination={false}
-                style={{ marginTop: 20 }} bordered columns={seatsColumns} dataSource={detailFlight.seats} />
+                style={{ marginTop: 20 }} bordered columns={seatsColumns} dataSource={detailFlight?.seats} />
         </Drawer>
     );
 
