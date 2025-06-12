@@ -45,7 +45,7 @@ const useSelectOptions = () => {
         label: seat.seatName,
     })) ?? [];
 
-    const roleSelectOptions = roles?.data?.result?.map((role: Role) => ({
+    const roleSelectOptions: { value: number, label: string }[] = roles?.data?.result?.map((role: Role) => ({
         value: role.id,
         label: role.roleName,
     })) ?? [];

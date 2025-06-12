@@ -8,6 +8,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { LiaTicketAltSolid } from "react-icons/lia";
 import { TbReportAnalytics } from "react-icons/tb";
 import { CgProfile } from "react-icons/cg";
+import { RiResetLeftFill } from "react-icons/ri";
 const size = 20;
 
 const icons = {
@@ -30,6 +31,7 @@ const icons = {
     export: <PiExportBold />,
     report: <TbReportAnalytics />,
     google: <IoLogoGoogle size={16} />,
-    profile: <CgProfile size={size} />
+    profile: <CgProfile size={size} />,
+    reset: <RiResetLeftFill size={16} />
 }
 export default icons;

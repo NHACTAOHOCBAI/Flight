@@ -2,7 +2,7 @@
 import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Popconfirm, message } from "antd";
+import { Avatar, Button, Input, Popconfirm, message } from "antd";
 import icons from "../../assets/icons";
 
 import { useDeleteAccount } from "../../hooks/useAccounts";
@@ -10,19 +10,31 @@ import { fetchAllAccounts } from "../../services/account";
 import NewAccount from "../../components/account/NewAccount";
 import UpdateAccount from "../../components/account/UpdateAccount";
 import useSelectOptions from "../../utils/selectOptions";
-import { hasPermission } from "../../utils/checkPermission";
+import { checkPermission } from "../../utils/checkPermission";
+import debounce from "lodash.debounce";
+import { useCallback } from "react";
 
 const Accounts = () => {
-    const canCreate = hasPermission("Accounts", "POST");
-    const canUpdate = hasPermission("Accounts", "PUT");
-    const canDelete = hasPermission("Accounts", "DELETE");
+    const canCreate = checkPermission("Create Account");
+    const canUpdate = checkPermission("Update Account");
+    const canDelete = checkPermission("Delete Account");
+    const [email, setEmail] = useState("");
+    const [fullName, setFullName] = useState("");
     const { roleSelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();
-    const [searchForm] = Form.useForm();
     const [accountsData, setAccountsData] = useState<Account[]>([]);
     const [isNewOpen, setIsNewOpen] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+    const filterRoles: {
+        text: string,
+        value: number
+    }[] = roleSelectOptions.map((value) => {
+        return {
+            text: value.label,
+            value: value.value
+        }
+    })
     const [updateAccount, setUpdateAccount] = useState<Account>({
         id: 0,
         username: "",
@@ -33,7 +45,8 @@ const Accounts = () => {
         role: {
             id: 0,
             roleName: "",
-            pages: []
+            pages: [],
+            roleDescription: ""
         }
     });
 
@@ -58,17 +71,13 @@ const Accounts = () => {
         setIsLoadingData(false);
     };
 
-    const handleSearch = (value: any) => {
-        console.log(value); // optional filter logic
-    };
-
     const columns: ProColumns<Account>[] = [
         {
-            title: "No.",
-            render: (_text, _record, index) => <div className="text-blue-400">{index + 1}</div>,
+            title: "ID",
+            dataIndex: "id",
         },
         {
-            title: "Username",
+            title: "Email",
             dataIndex: "username",
         },
         {
@@ -83,20 +92,45 @@ const Accounts = () => {
             title: "Avatar",
             dataIndex: "logo",
             render: (_, record) => {
+                if (record.avatar) {
+                    return (
+                        <img
+                            style={{
+                                objectFit: "cover",
+                                width: 30,
+                                height: 30,
+                                borderWidth: 1,
+                                borderRadius: 9999
+                            }}
+                            src={record.avatar}
+                            alt="avatar"
+                        />
+                    );
+                }
+
+                const getInitial = (fullName: string) => {
+                    if (!fullName) return "?";
+                    const parts = fullName.trim().split(" ");
+                    return parts[parts.length - 1]?.charAt(0).toUpperCase() || "?";
+                };
+
                 return (
-                    <img style={{
-                        objectFit: "cover",
-                        width: 30, height: 30,
-                        borderWidth: 1,
-                        borderRadius: 9999
-                    }} src={record.avatar} alt="avatar" />
-                )
+                    <Avatar style={{ backgroundColor: "#87d068" }}>
+                        {getInitial(record.fullName)}
+                    </Avatar>
+                );
             }
         },
+
         {
             title: "Role",
             render: (_, record) => <div>{record.role?.roleName}</div>,
+            filters: filterRoles,
+            filterMode: 'tree',
+            filterSearch: true,
+            onFilter: (value, record) => record.role.id === value
         },
+
         ...(canUpdate || canDelete)
             ?
             [{
@@ -131,6 +165,24 @@ const Accounts = () => {
             : []
     ];
 
+    // Tìm kiếm với debounce
+    const debouncedSearch = useCallback(
+        debounce(async (email: string, fullName: string) => {
+            setIsLoadingData(true);
+            const res = await fetchAllAccounts();
+            const filtered = res.data.result.filter((acc: Account) => {
+                return (
+                    acc.username.toLowerCase().includes(email.toLowerCase()) &&
+                    acc.fullName.toLowerCase().includes(fullName.toLowerCase())
+                );
+            });
+            setAccountsData(filtered);
+            setIsLoadingData(false);
+        }, 500),
+        []
+    );
+
+
     useEffect(() => {
         refetchData();
     }, []);
@@ -140,24 +192,40 @@ const Accounts = () => {
             {contextHolder}
             <div className="flex gap-[14px] drop-shadow-xs w-full h-full">
                 <div className="flex  drop-shadow-xs flex-col flex-1 w-[100%] gap-[10px]">
-                    <div className="w-full bg-white p-[20px] rounded-[8px]">
-                        <Form layout="inline" form={searchForm} onFinish={handleSearch}>
-                            <Form.Item label="Username" name="username">
-                                <Input placeholder="Enter username" />
-                            </Form.Item>
-                            <Form.Item label="Full Name" name="fullName">
-                                <Input placeholder="Enter full name" />
-                            </Form.Item>
-                            <Button
-                                icon={icons.search}
-                                type="primary"
-                                htmlType="submit"
-                                style={{ marginLeft: "auto" }}
-                            >
-                                Search
-                            </Button>
-                        </Form>
+                    <div className="flex gap-[30px] drop-shadow-xs  bg-white p-[20px] rounded-[8px]">
+                        <div className="flex gap-[10px] items-center">
+                            <p>Email:</p>
+                            <Input
+                                addonBefore={icons.search}
+                                value={email}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setEmail(val);
+                                    debouncedSearch(val, fullName);
+                                }}
+                                placeholder="Enter Email"
+                                style={{ width: 300 }}
+                            />
+                        </div>
+                        <div className="flex gap-[10px] items-center">
+                            <p>Full Name:</p>
+                            <Input
+                                addonBefore={icons.search}
+                                value={fullName}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setFullName(val);
+                                    debouncedSearch(email, val);
+                                }}
+                                placeholder="Enter Fullname"
+                                style={{ width: 300 }}
+                            />
+                        </div>
+                        <Button style={{ marginLeft: "auto" }} type="primary" onClick={() => { setEmail(""); setFullName(""); refetchData(); }}>
+                            {icons.reset} Reset
+                        </Button>
                     </div>
+
                     <ProTable<Account>
                         loading={isLoadingData}
                         columns={columns}
