@@ -63,8 +63,8 @@ const Cities = () => {
 
     const columns: ProColumns<City>[] = [
         {
-            title: "No.",
-            render: (_text, _record, index) => <div className="text-blue-400">{index + 1}</div>,
+            title: "ID",
+            dataIndex: 'id'
         },
         {
             title: "Code",

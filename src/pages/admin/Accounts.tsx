@@ -82,15 +82,22 @@ const Accounts = () => {
         },
         {
             title: "Full Name",
-            dataIndex: "fullName",
+            render: (_, record) => {
+                if (record.fullName)
+                    return record.fullName
+                return <div className="text-red-300">Not updated yet...</div>
+            }
         },
         {
             title: "Phone",
-            dataIndex: "phone",
+            render: (_, record) => {
+                if (record.phone)
+                    return record.phone
+                return <div className="text-red-300">Not updated yet...</div>
+            }
         },
         {
             title: "Avatar",
-            dataIndex: "logo",
             render: (_, record) => {
                 if (record.avatar) {
                     return (

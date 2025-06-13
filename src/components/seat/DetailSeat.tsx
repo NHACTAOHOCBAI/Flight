@@ -26,13 +26,13 @@ const DetailSeat = ({ isDetailOpen, setIsDetailOpen, detailSeat }: Props) => {
         {
             key: '4',
             label: 'Price',
-            children: detailSeat.price,
+            children: detailSeat.price + "%",
         },
         {
             key: '5',
             label: 'Description',
-            children: detailSeat.description,
-        },
+            children: detailSeat.description || <div className="text-rose-300">No desc...</div>,
+        }
     ];
 
     return (
@@ -42,7 +42,7 @@ const DetailSeat = ({ isDetailOpen, setIsDetailOpen, detailSeat }: Props) => {
             onClose={() => setIsDetailOpen(false)}
             open={isDetailOpen}
         >
-            <Descriptions items={items} column={1} />
+            <Descriptions bordered items={items} column={1} />
         </Drawer>
     );
 

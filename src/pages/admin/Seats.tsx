@@ -11,6 +11,7 @@ import NewSeat from "../../components/seat/NewSeat";
 import UpdateSeat from "../../components/seat/UpdateSeat";
 import DetailSeat from "../../components/seat/DetailSeat";
 import { hasPermission } from "../../utils/checkPermission";
+import { LuEye } from "react-icons/lu";
 
 
 const Seats = () => {
@@ -49,8 +50,8 @@ const Seats = () => {
 
     const columns: ProColumns<Seat>[] = [
         {
-            title: "No.",
-            render: (_text, _record, index) => <div className="text-blue-400">{index + 1}</div>,
+            title: "ID",
+            dataIndex: 'id'
         },
         {
             title: "Code",
@@ -72,7 +73,15 @@ const Seats = () => {
             [{
                 title: "Action",
                 render: (_: React.ReactNode, record: Seat) => (
-                    <div className="flex flex-row gap-[10px]">
+                    <div className="flex gap-[10px] items-center">
+                        <div className="text-blue-400"
+                            onClick={() => {
+                                setDetailSeat(record);
+                                setIsDetailOpen(true);
+                            }}
+                        >
+                            <LuEye />
+                        </div>
                         <div
                             onClick={() => {
                                 setUpdateSeat(record);

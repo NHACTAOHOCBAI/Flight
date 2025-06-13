@@ -40,7 +40,11 @@ const AdminLayout = () => {
         }
         setIsPendingLogout(false)
     }
-
+    const getInitial = (fullName: string) => {
+        if (!fullName) return "?";
+        const parts = fullName.trim().split(" ");
+        return parts[parts.length - 1]?.charAt(0).toUpperCase() || "?";
+    };
     useEffect(() => {
         const fetchUserInf = async () => {
             const response = await getCurrentUser();
@@ -185,14 +189,22 @@ const AdminLayout = () => {
                                 }}
                             />
                             <Popover content={content}>
-                                <div className='flex items-center ml-auto'>
-                                    <Avatar
-                                        style={{
-                                            marginRight: 20,
-                                            backgroundColor: "oklch(80.9% 0.105 251.813)"
-                                        }}
-                                        src={<img src={myAccount?.user?.avatar ?? undefined} alt="avatar" />} />
-                                    <div className=' text-blue-500'>Hi, {myAccount?.user?.fullName}</div>
+                                <div className='flex items-center ml-auto gap-[10px]'>
+                                    {
+                                        myAccount?.user?.avatar
+                                            ?
+                                            <Avatar
+                                                style={{
+                                                    marginRight: 20,
+                                                    backgroundColor: "oklch(80.9% 0.105 251.813)"
+                                                }}
+                                                src={<img src={myAccount?.user?.avatar} alt="avatar" />} />
+                                            :
+                                            <Avatar style={{ backgroundColor: "#87d068" }}>
+                                                {getInitial(myAccount?.user?.fullName ?? "?")}
+                                            </Avatar>
+                                    }
+                                    <div className=' text-blue-500'>Hi, {myAccount?.user?.fullName || "You"}</div>
                                 </div>
                             </Popover>
                         </Header>

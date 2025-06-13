@@ -73,7 +73,7 @@ const DetailRole = ({ isDetailOpen, setIsDetailOpen, detailRole }: Props) => {
                 <Descriptions.Item label="ID">{detailRole.id}</Descriptions.Item>
                 <Descriptions.Item label="Role Name">{detailRole.roleName}</Descriptions.Item>
                 <Descriptions.Item label="Description">
-                    {detailRole.roleDescription || "No description provided"}
+                    {detailRole.roleDescription || <div className="text-rose-300">No desc...</div>}
                 </Descriptions.Item>
             </Descriptions>
 
