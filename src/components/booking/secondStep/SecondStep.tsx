@@ -12,7 +12,49 @@ interface Ticket {
 const SecondStep = () => {
     const { tickets } = useTicketsContext();
     console.log("Tickets in SecondStep:", tickets);
-    const flight = JSON.parse(localStorage.getItem("booked_flight") || "{}");
+    const flight = JSON.parse(localStorage.getItem("booked_flight") || JSON.stringify({
+        id: 0,
+        flightCode: "",
+        plane: {
+            id: 0,
+            planeCode: "",
+            planeName: "",
+            airline: {
+                id: 0,
+                airlineCode: "",
+                airlineName: "",
+                logo: ""
+            }
+        },
+        departureAirport: {
+            id: 0,
+            airportCode: "",
+            airportName: "",
+            city: {
+                id: 0,
+                cityCode: "",
+                cityName: ""
+            }
+        },
+        arrivalAirport: {
+            id: 0,
+            airportCode: "",
+            airportName: "",
+            city: {
+                id: 0,
+                cityCode: "",
+                cityName: ""
+            }
+        },
+        departureDate: "",
+        arrivalDate: "",
+        departureTime: "",
+        arrivalTime: "",
+        originalPrice: 0,
+        interAirports: [],
+        seats: [],
+        hasTickets: false
+    }));
     return (
         <div className="w-full flex flex-col gap-[10px]">
             {tickets && tickets.tickets.map((item) => (

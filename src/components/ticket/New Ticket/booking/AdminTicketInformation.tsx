@@ -10,6 +10,7 @@ import useSelectOptions from '../../../../utils/selectOptions'
 import { getFlightById } from '../../../../services/flight'
 import { useAppDispatch } from '../../../../hooks/useAppDispatch'
 import { setFlight } from '../../../../redux/features/flight/flightSlide'
+import { useAppSelector } from '../../../../hooks/useAppSelector'
 
 interface FormValues {
     tickets: TicketRequest[]
@@ -20,7 +21,45 @@ const AdminTicketInformation = () => {
     const { flightSelectOptions } = useSelectOptions()
     const [api, contextHolder] = notification.useNotification();
     const [form] = Form.useForm();
-    const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
+    const flight = useAppSelector(state => state.flight).flight
+    //     id: 0,
+    //     flightCode: "",
+    //     plane: {
+    //         id: 0,
+    //         planeCode: "",
+    //         planeName: "",
+    //         description: "",
+    //         airline: {
+    //             id: 0,
+    //             name: "",
+    //             logo: ""
+    //         }
+    //     },
+    //     departureAirport: {
+    //         id: 0,
+    //         name: "",
+    //         city: {
+    //             id: 0,
+    //             name: ""
+    //         }
+    //     },
+    //     arrivalAirport: {
+    //         id: 0,
+    //         name: "",
+    //         city: {
+    //             id: 0,
+    //             name: ""
+    //         }
+    //     },
+    //     departureDate: "",
+    //     arrivalDate: "",
+    //     departureTime: "",
+    //     arrivalTime: "",
+    //     originalPrice: 0,
+    //     interAirports: [],
+    //     seats: [],
+    //     hasTickets: false
+    // }));
     const seatSelectOptions: { value: number, label: string }[] = flight.seats.map((value) => {
         return ({
             value: value.seat.id,
@@ -48,7 +87,7 @@ const AdminTicketInformation = () => {
         dispath(setFlight(res.data))
     }
     useEffect(() => {
-        const ticket = JSON.parse(localStorage.getItem('tickets') || "")
+        const ticket = JSON.parse(localStorage.getItem('tickets') || "[]")
         console.log(ticket)
         if (ticket) {
             form.setFieldsValue({ tickets: ticket });

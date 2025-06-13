@@ -7,8 +7,11 @@ import SecondStep from '../../../booking/secondStep/SecondStep';
 import { useAppDispatch } from '../../../../hooks/useAppDispatch';
 import { resetFlight } from '../../../../redux/features/flight/flightSlide';
 
-
-const AdminBooking = () => {
+interface Props {
+    refetchData: () => Promise<void>;
+    setIsNewOpen: (value: boolean) => void;
+}
+const AdminBooking = ({ setIsNewOpen, refetchData }: Props) => {
     const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') || JSON.stringify({
         id: 0,
         flightCode: "",
@@ -98,6 +101,8 @@ const AdminBooking = () => {
                 localStorage.removeItem("tickets")
                 messageApi.success("Booking flight success");
                 dispath(resetFlight())
+                refetchData()
+                setIsNewOpen(false)
             },
             onError: (error) => {
                 messageApi.error(error.message);

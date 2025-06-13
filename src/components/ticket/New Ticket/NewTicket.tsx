@@ -7,7 +7,7 @@ interface Props {
     setIsNewOpen: (value: boolean) => void;
 }
 
-const NewTicket = ({ isNewOpen, setIsNewOpen }: Props) => {
+const NewTicket = ({ isNewOpen, setIsNewOpen, refetchData }: Props) => {
     const handleCancel = () => {
         setIsNewOpen(false)
     };
@@ -20,7 +20,10 @@ const NewTicket = ({ isNewOpen, setIsNewOpen }: Props) => {
                 onCancel={handleCancel}
                 footer={null} // Ẩn cả OK và Cancel
             >
-                <AdminBooking />
+                <AdminBooking
+                    refetchData={refetchData}
+                    setIsNewOpen={setIsNewOpen}
+                />
             </Modal>
 
         </>
