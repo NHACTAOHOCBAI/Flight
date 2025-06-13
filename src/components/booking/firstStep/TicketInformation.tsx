@@ -4,7 +4,6 @@
 import { Card, Form, Input, notification, Row, Select, type FormProps } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
-import useSelectOptions from '../../../utils/selectOptions'
 import { useEffect } from 'react'
 import { useTicketsContext } from '../../../context/TicketsContext'
 
@@ -14,9 +13,15 @@ interface FormValues {
 const TicketInformation = () => {
   const { tickets, setTickets } = useTicketsContext();
   const [api, contextHolder] = notification.useNotification();
-  const { seatSelectOptions } = useSelectOptions();
   const [form] = Form.useForm();
   const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
+  const seatSelectOptions: { value: number, label: string }[] = flight.seats.map((value) => {
+    return ({
+      value: value.seat.id,
+      label: value.seat.seatName
+    }
+    )
+  })
   const onFinish: FormProps<FormValues>['onFinish'] = ({ tickets }: any) => {
     if (tickets.length === 0) {
       api.error({
@@ -31,8 +36,11 @@ const TicketInformation = () => {
     localStorage.setItem('tickets', JSON.stringify(tickets));
   }
   useEffect(() => {
-    if (tickets) {
-      form.setFieldsValue({ tickets });
+    console.log('hhhhhhhhhhhhh')
+    const ticket = JSON.parse(localStorage.getItem('tickets') || "")
+    console.log(ticket)
+    if (ticket) {
+      form.setFieldsValue({ tickets: ticket });
     }
   }, [form, tickets])
   return (
@@ -84,7 +92,12 @@ const TicketInformation = () => {
                   <Form.Item
                     label="Phone"
                     name={[field.name, 'passengerPhone']}
-                    rules={[{ required: true }]}
+                    rules={[
+                      {
+                        pattern: /^\d{10,11}$/,
+                        message: 'Phone number must be 10 or 11 digits',
+                      },
+                    ]}
                     style={{ textAlign: 'left' }}
                   >
                     <Input placeholder='Enter a phone' />
@@ -92,7 +105,10 @@ const TicketInformation = () => {
                   <Form.Item
                     label="Email"
                     name={[field.name, 'passengerEmail']}
-                    rules={[{ required: true }]}
+                    rules={[
+                      { required: true },
+                      { type: 'email', message: 'Please enter a valid email address' },
+                    ]}
                     style={{ textAlign: 'left' }}
                   >
                     <Input placeholder='Enter a email' />

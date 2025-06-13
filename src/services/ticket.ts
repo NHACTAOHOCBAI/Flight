@@ -21,3 +21,8 @@ export const updateTicket = async (id: number, data: TicketRequest) => {
 export const deleteTicket = async (id: number) => {
     await axiosInstance.delete(`/tickets/${id}`);
 };
+
+export const getMyTicket = async () => {
+    const response = await axiosInstance.get('/tickets/user')
+    return response.data
+}

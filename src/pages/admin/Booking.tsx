@@ -5,6 +5,7 @@ import SecondStep from '../../components/booking/secondStep/SecondStep';
 import { useCreateTicket } from '../../hooks/useTickets';
 import DetailTicket from '../../components/booking/detailTicket/DetailTicket';
 import { useNavigate } from 'react-router';
+import ThirdStep from '../../components/booking/thirdStep/ThirdStep';
 
 
 const Booking = () => {
@@ -27,6 +28,10 @@ const Booking = () => {
         {
             title: 'Confirm',
             content: <SecondStep />,
+        },
+        {
+            title: 'Complete',
+            content: <ThirdStep />,
         },
     ];
     const next = () => {
@@ -55,8 +60,8 @@ const Booking = () => {
         }
         mutate(tickets, {
             onSuccess: async () => {
-                await messageApi.success("booking flight successfully");
-                navigate("/admin/flights")
+                messageApi.success("Booking flight success");
+                next()
             },
             onError: (error) => {
                 messageApi.error(error.message);
@@ -77,17 +82,17 @@ const Booking = () => {
                     <Steps current={current} items={items} />
                     <div style={contentStyle} className='p-[10px]'>{steps[current].content}</div>
                     <div style={{ marginTop: 24 }}>
-                        {current < steps.length - 1 && (
+                        {current < 1 && (
                             <Button type="primary" onClick={() => next()}>
                                 Next
                             </Button>
                         )}
-                        {current === steps.length - 1 && (
+                        {current === 1 && (
                             <Button type="primary" onClick={handleBooking}>
-                                Done
+                                Booking
                             </Button>
                         )}
-                        {current > 0 && (
+                        {current > 0 && current != 2 && (
                             <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
                                 Previous
                             </Button>

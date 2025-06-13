@@ -1,7 +1,5 @@
 import React from "react";
 
-
-
 type Props = {
     flight: Flight;
 };
@@ -30,15 +28,24 @@ function calculateDuration(startDate: string, startTime: string, endDate: string
     return `${hours}h ${minutes}m`;
 }
 
-
 const FlightCard: React.FC<Props> = ({ flight }) => {
-    if (!flight)
-        return (<></>)
+    if (!flight) return <></>;
+
     const duration = calculateDuration(
         flight.departureDate,
         flight.departureTime,
         flight.arrivalDate,
         flight.arrivalTime
+    );
+
+    // Lấy thông tin ghế còn trống từ flight.seats
+    const seatAvailability = flight.seats.reduce(
+        (acc, seatInfo) => {
+            const seatType = seatInfo.seat.seatName; // Loại ghế dựa trên seatName
+            acc[seatType] = seatInfo.remainingTickets; // Số ghế còn trống từ remainingTickets
+            return acc;
+        },
+        {} as Record<string, number>
     );
 
     return (
@@ -79,10 +86,20 @@ const FlightCard: React.FC<Props> = ({ flight }) => {
                 </div>
             </div>
 
-            {/* Duration + Flight Info */}
+            {/* Duration + Flight Info + Seat Availability */}
             <div className="mt-2 border-t pt-3 text-sm text-gray-700">
                 <div>Flight Time: {duration}</div>
                 <div>Flight Code: <strong>{flight.flightCode}</strong></div>
+                <div>
+                    Available Seats:
+                    <ul className="list-disc pl-5">
+                        {Object.entries(seatAvailability).map(([seatType, count]) => (
+                            <li key={seatType}>
+                                {seatType}: {count} seat{count !== 1 ? 's' : ''}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </div>
     );
