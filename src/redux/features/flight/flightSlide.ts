@@ -57,9 +57,12 @@ const flightSilce = createSlice({
         setFlight(state, action: PayloadAction<Flight>) {
             state.flight = action.payload
         },
+        resetFlight(state) {
+            state.flight = initialState.flight
+        }
     },
 })
 
-export const { setFlight } = flightSilce.actions
+export const { setFlight, resetFlight } = flightSilce.actions
 export default flightSilce.reducer
 

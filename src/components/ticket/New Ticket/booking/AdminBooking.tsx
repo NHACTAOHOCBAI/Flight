@@ -4,7 +4,8 @@ import DetailTicket from '../../../booking/detailTicket/DetailTicket';
 import { useCreateTicket } from '../../../../hooks/useTickets';
 import FirstStep from './FirstStep';
 import SecondStep from '../../../booking/secondStep/SecondStep';
-import ThirdStep from '../../../booking/thirdStep/ThirdStep';
+import { useAppDispatch } from '../../../../hooks/useAppDispatch';
+import { resetFlight } from '../../../../redux/features/flight/flightSlide';
 
 
 const AdminBooking = () => {
@@ -47,7 +48,7 @@ const AdminBooking = () => {
         seats: [],
         hasTickets: false
     }));
-
+    const dispath = useAppDispatch();
     const ticketsData = JSON.parse(localStorage.getItem('tickets') as string);
     const tickets: TicketRequest = {
         flightId: flight.id,
@@ -65,11 +66,7 @@ const AdminBooking = () => {
         {
             title: 'Confirm',
             content: <SecondStep />,
-        },
-        {
-            title: 'Complete',
-            content: <ThirdStep isBookingFlight={false} />,
-        },
+        }
     ];
     const next = () => {
         setCurrent(current + 1);
@@ -97,8 +94,10 @@ const AdminBooking = () => {
         }
         mutate(tickets, {
             onSuccess: async () => {
+                localStorage.removeItem("booked_flight")
+                localStorage.removeItem("tickets")
                 messageApi.success("Booking flight success");
-                next()
+                dispath(resetFlight())
             },
             onError: (error) => {
                 messageApi.error(error.message);
@@ -113,17 +112,17 @@ const AdminBooking = () => {
                     <Steps current={current} items={items} />
                     <div style={contentStyle} className='p-[10px]'>{steps[current].content}</div>
                     <div style={{ marginTop: 24 }}>
-                        {current < 1 && (
+                        {current < steps.length - 1 && (
                             <Button type="primary" onClick={() => next()}>
                                 Next
                             </Button>
                         )}
-                        {current === 1 && (
+                        {current === steps.length - 1 && (
                             <Button type="primary" onClick={handleBooking}>
                                 Booking
                             </Button>
                         )}
-                        {current > 0 && current != 2 && (
+                        {current > 0 && (
                             <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
                                 Previous
                             </Button>

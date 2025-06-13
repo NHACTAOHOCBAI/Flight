@@ -61,6 +61,8 @@ const Booking = () => {
         mutate(tickets, {
             onSuccess: async () => {
                 messageApi.success("Booking flight success");
+                localStorage.removeItem("booked_flight")
+                localStorage.removeItem("tickets")
                 next()
             },
             onError: (error) => {
