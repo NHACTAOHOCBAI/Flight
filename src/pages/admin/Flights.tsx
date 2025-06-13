@@ -17,10 +17,13 @@ import icons from "../../assets/icons";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
 import { LuEye } from "react-icons/lu";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { setFlight } from "../../redux/features/flight/flightSlide";
 const Flights = () => {
     const canCreate = checkPermission("Create Flight");
     const canUpdate = checkPermission("Update Flight");
     const canDelete = checkPermission("Delete Flight");
+    const dispath = useAppDispatch()
     const [params, setParams] = useState<Parameter>({
         maxInterQuantity: 0,
         minFlightTime: 0,
@@ -49,7 +52,7 @@ const Flights = () => {
         try {
             const response = await getAllParamaters();
             setParams(response.data);
-            const res = await fetchAllFlights({});
+            const res = await fetchAllFlights();
             setFlightsData(res.data.result);
             setOriginalFlightsData(res.data.result); // Lưu dữ liệu gốc
         } catch (error) {
@@ -77,6 +80,7 @@ const Flights = () => {
 
     const handleBooking = (value: Flight) => {
         localStorage.setItem("booked_flight", JSON.stringify(value));
+        dispath(setFlight(value))
         navigate("/admin/booking");
     };
 

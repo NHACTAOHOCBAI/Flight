@@ -1,22 +1,59 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, message, Steps, theme } from 'antd';
-import FirstStep from '../../components/booking/firstStep/FirstStep';
-import SecondStep from '../../components/booking/secondStep/SecondStep';
-import { useBookingFlight } from '../../hooks/useTickets';
-import DetailTicket from '../../components/booking/detailTicket/DetailTicket';
-import { useNavigate } from 'react-router';
-import ThirdStep from '../../components/booking/thirdStep/ThirdStep';
+import DetailTicket from '../../../booking/detailTicket/DetailTicket';
+import { useCreateTicket } from '../../../../hooks/useTickets';
+import FirstStep from './FirstStep';
+import SecondStep from '../../../booking/secondStep/SecondStep';
+import ThirdStep from '../../../booking/thirdStep/ThirdStep';
 
 
-const Booking = () => {
-    const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
-    const navigate = useNavigate();
+const AdminBooking = () => {
+    const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') || JSON.stringify({
+        id: 0,
+        flightCode: "",
+        plane: {
+            id: 0,
+            planeCode: "",
+            planeName: "",
+            description: "",
+            airline: {
+                id: 0,
+                name: "",
+                logo: ""
+            }
+        },
+        departureAirport: {
+            id: 0,
+            name: "",
+            city: {
+                id: 0,
+                name: ""
+            }
+        },
+        arrivalAirport: {
+            id: 0,
+            name: "",
+            city: {
+                id: 0,
+                name: ""
+            }
+        },
+        departureDate: "",
+        arrivalDate: "",
+        departureTime: "",
+        arrivalTime: "",
+        originalPrice: 0,
+        interAirports: [],
+        seats: [],
+        hasTickets: false
+    }));
+
     const ticketsData = JSON.parse(localStorage.getItem('tickets') as string);
     const tickets: TicketRequest = {
         flightId: flight.id,
         tickets: ticketsData || []
     }
-    const { mutate } = useBookingFlight();
+    const { mutate } = useCreateTicket();
     const [messageApi, contextHolder] = message.useMessage();
     const { token } = theme.useToken();
     const [current, setCurrent] = useState(0);
@@ -31,7 +68,7 @@ const Booking = () => {
         },
         {
             title: 'Complete',
-            content: <ThirdStep isBookingFlight={true} />,
+            content: <ThirdStep isBookingFlight={false} />,
         },
     ];
     const next = () => {
@@ -68,12 +105,6 @@ const Booking = () => {
             },
         });
     }
-    useEffect(() => {
-        if (flight === null) {
-            console.log("flight is null, redirecting...");
-            navigate("/admin/flights");
-        }
-    }, [flight, navigate]);
     return (
         <>
             {contextHolder}
@@ -107,4 +138,4 @@ const Booking = () => {
     );
 };
 
-export default Booking;
+export default AdminBooking;

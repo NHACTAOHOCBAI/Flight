@@ -26,3 +26,11 @@ export const getMyTicket = async () => {
     const response = await axiosInstance.get('/tickets/user')
     return response.data
 }
+
+export const bookingFlight = async (data: TicketRequest) => {
+    await axiosInstance.post('/tickets/user', data);
+};
+
+export const refundMyTicket = async (id: number) => {
+    await axiosInstance.delete(`tickets/user/${id}`)
+}

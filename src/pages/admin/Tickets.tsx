@@ -10,11 +10,13 @@ import UpdateTicket from "../../components/ticket/UpdateTicket";
 import useSelectOptions from "../../utils/selectOptions";
 import debounce from "lodash.debounce";
 import { checkPermission } from "../../utils/checkPermission";
+import NewTicket from "../../components/ticket/New Ticket/NewTicket";
 
 const Tickets = () => {
     const canCreate = checkPermission("Create Ticket")
     const canUpdate = checkPermission("Update Ticket")
     const canDelete = checkPermission("Delete Ticket")
+    const [isNewOpen, setIsNewOpen] = useState(false)
     const { flightSelectOptions, seatSelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
@@ -192,9 +194,30 @@ const Tickets = () => {
                         }}
                         headerTitle="Ticket Table"
                         scroll={{ x: "max-content" }}
+                        toolBarRender={() => {
+                            if (canCreate)
+                                return [
+                                    <Button
+                                        type="primary"
+                                        key="save"
+                                        onClick={() => {
+                                            setIsNewOpen(true)
+                                        }}
+                                    >
+                                        New Ticket
+                                    </Button>,
+                                ];
+                            return [];
+                        }}
                     />
                 </div>
             </div>
+            <NewTicket
+
+                isNewOpen={isNewOpen}
+                setIsNewOpen={setIsNewOpen}
+                refetchData={refetchData}
+            />
             <UpdateTicket
                 flightSelectOptions={flightSelectOptions}
                 seatSelectOptions={seatSelectOptions}

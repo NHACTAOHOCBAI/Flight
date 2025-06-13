@@ -43,6 +43,28 @@ interface Seat {
     description: string
 }
 
+
+interface FlightRequest {
+    flightCode: string;
+    planeId: number;
+    departureAirportId: number;
+    arrivalAirportId: number;
+    departureDate: string;
+    arrivalDate: string;
+    departureTime: string;
+    arrivalTime: string;
+    originPrice: number;
+    interAirports: {
+        airportId: number;
+        departureDateTime: string;
+        arrivalDateTime: string;
+        note: string;
+    }[];
+    seats: {
+        seatId: number;
+        quantity: number;
+    }[];
+}
 interface Flight {
     id: number,
     flightCode: string,
@@ -74,29 +96,6 @@ interface Flight {
     }[]
     hasTickets: boolean
 }
-
-interface FlightRequest {
-    flightCode: string;
-    planeId: number;
-    departureAirportId: number;
-    arrivalAirportId: number;
-    departureDate: string;
-    arrivalDate: string;
-    departureTime: string;
-    arrivalTime: string;
-    originPrice: number;
-    interAirports: {
-        airportId: number;
-        departureDateTime: string;
-        arrivalDateTime: string;
-        note: string;
-    }[];
-    seats: {
-        seatId: number;
-        quantity: number;
-    }[];
-}
-
 interface Ticket {
     id: number;
     flight: Flight | undefined;
@@ -114,7 +113,6 @@ interface TicketCard {
     passengerEmail: string;
     passengerPhone: string;
     passengerIDCard: string;
-
 }
 interface TicketRequest {
     flightId: number

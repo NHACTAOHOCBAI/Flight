@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createTicket, deleteTicket, fetchAllTickets, getRevenue, updateTicket } from "../services/ticket";
+import { bookingFlight, createTicket, deleteTicket, fetchAllTickets, getRevenue, updateTicket } from "../services/ticket";
 
 
 export const useGetAllTickets = () => {
@@ -13,6 +13,16 @@ export const useGetRevenue = (period: "year" | "month") => {
     return useQuery({
         queryKey: ["get revenue", period],
         queryFn: () => getRevenue(period),
+    });
+};
+
+export const useBookingFlight = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: bookingFlight,
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["get all tickets"] });
+        },
     });
 };
 

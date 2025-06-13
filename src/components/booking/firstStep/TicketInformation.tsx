@@ -6,15 +6,16 @@ import { CloseOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { useEffect } from 'react'
 import { useTicketsContext } from '../../../context/TicketsContext'
+import { useAppSelector } from '../../../hooks/useAppSelector'
 
 interface FormValues {
   tickets: TicketRequest[]
 }
 const TicketInformation = () => {
+  const flight = useAppSelector((state) => state.flight).flight
   const { tickets, setTickets } = useTicketsContext();
   const [api, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
-  const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
   const seatSelectOptions: { value: number, label: string }[] = flight.seats.map((value) => {
     return ({
       value: value.seat.id,
@@ -36,9 +37,7 @@ const TicketInformation = () => {
     localStorage.setItem('tickets', JSON.stringify(tickets));
   }
   useEffect(() => {
-    console.log('hhhhhhhhhhhhh')
     const ticket = JSON.parse(localStorage.getItem('tickets') || "")
-    console.log(ticket)
     if (ticket) {
       form.setFieldsValue({ tickets: ticket });
     }
