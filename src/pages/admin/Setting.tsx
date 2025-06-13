@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { getAllParamaters, updateParameter } from "../../services/parameter";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setParams } from "../../redux/features/params/paramsSlide";
-import { hasPermission } from "../../utils/checkPermission";
+import { checkPermission } from "../../utils/checkPermission";
 
 
 export default function Setting() {
-    const canUpdate = hasPermission("Parameters", "PUT");
+    const canUpdate = checkPermission("Update Parameter");
     const [isPending, setIsPending] = useState(false);
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();

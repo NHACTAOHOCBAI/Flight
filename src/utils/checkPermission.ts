@@ -67,8 +67,6 @@ function checkPermission(permissionToCheck: string, roles?: Role): boolean {
         const key = `${page.method}_${page.apiPath}`;
         return permissionMap[key];
     });
-    console.log(pages)
-    console.log(permissions)
     return permissions.includes(permissionToCheck);
 }
 export { hasPermission, checkPermission, permissionMap }

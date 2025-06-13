@@ -72,8 +72,7 @@ interface Flight {
         remainingTickets: number,
         price: number
     }[]
-    canUpdate?: boolean
-    canDelete?: boolean
+    hasTickets: boolean
 }
 
 interface FlightRequest {

@@ -16,6 +16,7 @@ import { checkPermission } from "../../utils/checkPermission";
 import icons from "../../assets/icons";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
+import { LuEye } from "react-icons/lu";
 const Flights = () => {
     const canCreate = checkPermission("Create Flight");
     const canUpdate = checkPermission("Update Flight");
@@ -86,12 +87,7 @@ const Flights = () => {
         },
         {
             title: "Code",
-            render: (_text, record) => <div
-                onClick={() => {
-                    setIsDetailOpen(true)
-                    setDetailFlight(record)
-                }}
-                className="text-cyan-400 cursor-pointer">{record.flightCode}</div>,
+            dataIndex: 'flightCode'
         },
         {
             title: "Plane",
@@ -155,7 +151,6 @@ const Flights = () => {
                 { text: "Expired", value: "Expired" },
             ],
             filterMode: "tree",
-            filterSearch: true,
             onFilter: (value: boolean | React.Key, record: Flight) => {
                 const departureDateTime = new Date(`${record.departureDate}T${record.departureTime}`);
                 const now = new Date();
@@ -179,35 +174,71 @@ const Flights = () => {
                 const canBooking = value.seats.reduce((sum, seat) => sum + seat.remainingTickets, 0) > 0;
                 return (
                     <div className="flex flex-row gap-[10px] items-center">
-                        {canUpdate && <button
+                        <div className="text-blue-400"
                             onClick={() => {
-                                setUpdateFlight(value);
-                                setIsUpdateOpen(true);
+                                setDetailFlight(value);
+                                setIsDetailOpen(true);
                             }}
-                            disabled={!value.canUpdate}
-                            className={` ${!value.canUpdate ? 'cursor-not-allowed opacity-40 text-blue-400' : 'cursor-pointer text-yellow-400'}`}
                         >
-                            {icons.edit}
-                        </button>}
+                            <LuEye />
+                        </div>
+                        {canUpdate && (
+
+                            value.hasTickets ? (
+                                <Popconfirm
+                                    title="Update the flight"
+                                    description={<div className="w-[400px]">
+                                        This flight has already been booked.If you Update the flight, we will send a notification to all customers. Are you sure you want to edit it?
+                                    </div>}
+                                    onConfirm={() => {
+                                        setUpdateFlight(value)
+                                        setIsUpdateOpen(true)
+                                    }}
+                                    onCancel={() => { }}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <button className="cursor-pointer text-blue-500">
+                                        {icons.edit}
+                                    </button>
+                                </Popconfirm>
+                            ) : (
+                                <button
+                                    className="cursor-pointer text-blue-500"
+                                    onClick={() => {
+                                        setUpdateFlight(value)
+                                        setIsUpdateOpen(true)
+                                    }}
+                                >
+                                    {icons.edit}
+                                </button>
+                            )
+
+
+                        )}
 
                         {
                             canDelete &&
                             <Popconfirm
-                                disabled={!value.canDelete}
-                                title="Delete the city"
-                                description="Are you sure to delete this city?"
+                                title="Delete the flight"
+                                description={
+                                    <div className="w-[400px]">
+                                        {value.hasTickets
+                                            ? "This flight has already been booked. If you cancel the flight, we will send a notification to all customers. Do you still want to delete it?"
+                                            : "Are you sure you want to delete this flight?"}
+                                    </div>
+                                }
                                 onConfirm={() => { handleDelete(value.id) }}
                                 onCancel={() => { }}
                                 okText="Yes"
                                 cancelText="No"
                             >
-                                <button
-                                    className={` ${!value.canUpdate ? 'cursor-not-allowed opacity-40 text-blue-400' : 'cursor-pointer text-red-400'}`}
-                                >
+                                <button className='cursor-pointer text-red-400'>
                                     {icons.delete}
                                 </button>
-
                             </Popconfirm>
+
+
                         }
                         <Button
                             disabled={!canBooking}

@@ -9,8 +9,12 @@ import { fetchAllTickets } from "../../services/ticket";
 import UpdateTicket from "../../components/ticket/UpdateTicket";
 import useSelectOptions from "../../utils/selectOptions";
 import debounce from "lodash.debounce";
+import { checkPermission } from "../../utils/checkPermission";
 
 const Tickets = () => {
+    const canCreate = checkPermission("Create Ticket")
+    const canUpdate = checkPermission("Update Ticket")
+    const canDelete = checkPermission("Delete Ticket")
     const { flightSelectOptions, seatSelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);

@@ -10,14 +10,14 @@ import { fetchAllSeats } from "../../services/seat";
 import NewSeat from "../../components/seat/NewSeat";
 import UpdateSeat from "../../components/seat/UpdateSeat";
 import DetailSeat from "../../components/seat/DetailSeat";
-import { hasPermission } from "../../utils/checkPermission";
+import { checkPermission } from "../../utils/checkPermission";
 import { LuEye } from "react-icons/lu";
 
 
 const Seats = () => {
-    const canCreate = hasPermission("Seats", "POST");
-    const canUpdate = hasPermission("Seats", "PUT");
-    const canDelete = hasPermission("Seats", "DELETE");
+    const canCreate = checkPermission("Create Seat")
+    const canUpdate = checkPermission("Update Seat")
+    const canDelete = checkPermission("Delete Seat")
     const [messageApi, contextHolder] = message.useMessage();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -68,20 +68,20 @@ const Seats = () => {
             render: (_text, record) => <div>{`${record.price} %`}</div>,
             sorter: (a, b) => a.price - b.price,
         },
-        ...(canUpdate || canDelete)
-            ?
-            [{
-                title: "Action",
-                render: (_: React.ReactNode, record: Seat) => (
-                    <div className="flex gap-[10px] items-center">
-                        <div className="text-blue-400"
-                            onClick={() => {
-                                setDetailSeat(record);
-                                setIsDetailOpen(true);
-                            }}
-                        >
-                            <LuEye />
-                        </div>
+        {
+            title: "Action",
+            render: (_: React.ReactNode, record: Seat) => (
+                <div className="flex gap-[10px] items-center">
+                    <div className="text-blue-400"
+                        onClick={() => {
+                            setDetailSeat(record);
+                            setIsDetailOpen(true);
+                        }}
+                    >
+                        <LuEye />
+                    </div>
+                    {
+                        canUpdate &&
                         <div
                             onClick={() => {
                                 setUpdateSeat(record);
@@ -91,6 +91,9 @@ const Seats = () => {
                         >
                             {icons.edit}
                         </div>
+                    }
+                    {
+                        canDelete &&
                         <Popconfirm
                             title="Delete the seat"
                             description="Are you sure to delete this seat?"
@@ -100,10 +103,10 @@ const Seats = () => {
                         >
                             <div className="text-red-400">{icons.delete}</div>
                         </Popconfirm>
-                    </div>
-                ),
-            }]
-            : []
+                    }
+                </div>
+            ),
+        }
     ];
 
     useEffect(() => {

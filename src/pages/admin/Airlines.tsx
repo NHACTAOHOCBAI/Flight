@@ -85,24 +85,30 @@ const Airlines = () => {
                     title: "Action",
                     render: (_: React.ReactNode, value: Airline) => (
                         <div className="flex gap-[10px]">
-                            <div
-                                onClick={() => {
-                                    setUpdateAirline(value);
-                                    setIsUpdateOpen(true);
-                                }}
-                                className="text-yellow-400"
-                            >
-                                {icons.edit}
-                            </div>
-                            <Popconfirm
-                                title="Delete the airline"
-                                description="Are you sure?"
-                                onConfirm={() => handleDelete(value.id)}
-                                okText="Yes"
-                                cancelText="No"
-                            >
-                                <div className="text-red-400">{icons.delete}</div>
-                            </Popconfirm>
+                            {
+                                canUpdate &&
+                                <div
+                                    onClick={() => {
+                                        setUpdateAirline(value);
+                                        setIsUpdateOpen(true);
+                                    }}
+                                    className="text-yellow-400"
+                                >
+                                    {icons.edit}
+                                </div>
+                            }
+                            {
+                                canDelete &&
+                                <Popconfirm
+                                    title="Delete the airline"
+                                    description="Are you sure?"
+                                    onConfirm={() => handleDelete(value.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <div className="text-red-400">{icons.delete}</div>
+                                </Popconfirm>
+                            }
                         </div>
                     ),
                 },
