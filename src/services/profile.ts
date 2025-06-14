@@ -11,4 +11,7 @@ const updateProfile = ({ profile, avatar }: { profile: Profile, avatar?: File })
         formData.append("avatar", avatar);
     return axiosInstance.put("/auth/profile", formData);
 };
-export { updateProfile };
+const updatePassword = async (value: { oldPassword: string, newPassword: string }) => {
+    await axiosInstance.post("accounts/change-password", value)
+}
+export { updateProfile, updatePassword };

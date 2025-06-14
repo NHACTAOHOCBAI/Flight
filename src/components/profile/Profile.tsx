@@ -9,7 +9,9 @@ import { getCurrentUser } from "../../services/auth";
 import { login } from "../../redux/features/user/userSlide";
 import type { UploadFile } from "antd/lib";
 import UploadImage from "../../components/airline/test";
+import UpdatePassword from "./UpdatePassword";
 const MyProfile = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [isPending, setIsPending] = useState(false);
     const dispath = useAppDispatch()
@@ -89,7 +91,7 @@ const MyProfile = () => {
                                 <Input disabled={isPending} />
                             </Form.Item>
                             <div className="flex justify-between">
-                                <Button type="primary" disabled={isPending}>
+                                <Button type="primary" disabled={isPending} onClick={() => setIsModalOpen(true)}>
                                     Change password
                                 </Button>
                                 <Button type="primary" onClick={() => form.submit()} disabled={isPending}>
@@ -99,6 +101,11 @@ const MyProfile = () => {
                         </Form>
                     </div>
                 </div>
+                <UpdatePassword
+                    fetchUserInf={fetchUserInf}
+                    isModalOpen={isModalOpen}
+                    setIsModalOpen={setIsModalOpen}
+                />
             </div>
         </>
     )
