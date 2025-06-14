@@ -25,7 +25,7 @@ const AdminLayout = () => {
     const {
         token: { colorBgContainer },
     } = theme.useToken();
-
+    const accessToken = localStorage.getItem("accessToken")
     const handleLogout = async () => {
         setIsPendingLogout(true)
         try {
@@ -53,7 +53,10 @@ const AdminLayout = () => {
         fetchUserInf()
     }, [])
 
-
+    useEffect(() => {
+        if (accessToken === null)
+            navigator('/login')
+    }, [])
     const labelMap: Record<string, { label: React.ReactNode; icon: React.ReactNode }> = {
         Dashboard: { label: <Link to="/admin">Dashboard</Link>, icon: icons.dashboard },
         Accounts: { label: <Link to="/admin/accounts">Account</Link>, icon: icons.account },
@@ -68,16 +71,18 @@ const AdminLayout = () => {
         Tickets: { label: <Link to="/admin/tickets">Ticket</Link>, icon: icons.ticket },
         Profile: { label: <Link to="/admin/profile">Profile</Link>, icon: icons.profile },
     };
+    const canViewDashBoard = checkPermission("View Dashboard");
     const canViewAccount = checkPermission("View Account");
     const canViewRole = checkPermission("View Role");
     const canViewTicket = checkPermission("View Ticket");
 
     const menuItems = [
-        {
-            key: 'dashboard',
-            icon: labelMap['Dashboard'].icon,
-            label: labelMap['Dashboard'].label,
-        },
+        ...(canViewDashBoard
+            ? [{
+                key: 'dashboard',
+                icon: labelMap['Dashboard'].icon,
+                label: labelMap['Dashboard'].label,
+            }] : []),
         {
             key: 'airline',
             icon: labelMap['Airlines'].icon,
@@ -145,11 +150,10 @@ const AdminLayout = () => {
             </div>
         )
     }
-
     return (
         <>
             {contextHolder}
-            {isPendingLogout ?
+            {isPendingLogout || !accessToken ?
                 <div className='h-dvh w-dvw flex justify-center items-center'>
                     <Spin size="large" />
                 </div>

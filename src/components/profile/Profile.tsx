@@ -45,7 +45,7 @@ const MyProfile = () => {
         setFileList([
             {
                 uid: '-1',
-                name: 'airline_logo.jpg',
+                name: 'Avatar.jpg',
                 status: 'done',
                 url: myAccount.avatar || '',
             },

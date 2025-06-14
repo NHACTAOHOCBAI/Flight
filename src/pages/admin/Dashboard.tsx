@@ -30,7 +30,7 @@ const Dashboard = () => {
 
             <div className=" mt-[10px] gap-[10px] flex justify-between flex-wrap gap-y-2">
                 {canViewTicket && <BookingRate />}
-                <PopularAirline />
+                {canViewTicket && <PopularAirline />}
             </div>
             <div className="flex gap-[10px] flex-wrap">
                 {

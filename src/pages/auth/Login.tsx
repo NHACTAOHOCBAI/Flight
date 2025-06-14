@@ -48,6 +48,7 @@ const Login = () => {
             },
             {
                 onSuccess: async (data) => {
+                    localStorage.setItem("accessToken", data.data.accessToken)
                     setIsRedirecting(true);
                     const params = await getAllParamaters();
                     dispatch(login(data.data.account));
@@ -55,7 +56,7 @@ const Login = () => {
                     localStorage.setItem('permission', JSON.stringify(data.data.account.role));
                     dispatch(setRoles(data.data.account.role));
                     setTimeout(() => {
-                        navigate('/admin');
+                        navigate('/admin/flights');
                     }, 500);
                 },
                 onError: (error) => {

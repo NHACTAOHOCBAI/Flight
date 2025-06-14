@@ -81,29 +81,38 @@ const Cities = () => {
                     render: (_: React.ReactNode, record: City) => (
                         <div className="flex gap-[10px]">
                             {canUpdate && (
-                                <div
-                                    onClick={() => {
-                                        setUpdateCity(record);
-                                        setIsUpdateOpen(true);
-                                    }}
-                                    className="text-yellow-400"
-                                >
-                                    {icons.edit}
-                                </div>
+                                record.canDelete ? (
+                                    <div
+                                        onClick={() => {
+                                            setUpdateCity(record);
+                                            setIsUpdateOpen(true);
+                                        }}
+                                        className="text-yellow-400 cursor-pointer"
+                                    >
+                                        {icons.edit}
+                                    </div>
+                                ) : (
+                                    <div className="text-gray-400 cursor-not-allowed">{icons.edit}</div>
+                                )
                             )}
                             {canDelete && (
-                                <Popconfirm
-                                    title="Delete the city"
-                                    description="Are you sure to delete this city?"
-                                    onConfirm={() => handleDelete(record.id)}
-                                    okText="Yes"
-                                    cancelText="No"
-                                >
-                                    <div className="text-red-400">{icons.delete}</div>
-                                </Popconfirm>
+                                record.canDelete ? (
+                                    <Popconfirm
+                                        title="Delete the city"
+                                        description="Are you sure to delete this city?"
+                                        onConfirm={() => handleDelete(record.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <div className="text-red-400 cursor-pointer">{icons.delete}</div>
+                                    </Popconfirm>
+                                ) : (
+                                    <div className="text-gray-400 cursor-not-allowed">{icons.delete}</div>
+                                )
                             )}
                         </div>
-                    ),
+                    )
+
                 },
             ]
             : []),

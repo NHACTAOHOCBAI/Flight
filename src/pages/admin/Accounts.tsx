@@ -137,6 +137,20 @@ const Accounts = () => {
             filterSearch: true,
             onFilter: (value, record) => record.role.id === value
         },
+        {
+            title: "Active",
+            dataIndex: "isActive",
+            render: (_, record) => {
+                return record.isActive
+                    ? <span className="text-green-500 font-medium">Active</span>
+                    : <span className="text-red-500 font-medium">Inactive</span>;
+            },
+            filters: [
+                { text: "Active", value: true },
+                { text: "Inactive", value: false },
+            ],
+            onFilter: (value, record) => record.isActive === value,
+        },
 
         ...(canUpdate || canDelete)
             ?

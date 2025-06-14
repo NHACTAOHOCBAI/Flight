@@ -58,6 +58,7 @@ const UpdateAccount = ({
             role: {
                 id: 0,
                 roleName: "",
+                roleDescription: "",
                 pages: []
             }
         })
@@ -96,7 +97,7 @@ const UpdateAccount = ({
                         <Input disabled />
                     </Form.Item>
                     <Form.Item name="username" label="Email" rules={[{ required: true }]}>
-                        <Input disabled placeholder="Leave blank to keep current password" />
+                        <Input disabled />
                     </Form.Item>
                     <Form.Item
                         name="fullName"

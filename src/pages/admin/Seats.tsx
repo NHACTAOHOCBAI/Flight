@@ -72,7 +72,8 @@ const Seats = () => {
             title: "Action",
             render: (_: React.ReactNode, record: Seat) => (
                 <div className="flex gap-[10px] items-center">
-                    <div className="text-blue-400"
+                    <div
+                        className="text-blue-400 cursor-pointer"
                         onClick={() => {
                             setDetailSeat(record);
                             setIsDetailOpen(true);
@@ -80,32 +81,41 @@ const Seats = () => {
                     >
                         <LuEye />
                     </div>
-                    {
-                        canUpdate &&
-                        <div
-                            onClick={() => {
-                                setUpdateSeat(record);
-                                setIsUpdateOpen(true);
-                            }}
-                            className="text-yellow-400"
-                        >
-                            {icons.edit}
-                        </div>
-                    }
-                    {
-                        canDelete &&
-                        <Popconfirm
-                            title="Delete the seat"
-                            description="Are you sure to delete this seat?"
-                            onConfirm={() => handleDelete(record.id)}
-                            okText="Yes"
-                            cancelText="No"
-                        >
-                            <div className="text-red-400">{icons.delete}</div>
-                        </Popconfirm>
-                    }
+
+                    {canUpdate && (
+                        record.canDelete ? (
+                            <div
+                                onClick={() => {
+                                    setUpdateSeat(record);
+                                    setIsUpdateOpen(true);
+                                }}
+                                className="text-yellow-400 cursor-pointer"
+                            >
+                                {icons.edit}
+                            </div>
+                        ) : (
+                            <div className="text-gray-400 cursor-not-allowed">{icons.edit}</div>
+                        )
+                    )}
+
+                    {canDelete && (
+                        record.canDelete ? (
+                            <Popconfirm
+                                title="Delete the seat"
+                                description="Are you sure to delete this seat?"
+                                onConfirm={() => handleDelete(record.id)}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <div className="text-red-400 cursor-pointer">{icons.delete}</div>
+                            </Popconfirm>
+                        ) : (
+                            <div className="text-gray-400 cursor-not-allowed">{icons.delete}</div>
+                        )
+                    )}
                 </div>
-            ),
+            )
+
         }
     ];
 

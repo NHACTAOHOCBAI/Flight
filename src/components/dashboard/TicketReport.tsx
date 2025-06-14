@@ -111,10 +111,6 @@ const TicketReport = () => {
                     defaultCurrent: 1,
                     defaultPageSize: 10,
                 }}
-                options={{
-                    reload: false,
-                    setting: false,
-                }}
                 toolBarRender={() => [
                     <Button
                         type="primary"

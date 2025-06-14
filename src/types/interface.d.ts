@@ -2,7 +2,8 @@
 interface City {
     id: number,
     cityCode: string,
-    cityName: string
+    cityName: string,
+    canDelete?: boolean
 }
 
 interface Airline {
@@ -10,6 +11,7 @@ interface Airline {
     airlineCode: string,
     airlineName: string,
     logo: string
+    canDelete?: boolean
 }
 
 interface Airport {
@@ -21,6 +23,7 @@ interface Airport {
         cityCode: string,
         cityName: string
     }
+    canDelete?: boolean
 }
 
 interface Plane {
@@ -33,6 +36,7 @@ interface Plane {
         airlineName: string,
         logo: string
     }
+    canDelete?: boolean
 }
 
 interface Seat {
@@ -41,6 +45,7 @@ interface Seat {
     seatName: string,
     price: number,
     description: string
+    canDelete?: boolean
 }
 
 
@@ -105,6 +110,7 @@ interface Ticket {
     passengerPhone: string;
     passengerIDCard: string;
     userBooking?: Account
+    canDelete?: boolean
 }
 interface TicketCard {
     id?: number;
@@ -137,7 +143,8 @@ interface Role {
     id: number,
     roleName: string,
     roleDescription: string,
-    pages: Page[]
+    pages: Page[],
+    canDelete?: boolean
 }
 
 interface Account {
@@ -147,8 +154,10 @@ interface Account {
     fullName: string
     phone: string
     avatar: string
-    role: Role
+    role: Role,
+    isActive?: boolean
 }
+
 
 interface AccountRequest {
     username: string,

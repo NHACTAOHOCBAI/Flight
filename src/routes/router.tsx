@@ -46,35 +46,73 @@ const router = createBrowserRouter([
     },
     {
         path: "/admin",
-        element: < AdminLayout />,
+        element: <ProtectedRoute />, // bảo vệ toàn bộ admin layout
         children: [
             {
                 path: "",
-                element: <ProtectedRoute />,
+                element: <AdminLayout />,
                 children: [
-                    { path: "accounts", element: <Accounts /> },
-                    { path: "airlines", element: <Airlines /> },
-                    { path: "airports", element: <Airports /> },
-                    { path: "cities", element: <Cities /> },
-                    { path: "flights", element: <Flights /> },
-                    { path: "planes", element: <Planes /> },
-                    { path: "roles", element: <Roles /> },
-                    { path: "seats", element: <Seats /> },
-                    { path: "setting", element: <Setting /> },
-                    { path: "booking", element: <Booking /> },
-                    { path: "tickets", element: <Tickets /> },
+                    {
+                        path: "",
+                        element: <ProtectedRoute permissionToCheck="View Dashboard" />,
+                        children: [{ index: true, element: <Dashboard /> }]
+                    },
+                    {
+                        path: "accounts",
+                        element: <ProtectedRoute permissionToCheck="View Account" />,
+                        children: [{ index: true, element: <Accounts /> }]
+                    },
+                    {
+                        path: "airlines",
+                        element: <Airlines />
+                    },
+                    {
+                        path: "airports",
+                        element: <Airports />
+                    },
+                    {
+                        path: "cities",
+                        element: <Cities />
+                    },
+                    {
+                        path: "flights",
+                        element: <Flights />
+                    },
+                    {
+                        path: "planes",
+                        element: <Planes />
+                    },
+                    {
+                        path: "roles",
+                        element: <ProtectedRoute permissionToCheck="View Role" />,
+                        children: [{ index: true, element: <Roles /> }]
+                    },
+                    {
+                        path: "seats",
+                        element: <Seats />
+                    },
+                    {
+                        path: "setting",
+                        element: <Setting />
+                    },
+                    {
+                        path: "booking",
+                        element: <Booking />
+                    },
+                    {
+                        path: "tickets",
+                        element: <ProtectedRoute permissionToCheck="View Ticket" />,
+                        children: [{ index: true, element: <Tickets /> }]
+                    },
+                    {
+                        path: "profile",
+                        element: <Profile />
+                    }
                 ]
-            },
-            {
-                index: true,
-                element: <Dashboard />
-            },
-            {
-                path: "profile",
-                element: <Profile />
             }
         ]
     },
+
     // not found
     {
         path: "*",

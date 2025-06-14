@@ -54,6 +54,14 @@ const permissionMap: Record<string, string> = {
 };
 
 function checkPermission(permissionToCheck: string, roles?: Role): boolean {
+    if (permissionToCheck === "View Dashboard") {
+        const roleJson = localStorage.getItem('permission');
+        if (!roleJson) return false;
+        const role = JSON.parse(roleJson);
+        if (role.roleName === "USER")
+            return false;
+        return true
+    }
     let pages = [];
     if (!roles) {
         const roleJson = localStorage.getItem('permission');

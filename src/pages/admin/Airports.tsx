@@ -107,29 +107,38 @@ const Airports = () => {
                     render: (_: React.ReactNode, value: Airport) => (
                         <div className="flex gap-[10px]">
                             {canUpdate && (
-                                <div
-                                    onClick={() => {
-                                        setUpdateAirport(value);
-                                        setIsUpdateOpen(true);
-                                    }}
-                                    className="text-yellow-400"
-                                >
-                                    {icons.edit}
-                                </div>
+                                value.canDelete ? (
+                                    <div
+                                        onClick={() => {
+                                            setUpdateAirport(value);
+                                            setIsUpdateOpen(true);
+                                        }}
+                                        className="text-yellow-400 cursor-pointer"
+                                    >
+                                        {icons.edit}
+                                    </div>
+                                ) : (
+                                    <div className="text-gray-400 cursor-not-allowed">{icons.edit}</div>
+                                )
                             )}
                             {canDelete && (
-                                <Popconfirm
-                                    title="Delete the airport"
-                                    description="Are you sure?"
-                                    onConfirm={() => handleDelete(value.id)}
-                                    okText="Yes"
-                                    cancelText="No"
-                                >
-                                    <div className="text-red-400">{icons.delete}</div>
-                                </Popconfirm>
+                                value.canDelete ? (
+                                    <Popconfirm
+                                        title="Delete the airport"
+                                        description="Are you sure?"
+                                        onConfirm={() => handleDelete(value.id)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <div className="text-red-400 cursor-pointer">{icons.delete}</div>
+                                    </Popconfirm>
+                                ) : (
+                                    <div className="text-gray-400 cursor-not-allowed">{icons.delete}</div>
+                                )
                             )}
                         </div>
-                    ),
+                    )
+
                 },
             ]
             : []),

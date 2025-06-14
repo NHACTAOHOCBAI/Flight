@@ -13,7 +13,8 @@ import { checkPermission } from "../../utils/checkPermission";
 import NewTicket from "../../components/ticket/New Ticket/NewTicket";
 import { BsArrowReturnLeft } from "react-icons/bs";
 import { TbExclamationCircleFilled } from "react-icons/tb";
-import formatPrice from "../../utils/formatVNprice"; const checkDate = (value: Flight) => {
+import formatPrice from "../../utils/formatVNprice"; import { getAllParamaters } from "../../services/parameter";
+const checkDate = (value: Flight) => {
     const now = new Date();
 
     const dateStr = value.departureDate;
@@ -29,6 +30,15 @@ const Tickets = () => {
     const canCreate = checkPermission("Create Ticket")
     const canUpdate = checkPermission("Update Ticket")
     const canDelete = checkPermission("Delete Ticket")
+    const [params, setParams] = useState<Parameter>({
+        maxInterQuantity: 0,
+        minFlightTime: 0,
+        minStopTime: 0,
+        maxFlightTime: 0,
+        latestBookingDay: 0,
+        latestCancelDay: 0,
+        maxStopTime: 0,
+    });
     const [isOpen, setIsOpen] = useState(false)
     const [deletedTicket, setDeletedTicket] = useState<Ticket>()
     const [isNewOpen, setIsNewOpen] = useState(false)
@@ -66,6 +76,8 @@ const Tickets = () => {
 
     const refetchData = async () => {
         setIsLoadingData(true);
+        const response = await getAllParamaters();
+        setParams(response.data);
         const res = await fetchAllTickets();
         setTicketsData(res?.result || []);
         setIsLoadingData(false);
@@ -132,35 +144,87 @@ const Tickets = () => {
                 if (isExpired)
                     return <div className="text-red-400">Expired</div>;
                 return <div className="text-green-400">Active</div>;
-            }
+            },
+            filters: [
+                { text: 'Active', value: 'Active' },
+                { text: 'Expired', value: 'Expired' }
+            ],
+            onFilter: (value, record) => {
+                const isExpired = record.flight ? checkDate(record.flight) : false;
+                if (value === 'Expired') return isExpired;
+                if (value === 'Active') return !isExpired;
+                return true;
+            },
         },
         {
             title: "Action",
             render: (_, value) => {
-                const isExpired = value.flight ? checkDate(value.flight) : false
+                const now = new Date();
+
+                const departureDateTime = value.flight
+                    ? new Date(`${value.flight.departureDate}T${value.flight.departureTime}`)
+                    : null;
+
+                let isCancelExpired = false;
+                if (departureDateTime) {
+                    const cancelDeadline = new Date(departureDateTime);
+                    cancelDeadline.setDate(cancelDeadline.getDate() - params.latestCancelDay);
+                    isCancelExpired = now > cancelDeadline;
+                }
+
                 return (
                     <div className="flex gap-[10px] items-center">
-                        <div
-                            onClick={() => {
-                                setUpdateTicket(value);
-                                setIsUpdateOpen(true);
-                            }}
-                            className="text-yellow-400"
-                        >
-                            {icons.edit}
-                        </div>
-                        {
-                            canDelete && !isExpired &&
+                        {/* Update Button */}
+                        {canUpdate ? (
+                            isCancelExpired ? (
+                                <div className="text-gray-400 cursor-not-allowed">
+                                    {icons.edit}
+                                </div>
+                            ) : (
+                                <div
+                                    onClick={() => {
+                                        setUpdateTicket(value);
+                                        setIsUpdateOpen(true);
+                                    }}
+                                    className="text-yellow-400 cursor-pointer"
+                                >
+                                    {icons.edit}
+                                </div>
+                            )
+                        ) : (
+                            <div className="text-gray-400 cursor-not-allowed">
+                                {icons.edit}
+                            </div>
+                        )}
 
-                            <div className="text-red-400" onClick={() => {
-                                setDeletedTicket(value)
-                                setIsOpen(true)
-                            }}><BsArrowReturnLeft /></div>
-                        }
+                        {/* Delete Button (Return Ticket) */}
+                        {canDelete ? (
+                            isCancelExpired ? (
+                                <div className="text-gray-400 cursor-not-allowed">
+                                    <BsArrowReturnLeft />
+                                </div>
+                            ) : (
+                                <div
+                                    className="text-red-400 cursor-pointer"
+                                    onClick={() => {
+                                        setDeletedTicket(value);
+                                        setIsOpen(true);
+                                    }}
+                                >
+                                    <BsArrowReturnLeft />
+                                </div>
+                            )
+                        ) : (
+                            <div className="text-gray-400 cursor-not-allowed">
+                                <BsArrowReturnLeft />
+                            </div>
+                        )}
                     </div>
-                )
+                );
             }
-        },
+        }
+
+
     ];
 
     useEffect(() => {
@@ -255,7 +319,6 @@ const Tickets = () => {
                 </div>
             </div>
             <NewTicket
-
                 isNewOpen={isNewOpen}
                 setIsNewOpen={setIsNewOpen}
                 refetchData={refetchData}
