@@ -118,6 +118,9 @@ const Roles = () => {
                         pagination={{ pageSizeOptions: [5, 10], showSizeChanger: true, defaultPageSize: 5 }}
                         headerTitle="Role Table"
                         scroll={{ x: 'max-content' }}
+                        options={{
+                            reload: false,
+                        }}
                     />
                 </div>
                 {canCreate && <NewRole refetchData={refetchData} />}

@@ -285,7 +285,9 @@ const Flights = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="Flight Table"
-                        scroll={{ x: "max-content" }}
+                        options={{
+                            reload: false,
+                        }}
                         toolBarRender={() => {
                             const buttons = [];
                             if (canCreate) {

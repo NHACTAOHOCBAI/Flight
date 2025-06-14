@@ -246,7 +246,10 @@ const Accounts = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="Account Table"
-                        scroll={{ x: "max-content" }}
+                        options={{
+                            reload: false,
+                        }}
+
                         toolBarRender={() => {
                             if (canCreate)
                                 return [

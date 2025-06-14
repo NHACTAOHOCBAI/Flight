@@ -198,7 +198,9 @@ const Airports = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="Airport Table"
-                        scroll={{ x: "max-content" }}
+                        options={{
+                            reload: false,
+                        }}
                     />
                 </div>
                 {canCreate && (

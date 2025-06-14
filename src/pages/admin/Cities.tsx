@@ -172,7 +172,9 @@ const Cities = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="City Table"
-                        scroll={{ x: "max-content" }}
+                        options={{
+                            reload: false,
+                        }}
                     />
                 </div>
                 {canCreate && <NewCity refetchData={refetchData} />}

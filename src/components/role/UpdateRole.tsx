@@ -129,7 +129,6 @@ const hardcodedPagesByModule: Record<string, Page[]> = {
         { id: 21, name: "Create Account", apiPath: "/accounts/**", method: "POST", module: "Account", icon: <PlusOutlined />, color: "green" },
         { id: 22, name: "Edit Account", apiPath: "/accounts/**", method: "PUT", module: "Account", icon: <EditOutlined />, color: "orange" },
         { id: 23, name: "Delete Account", apiPath: "/accounts/**", method: "DELETE", module: "Account", icon: <DeleteOutlined />, color: "red" },
-        { id: 24, name: "Change Password", apiPath: "/accounts/**/change-password/**", method: "POST", module: "Account", icon: <EditOutlined />, color: "purple" },
     ],
     "Airline": [
         { id: 31, name: "Create Airline", apiPath: "/airlines/**", method: "POST", module: "Airline", icon: <PlusOutlined />, color: "green" },
@@ -175,8 +174,6 @@ const hardcodedPagesByModule: Record<string, Page[]> = {
         { id: 111, name: "Create Ticket", apiPath: "/tickets/**", method: "POST", module: "Ticket", icon: <PlusOutlined />, color: "green" },
         { id: 112, name: "Edit Ticket", apiPath: "/tickets/**", method: "PUT", module: "Ticket", icon: <EditOutlined />, color: "orange" },
         { id: 113, name: "Delete Ticket", apiPath: "/tickets/**", method: "DELETE", module: "Ticket", icon: <DeleteOutlined />, color: "red" },
-        { id: 114, name: "Get Total Revenue", apiPath: "/tickets/revenue/**", method: "GET", module: "Ticket", icon: <EyeOutlined />, color: "purple" },
-        { id: 115, name: "Get Booking Rate", apiPath: "/tickets/booking-rate/**", method: "GET", module: "Ticket", icon: <EyeOutlined />, color: "cyan" },
     ],
     "Report": [
         { id: 120, name: "Get Annual Revenue Report", apiPath: "/reports/annual-revenue/**", method: "GET", module: "Report", icon: <EyeOutlined />, color: "gold" },

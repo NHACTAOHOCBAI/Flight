@@ -196,7 +196,9 @@ const Tickets = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="Ticket Table"
-                        scroll={{ x: "max-content" }}
+                        options={{
+                            reload: false,
+                        }}
                         toolBarRender={() => {
                             if (canCreate)
                                 return [

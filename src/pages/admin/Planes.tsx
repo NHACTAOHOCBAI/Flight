@@ -199,7 +199,9 @@ const Planes = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="Plane Table"
-                        scroll={{ x: "max-content" }}
+                        options={{
+                            reload: false,
+                        }}
                     />
                 </div>
                 {canCreate && (

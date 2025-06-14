@@ -196,7 +196,9 @@ const Airlines = () => {
                             defaultPageSize: 5,
                         }}
                         headerTitle="Airline Table"
-                        scroll={{ x: "max-content" }}
+                        options={{
+                            reload: false,
+                        }}
                     />
                 </div>
                 {canCreate && <NewAirline refetchData={refetchData} />}

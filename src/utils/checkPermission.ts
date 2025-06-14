@@ -9,7 +9,7 @@ const permissionMap: Record<string, string> = {
     'GET_/accounts/**': 'View Account',
     'DELETE_/accounts/**': 'Delete Account',
     'PUT_/accounts/**': 'Update Account',
-    'POST_/accounts/**/change-password/**': 'Change Password',
+    // 'POST_/accounts/**/change-password/**': 'Change Password',
 
     'POST_/roles/**': 'Create Role',
     'PUT_/roles/**': 'Update Role',
@@ -20,8 +20,8 @@ const permissionMap: Record<string, string> = {
     'GET_/tickets/**': 'View Ticket',
     'PUT_/tickets/**': 'Update Ticket',
     'DELETE_/tickets/**': 'Delete Ticket',
-    'GET_/tickets/revenue/**': 'Get Total Revenue',
-    'GET_/tickets/booking-rate/**': "Get Booking Rate",
+    // 'GET_/tickets/revenue/**': 'Get Total Revenue',
+    // 'GET_/tickets/booking-rate/**': "Get Booking Rate",
 
     'POST_/seats/**': 'Create Seat',
     'PUT_/seats/**': 'Update Seat',

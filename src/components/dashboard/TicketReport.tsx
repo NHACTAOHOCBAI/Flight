@@ -131,7 +131,9 @@ const TicketReport = () => {
                         disabledDate={disabledDate}
                     />
                 ]}
-                scroll={{ x: "max-content" }}
+                options={{
+                    reload: false,
+                }}
             />
         </div>
     );
