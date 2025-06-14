@@ -6,6 +6,7 @@ import FirstStep from './FirstStep';
 import SecondStep from '../../../booking/secondStep/SecondStep';
 import { useAppDispatch } from '../../../../hooks/useAppDispatch';
 import { resetFlight } from '../../../../redux/features/flight/flightSlide';
+import Loading from '../../../Loading';
 
 interface Props {
     refetchData: () => Promise<void>;
@@ -57,7 +58,7 @@ const AdminBooking = ({ setIsNewOpen, refetchData }: Props) => {
         flightId: flight.id,
         tickets: ticketsData || []
     }
-    const { mutate } = useCreateTicket();
+    const { mutate, isPending } = useCreateTicket();
     const [messageApi, contextHolder] = message.useMessage();
     const { token } = theme.useToken();
     const [current, setCurrent] = useState(0);
@@ -102,6 +103,7 @@ const AdminBooking = ({ setIsNewOpen, refetchData }: Props) => {
                 messageApi.success("Booking flight success");
                 dispath(resetFlight())
                 refetchData()
+                setCurrent(0)
                 setIsNewOpen(false)
             },
             onError: (error) => {
@@ -112,32 +114,37 @@ const AdminBooking = ({ setIsNewOpen, refetchData }: Props) => {
     return (
         <>
             {contextHolder}
-            <div className='flex gap-[10px]'>
-                <div className='flex-2/3'>
-                    <Steps current={current} items={items} />
-                    <div style={contentStyle} className='p-[10px]'>{steps[current].content}</div>
-                    <div style={{ marginTop: 24 }}>
-                        {current < steps.length - 1 && (
-                            <Button type="primary" onClick={() => next()}>
-                                Next
-                            </Button>
-                        )}
-                        {current === steps.length - 1 && (
-                            <Button type="primary" onClick={handleBooking}>
-                                Booking
-                            </Button>
-                        )}
-                        {current > 0 && (
-                            <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
-                                Previous
-                            </Button>
-                        )}
+            {
+                isPending ?
+                    <Loading />
+                    :
+                    <div className='flex gap-[10px]'>
+                        <div className='flex-2/3'>
+                            <Steps current={current} items={items} />
+                            <div style={contentStyle} className='p-[10px]'>{steps[current].content}</div>
+                            <div style={{ marginTop: 24 }}>
+                                {current < steps.length - 1 && (
+                                    <Button type="primary" onClick={() => next()}>
+                                        Next
+                                    </Button>
+                                )}
+                                {current === steps.length - 1 && (
+                                    <Button type="primary" onClick={handleBooking}>
+                                        Booking
+                                    </Button>
+                                )}
+                                {current > 0 && (
+                                    <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
+                                        Previous
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                        <div className='flex-1/3'>
+                            <DetailTicket />
+                        </div>
                     </div>
-                </div>
-                <div className='flex-1/3'>
-                    <DetailTicket />
-                </div>
-            </div>
+            }
         </>
     );
 };

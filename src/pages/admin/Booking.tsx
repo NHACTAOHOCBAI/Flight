@@ -6,9 +6,11 @@ import { useBookingFlight } from '../../hooks/useTickets';
 import DetailTicket from '../../components/booking/detailTicket/DetailTicket';
 import { useNavigate } from 'react-router';
 import ThirdStep from '../../components/booking/thirdStep/ThirdStep';
+import Loading from '../../components/Loading';
 
 
 const Booking = () => {
+    // const [isPending, setIsPending] = useState(false)
     const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') || JSON.stringify({
         id: 0,
         flightCode: "",
@@ -54,7 +56,7 @@ const Booking = () => {
         flightId: flight.id,
         tickets: ticketsData || []
     }
-    const { mutate } = useBookingFlight();
+    const { mutate, isPending } = useBookingFlight();
     const [messageApi, contextHolder] = message.useMessage();
     const { token } = theme.useToken();
     const [current, setCurrent] = useState(0);
@@ -96,6 +98,7 @@ const Booking = () => {
             messageApi.error("You haven't booked any tickets");
             return;
         }
+        // setIsPending(true)
         mutate(tickets, {
             onSuccess: async () => {
                 messageApi.success("Booking flight success");
@@ -107,6 +110,7 @@ const Booking = () => {
                 messageApi.error(error.message);
             },
         });
+        // setIsPending(false)
     }
     useEffect(() => {
         if (flight === null) {
@@ -117,32 +121,37 @@ const Booking = () => {
     return (
         <>
             {contextHolder}
-            <div className='flex gap-[10px]'>
-                <div className='flex-2/3'>
-                    <Steps current={current} items={items} />
-                    <div style={contentStyle} className='p-[10px]'>{steps[current].content}</div>
-                    <div style={{ marginTop: 24 }}>
-                        {current < 1 && (
-                            <Button type="primary" onClick={() => next()}>
-                                Next
-                            </Button>
-                        )}
-                        {current === 1 && (
-                            <Button type="primary" onClick={handleBooking}>
-                                Booking
-                            </Button>
-                        )}
-                        {current > 0 && current != 2 && (
-                            <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
-                                Previous
-                            </Button>
-                        )}
+            {
+                isPending ?
+                    <Loading />
+                    :
+                    <div className='flex gap-[10px]'>
+                        <div className='flex-2/3'>
+                            <Steps current={current} items={items} />
+                            <div style={contentStyle} className='p-[10px]'>{steps[current].content}</div>
+                            <div style={{ marginTop: 24 }}>
+                                {current < 1 && (
+                                    <Button disabled={isPending} type="primary" onClick={() => next()}>
+                                        Next
+                                    </Button>
+                                )}
+                                {current === 1 && (
+                                    <Button type="primary" onClick={handleBooking} disabled={isPending}>
+                                        Booking
+                                    </Button>
+                                )}
+                                {current > 0 && current != 2 && (
+                                    <Button disabled={isPending} style={{ margin: '0 8px' }} onClick={() => prev()}>
+                                        Previous
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                        <div className='flex-1/3'>
+                            <DetailTicket />
+                        </div>
                     </div>
-                </div>
-                <div className='flex-1/3'>
-                    <DetailTicket />
-                </div>
-            </div>
+            }
         </>
     );
 };

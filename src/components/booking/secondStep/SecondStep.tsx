@@ -11,7 +11,6 @@ interface Ticket {
 }
 const SecondStep = () => {
     const { tickets } = useTicketsContext();
-    console.log("Tickets in SecondStep:", tickets);
     const flight = JSON.parse(localStorage.getItem("booked_flight") || JSON.stringify({
         id: 0,
         flightCode: "",
