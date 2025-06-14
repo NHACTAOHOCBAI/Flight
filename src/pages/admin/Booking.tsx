@@ -9,7 +9,45 @@ import ThirdStep from '../../components/booking/thirdStep/ThirdStep';
 
 
 const Booking = () => {
-    const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') as string);
+    const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') || JSON.stringify({
+        id: 0,
+        flightCode: "",
+        plane: {
+            id: 0,
+            planeCode: "",
+            planeName: "",
+            description: "",
+            airline: {
+                id: 0,
+                name: "",
+                logo: ""
+            }
+        },
+        departureAirport: {
+            id: 0,
+            name: "",
+            city: {
+                id: 0,
+                name: ""
+            }
+        },
+        arrivalAirport: {
+            id: 0,
+            name: "",
+            city: {
+                id: 0,
+                name: ""
+            }
+        },
+        departureDate: "",
+        arrivalDate: "",
+        departureTime: "",
+        arrivalTime: "",
+        originalPrice: 0,
+        interAirports: [],
+        seats: [],
+        hasTickets: false
+    }));
     const navigate = useNavigate();
     const ticketsData = JSON.parse(localStorage.getItem('tickets') as string);
     const tickets: TicketRequest = {

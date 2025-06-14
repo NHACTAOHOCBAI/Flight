@@ -37,7 +37,7 @@ const TicketInformation = () => {
     localStorage.setItem('tickets', JSON.stringify(tickets));
   }
   useEffect(() => {
-    const ticket = JSON.parse(localStorage.getItem('tickets') || "")
+    const ticket = JSON.parse(localStorage.getItem('tickets') || "[]")
     if (ticket) {
       form.setFieldsValue({ tickets: ticket });
     }

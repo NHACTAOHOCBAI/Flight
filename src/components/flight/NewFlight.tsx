@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Col, DatePicker, Form, Input, InputNumber, message, Modal, Row, Select } from "antd";
+import { Button, Col, DatePicker, Form, InputNumber, message, Modal, Row, Select } from "antd";
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import { useCreateFlight } from "../../hooks/useFlights";
 import dayjs from "dayjs";
@@ -98,9 +98,6 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
                     style={{ display: "flex", gap: 20 }}
                 >
                     <div style={{ width: '60%' }}>
-                        <Form.Item label="Code" name="flightCode" rules={[{ required: true, message: "Please enter flight code" }]}>
-                            <Input disabled={isPending} placeholder="Enter flight code" />
-                        </Form.Item>
 
                         <Form.Item label="Plane" name="planeId" rules={[{ required: true, message: "Please select a plane" }]}>
                             <Select disabled={isPending} options={planeSelectOptions} placeholder="Select plane" />
