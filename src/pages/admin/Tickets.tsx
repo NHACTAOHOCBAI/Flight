@@ -116,15 +116,18 @@ const Tickets = () => {
                     >
                         {icons.edit}
                     </div>
-                    <Popconfirm
-                        title="Delete the ticket"
-                        description="Are you sure?"
-                        onConfirm={() => handleDelete(value.id)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <div className="text-red-400">{icons.delete}</div>
-                    </Popconfirm>
+                    {
+                        canDelete &&
+                        <Popconfirm
+                            title="Delete the ticket"
+                            description="Are you sure?"
+                            onConfirm={() => handleDelete(value.id)}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <div className="text-red-400">{icons.delete}</div>
+                        </Popconfirm>
+                    }
                 </div>
             ),
         },
