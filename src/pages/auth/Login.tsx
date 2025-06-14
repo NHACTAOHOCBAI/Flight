@@ -1,6 +1,5 @@
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input, message, Spin } from 'antd';
-import icons from '../../assets/icons';
 import { Link, useNavigate } from 'react-router';
 import { useLogin } from '../../hooks/useAuth';
 import { useState } from 'react';
@@ -13,50 +12,79 @@ import { setRoles } from '../../redux/features/role/roleSlide';
 type FieldType = {
     username?: string;
     password?: string;
-    remember?: string;
+    remember?: boolean;
 };
 
 const Login = () => {
-    const dispath = useAppDispatch()
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { mutate, isPending } = useLogin();
     const [messageApi, contextHolder] = message.useMessage();
     const [isRedirecting, setIsRedirecting] = useState(false);
+
+    // Lấy dữ liệu từ localStorage
+    const rememberedUsername = localStorage.getItem('rememberedUsername') || '';
+    const rememberedPassword = localStorage.getItem('rememberedPassword') || '';
+    const remembered = localStorage.getItem('rememberMe') === 'true';
+
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        mutate({
-            username: values.username as string,
-            password: values.password as string
-        }, {
-            onSuccess: async (data) => {
-                setIsRedirecting(true);
-                const params = await getAllParamaters()
-                dispath(login(data.data.account));
-                dispath(setParams(params.data))
-                console.log(data.data.account.role);
-                localStorage.setItem('permission', JSON.stringify(data.data.account.role));
-                dispath(setRoles(data.data.account.role))
-                setTimeout(() => {
-                    navigate('/admin');
-                }, 500);
+        const { username, password, remember } = values;
+
+        // Xử lý "Remember Me"
+        if (remember) {
+            localStorage.setItem('rememberMe', 'true');
+            localStorage.setItem('rememberedUsername', username || '');
+            localStorage.setItem('rememberedPassword', password || '');
+        } else {
+            localStorage.removeItem('rememberMe');
+            localStorage.removeItem('rememberedUsername');
+            localStorage.removeItem('rememberedPassword');
+        }
+
+        mutate(
+            {
+                username: username as string,
+                password: password as string
             },
-            onError: (error) => {
-                messageApi.error(error.message);
-            },
-        });
+            {
+                onSuccess: async (data) => {
+                    setIsRedirecting(true);
+                    const params = await getAllParamaters();
+                    dispatch(login(data.data.account));
+                    dispatch(setParams(params.data));
+                    localStorage.setItem('permission', JSON.stringify(data.data.account.role));
+                    dispatch(setRoles(data.data.account.role));
+                    setTimeout(() => {
+                        navigate('/admin');
+                    }, 500);
+                },
+                onError: (error) => {
+                    messageApi.error(error.message);
+                }
+            }
+        );
     };
 
     return (
         <>
             {contextHolder}
-            <div className=' w-lvw h-lvh flex items-center justify-center'>
-                {isRedirecting ? <Spin size='large' /> :
-                    <div className=' rounded-md bg-white p-[24px] drop-shadow-md flex gap-[20px]'>
-                        <div className='w-[400px]'>
-                            <h1 className='font-medium text-[24px] text-center text-blue-500 p-[24px]'>Wellcome to our website :))</h1>
+            <div className="w-lvw h-lvh flex items-center justify-center">
+                {isRedirecting ? (
+                    <Spin size="large" />
+                ) : (
+                    <div className="rounded-md bg-white p-[24px] drop-shadow-md flex gap-[20px]">
+                        <div className="w-[400px]">
+                            <h1 className="font-medium text-[24px] text-center text-blue-500 p-[24px]">
+                                Welcome to our website :))
+                            </h1>
                             <Form
                                 layout="vertical"
                                 name="basic"
-                                initialValues={{ remember: true }}
+                                initialValues={{
+                                    username: rememberedUsername,
+                                    password: rememberedPassword,
+                                    remember: remembered
+                                }}
                                 onFinish={onFinish}
                                 autoComplete="off"
                             >
@@ -76,32 +104,40 @@ const Login = () => {
                                     <Input.Password disabled={isPending} />
                                 </Form.Item>
 
-                                <Form.Item<FieldType> name="remember" valuePropName="checked" label={null}>
+                                <Form.Item<FieldType> name="remember" valuePropName="checked">
                                     <Checkbox disabled={isPending}>Remember me</Checkbox>
                                 </Form.Item>
 
-                                <Form.Item label={null}>
-                                    <Button disabled={isPending} type="primary" htmlType="submit" style={{ width: '100%' }}>
+                                <Form.Item>
+                                    <Button
+                                        disabled={isPending}
+                                        type="primary"
+                                        htmlType="submit"
+                                        style={{ width: '100%' }}
+                                    >
                                         Sign in
                                     </Button>
                                 </Form.Item>
                             </Form>
-                            <div className='relative h-[50px] flex flex-row items-center justify-center'>
-                                <div className='h-[1px] w-full bg-gray-200'></div>
-                                <p className='absolute text-gray-800 text-[14px] bg-white  p-[5px]'>or Sign In with</p>
-                            </div>
-                            <Button disabled={isPending} style={{ width: '100%' }}>
-                                {icons.google}Google
-                            </Button>
-                            <p className=' text-gray-800 text-[14px] mt-[20px]'>Don't have an account? <Link to={'/register'} style={{ color: "oklch(62.3% 0.214 259.815)", textDecoration: "underline" }}>Sign up here</Link></p>
-                        </div>
-                        {/* <img src="../../../public/registerImg.png" className='h-[500px] drop-shadow-lg' /> */}
-                    </div>
-                }
 
+                            <p className="text-gray-800 text-[14px] mt-[20px]">
+                                Don't have an account?{' '}
+                                <Link
+                                    to={'/register'}
+                                    style={{
+                                        color: 'oklch(62.3% 0.214 259.815)',
+                                        textDecoration: 'underline'
+                                    }}
+                                >
+                                    Sign up here
+                                </Link>
+                            </p>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
-    )
+    );
 };
 
 export default Login;
