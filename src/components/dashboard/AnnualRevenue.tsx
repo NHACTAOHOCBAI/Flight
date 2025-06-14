@@ -4,38 +4,20 @@ import icons from '../../assets/icons';
 import type { DatePickerProps } from 'antd/lib';
 import exportToExcel from '../../utils/exportFile';
 import { ProTable, type ProColumns } from '@ant-design/pro-components';
-
+import { useEffect, useState } from 'react';
+import { annualRevenueReport } from '../../services/report';
+import dayjs from 'dayjs';
 interface DataType {
-    key: number,
-    month: number,
-    flightQuantity: number,
-    revenue: number,
-    rate: number
-}
-const data: DataType[] = [
-    { key: 1, month: 1, flightQuantity: 120, revenue: 125000000, rate: 5.2 },
-    { key: 2, month: 2, flightQuantity: 110, revenue: 115000000, rate: 4.8 },
-    { key: 3, month: 3, flightQuantity: 130, revenue: 140000000, rate: 6.1 },
-    { key: 4, month: 4, flightQuantity: 145, revenue: 160000000, rate: 7.5 },
-    { key: 5, month: 5, flightQuantity: 150, revenue: 170000000, rate: 6.9 },
-    { key: 6, month: 6, flightQuantity: 140, revenue: 155000000, rate: 5.6 },
-    { key: 7, month: 7, flightQuantity: 160, revenue: 180000000, rate: 8.2 },
-    { key: 8, month: 8, flightQuantity: 155, revenue: 175000000, rate: 7.8 },
-    { key: 9, month: 9, flightQuantity: 135, revenue: 150000000, rate: 6.0 },
-    { key: 10, month: 10, flightQuantity: 125, revenue: 140000000, rate: 5.3 },
-    { key: 11, month: 11, flightQuantity: 115, revenue: 130000000, rate: 4.7 },
-    { key: 12, month: 12, flightQuantity: 170, revenue: 190000000, rate: 9.1 }
-];
 
-const excelData: unknown[][] = [
-    ["Month", "Flight quantity", "Revenue", "Rate"],
-    ...data.map((value) => [
-        value.month,
-        value.flightQuantity,
-        value.revenue.toLocaleString("vi-VN") + " VND",
-        value.rate + "%"
-    ])
-];
+    month: number,
+    flightCount: number,
+    revenue: number,
+    percentage: number
+}
+const currentYear = dayjs().year();
+const disabledDate = (current: dayjs.Dayjs) => {
+    return current.year() >= currentYear; // Vô hiệu hóa năm hiện tại trở lên
+};
 const columns: ProColumns<DataType>[] = [
     {
         title: 'Month',
@@ -44,8 +26,8 @@ const columns: ProColumns<DataType>[] = [
     },
     {
         title: 'Flight quantity',
-        dataIndex: 'flightQuantity',
-        key: 'flightQuantity',
+        dataIndex: 'flightCount',
+        key: 'flightCount',
         sorter: true,
     },
     {
@@ -57,26 +39,43 @@ const columns: ProColumns<DataType>[] = [
     },
     {
         title: 'Rate',
-        dataIndex: 'rate',
-        key: 'rate',
+        dataIndex: 'percentage',
+        key: 'percentage',
         sorter: true,
         render: (text) => <div>{text}%</div>
     },
 ];
 
 
-
-const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log(date, dateString);
-}
 const AnnualRevenue = () => {
+    const [report, setReport] = useState<DataType[]>([])
+    const [year, setYear] = useState<number>(currentYear - 1)
+    const refetchReport = async () => {
+        const data = await annualRevenueReport(year)
+        setReport(data.months)
+    }
+    const excelData: unknown[][] = [
+        ["Month", "Flight quantity", "Revenue", "Rate"],
+        ...report.map((value) => [
+            value.month,
+            value.flightCount,
+            value.revenue.toLocaleString("vi-VN") + " VND",
+            value.percentage + "%"
+        ])
+    ];
+    const onChange: DatePickerProps['onChange'] = (date) => {
+        setYear(date.year())
+    };
+    useEffect(() => {
+        refetchReport()
+    }, [year])
     return (
         <div className='flex-1 min-w-[400px] bg-white mt-[10px] shadow-md'>
             <ProTable<DataType>
                 style={{ width: "100%" }}
                 headerTitle={<div className='text-[18px] flex gap-[5px] underline underline-offset-1'>{icons.report}Annual Revenue  Report</div>}
                 columns={columns}
-                dataSource={data}
+                dataSource={report}
                 rowKey="id"
                 search={false}
                 pagination={{
@@ -94,7 +93,12 @@ const AnnualRevenue = () => {
                         <Button type='primary' style={{ marginLeft: "auto", marginRight: 10 }} onClick={() => exportToExcel(excelData, "Flight_Ticket_Sales_Report")}>
                             {icons.export} Export
                         </Button>,
-                        <DatePicker onChange={onChange} picker="year" />
+                        <DatePicker
+                            onChange={onChange}
+                            picker="year"
+                            disabledDate={disabledDate}
+                            value={dayjs(String(year), 'YYYY')} // ✅ truyền giá trị mặc định vào đây
+                        />
                     ];
                 }}
                 scroll={{ x: 'max-content' }}

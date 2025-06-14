@@ -4,51 +4,16 @@ import type { DatePickerProps } from 'antd/lib';
 import exportToExcel from '../../utils/exportFile';
 import { ProTable, type ProColumns } from '@ant-design/pro-components';
 import formatPrice from '../../utils/formatVNprice';
+import { useEffect, useState } from 'react';
+import { flightRevenueReport } from '../../services/report';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+dayjs.extend(isSameOrAfter);
 
-
-const reportData: MonthlyRevenueReport = {
-    year: 2025,
-    month: 4,
-    revenue: 1_353_000_000,
-    percentage: 12.3,
-    flightCount: 10,
-    flights: [
-        {
-            flightId: 1,
-            flightCode: "VN101",
-            ticketCount: 120,
-            revenue: 150_000_000,
-            percentage: 12.5,
-        },
-        {
-            flightId: 2,
-            flightCode: "VN202",
-            ticketCount: 95,
-            revenue: 113_000_000,
-            percentage: 10.8,
-        },
-        // ...các chuyến bay còn lại tương tự
-    ],
+const disabledDate = (current: dayjs.Dayjs) => {
+    return current.isSameOrAfter(dayjs(), 'month'); // Disable tháng hiện tại trở đi
 };
-
-const excelData = [
-    ["Year", reportData.year],
-    ["Month", reportData.month],
-    ["Total Revenue", `${reportData.revenue.toLocaleString("vi-VN")} VND`],
-    ["Growth Percentage", `${reportData.percentage}%`],
-    ["Flight Count", reportData.flightCount],
-    [],
-    ["Flight ID", "Flight Code", "Ticket Count", "Revenue", "Percentage"],
-    ...reportData.flights.map((flight) => [
-        flight.flightId,
-        flight.flightCode,
-        flight.ticketCount,
-        `${flight.revenue.toLocaleString("vi-VN")} VND`,
-        `${flight.percentage}%`
-    ])
-];
-
-
+const defaultDate = dayjs().subtract(1, 'month');
 const columns: ProColumns<MonthlyRevenueReport["flights"][0]>[] = [
     {
         title: 'ID',
@@ -71,29 +36,60 @@ const columns: ProColumns<MonthlyRevenueReport["flights"][0]>[] = [
         render: (_, record) => <div>{record.revenue.toLocaleString("vi-VN")} VND</div>,
     },
     {
-        title: 'Percentage',
+        title: 'Rate',
         dataIndex: 'percentage',
         sorter: true,
         render: (text) => <div>{text}%</div>,
     },
 ];
 
-const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log(date, dateString);
-}
 const TicketReport = () => {
+    const [report, setReport] = useState<MonthlyRevenueReport>()
+    const [date, setDate] = useState<{ month: number, year: number }>({
+        month: defaultDate.month() + 1,
+        year: defaultDate.year()
+    })
+    const onChange: DatePickerProps['onChange'] = (date) => {
+        setDate({
+            month: date.month() + 1,
+            year: date.year()
+        })
+    };
+    const refetchReport = async () => {
+        const data = await flightRevenueReport(date.month, date.year)
+        setReport(data)
+    }
+    const excelData = [
+        ["Year", report?.year ?? ""],
+        ["Month", report?.month ?? ""],
+        ["Total Revenue", report?.revenue !== undefined ? `${report.revenue.toLocaleString("vi-VN")} VND` : ""],
+        ["Growth Percentage", report?.percentage !== undefined ? `${report.percentage}%` : ""],
+        ["Flight Count", report?.flightCount ?? ""],
+        [],
+        ["Flight ID", "Flight Code", "Ticket Count", "Revenue", "Percentage"],
+        ...(report?.flights?.map((flight) => [
+            flight.flightId,
+            flight.flightCode,
+            flight.ticketCount,
+            `${flight.revenue.toLocaleString("vi-VN")} VND`,
+            `${flight.percentage}%`
+        ]) ?? [])
+    ];
+    useEffect(() => {
+        refetchReport()
+    }, [date])
     return (
         <div className="flex-1 min-w-[400px] bg-white mt-[10px] shadow-md">
             {/* Thống kê tổng quan */}
             <div className="p-4 border-b border-gray-200 text-[15px] font-medium">
                 <div>
-                    Date: {reportData.month}/{reportData.year}
+                    Date: {report?.month}/{report?.year}
                 </div>
                 <div>
-                    Total Revenue: {formatPrice(reportData.revenue)}
+                    Total Revenue: {formatPrice(report?.revenue || 0)}
                 </div>
                 <div>
-                    Percentage: {reportData.percentage}%
+                    Percentage: {report?.percentage}%
                 </div>
             </div>
 
@@ -106,7 +102,7 @@ const TicketReport = () => {
                     </div>
                 }
                 columns={columns}
-                dataSource={reportData.flights}
+                dataSource={report?.flights}
                 rowKey="flightId"
                 search={false}
                 pagination={{
@@ -127,7 +123,13 @@ const TicketReport = () => {
                     >
                         {icons.export} Export
                     </Button>,
-                    <DatePicker onChange={onChange} picker="month" />,
+
+                    <DatePicker
+                        value={dayjs(`${date.year}-${date.month}`, 'YYYY-M')}
+                        onChange={onChange}
+                        picker="month"
+                        disabledDate={disabledDate}
+                    />
                 ]}
                 scroll={{ x: "max-content" }}
             />

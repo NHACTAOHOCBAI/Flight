@@ -9,4 +9,12 @@ const getYearDashboard = async ({ year }: { year: number }) => {
     const res = await axiosInstance.get(`/dashboard/${year}`);
     return res.data as BookingRate
 }
-export { getAnnualRevenueReport, getMonthlyRevenueReport, getDashboard, getYearDashboard };
+const annualRevenueReport = async (year: number) => {
+    const res = await axiosInstance.get(`/reports/annual-revenue/${year}`)
+    return res.data
+}
+const flightRevenueReport = async (month: number, year: number) => {
+    const res = await axiosInstance.get(`/reports/monthly-revenue/${month}/${year}`)
+    return res.data
+}
+export { getAnnualRevenueReport, getMonthlyRevenueReport, getDashboard, getYearDashboard, annualRevenueReport, flightRevenueReport };

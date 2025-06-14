@@ -14,26 +14,31 @@ import { getPoplarAirlines } from "../../services/airline";
 import { checkPermission } from "../../utils/checkPermission";
 
 const Dashboard = () => {
-    const canUpdateAccount = checkPermission("Create Role")
-    console.log(canUpdateAccount)
+    const canViewAnuualReport = checkPermission("Get Anuual Revenue Report")
+    const canViewMonthlyReport = checkPermission('Get Monthly Revenue Report')
+    const canViewTicket = checkPermission('View Ticket')
     const { data: airlineData } = useGetAllAirlines();
     const { data: airportData } = useGetAllAirports();
     return (
         <div className="w-full">
             <div className="w-full flex gap-[10px] justify-between flex-wrap gap-y-2">
                 <FlightCard />
-                <RevenueCard />
+                {canViewTicket && <RevenueCard />}
                 <StaticCard title="Airlines" value={airlineData?.data.result.length || 0} />
                 <StaticCard title="Airports" value={airportData?.data.result.length || 0} />
             </div>
 
             <div className=" mt-[10px] gap-[10px] flex justify-between flex-wrap gap-y-2">
-                <BookingRate />
+                {canViewTicket && <BookingRate />}
                 <PopularAirline />
             </div>
             <div className="flex gap-[10px] flex-wrap">
-                <TicketReport />
-                <AnnualRevenue />
+                {
+                    canViewMonthlyReport && <TicketReport />
+                }
+                {
+                    canViewAnuualReport && <AnnualRevenue />
+                }
             </div>
         </div>
     );
