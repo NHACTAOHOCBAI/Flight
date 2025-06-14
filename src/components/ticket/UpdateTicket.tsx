@@ -79,15 +79,16 @@ const UpdateTicket = ({
                 <Form form={form} layout="vertical" onFinish={handleOk}>
                     <Form.Item label="Flight" name="flightId" rules={[{ required: true }]}>
                         <Select
+
                             options={flightSelectOptions}
-                            disabled={isPending}
+                            disabled
                             placeholder="Select a flight"
                         />
                     </Form.Item>
                     <Form.Item label="Seat" name="seatId" rules={[{ required: true }]}>
                         <Select
                             options={seatSelectOptions}
-                            disabled={isPending}
+                            disabled
                             placeholder="Select a seat"
                         />
                     </Form.Item>
@@ -95,7 +96,7 @@ const UpdateTicket = ({
                         <Input disabled={isPending} />
                     </Form.Item>
                     <Form.Item label="Email" name="passengerEmail" rules={[{ required: true, type: "email" }]}>
-                        <Input disabled={isPending} />
+                        <Input disabled />
                     </Form.Item>
                     <Form.Item label="Phone Number" name="passengerPhone" rules={[{ required: true }]}>
                         <Input disabled={isPending} />

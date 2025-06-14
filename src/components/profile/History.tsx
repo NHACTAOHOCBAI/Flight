@@ -86,7 +86,7 @@ const History = () => {
     )
 }
 
-const RefundModal = ({ isOpen, setIsOpen, ticket, fetchMyTickets }: { isOpen: boolean, setIsOpen: (value: boolean) => void, ticket: Ticket | undefined, fetchMyTickets: () => void }) => {
+const RefundModal = ({ isOpen, setIsOpen, ticket, fetchMyTickets }: { isOpen: boolean, setIsOpen: (value: boolean) => void, ticket: Ticket | undefined, fetchMyTickets?: () => void }) => {
     const [isPending, setIsPending] = useState(false)
     const [messageApi, contextHolder] = message.useMessage();
     const handleCancel = () => {
@@ -97,9 +97,11 @@ const RefundModal = ({ isOpen, setIsOpen, ticket, fetchMyTickets }: { isOpen: bo
         setIsPending(true);
         try {
             await refundMyTicket(ticket!.id)
-            messageApi.success("Create airport successfully");
+            messageApi.success("Refund ticket successfully");
             setIsOpen(false)
-            fetchMyTickets()
+            if (fetchMyTickets) {
+                fetchMyTickets();
+            }
         }
         catch {
             notification.error({
@@ -150,5 +152,5 @@ const RefundModal = ({ isOpen, setIsOpen, ticket, fetchMyTickets }: { isOpen: bo
         </>
     );
 };
-
+export { RefundModal }
 export default History

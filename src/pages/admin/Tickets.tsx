@@ -2,7 +2,7 @@
 import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
 import { useEffect, useState, useCallback } from "react";
-import { Button, Input, message, Popconfirm } from "antd";
+import { Button, Input, message, Modal } from "antd";
 import icons from "../../assets/icons";
 import { useDeleteTicket } from "../../hooks/useTickets";
 import { fetchAllTickets } from "../../services/ticket";
@@ -11,11 +11,26 @@ import useSelectOptions from "../../utils/selectOptions";
 import debounce from "lodash.debounce";
 import { checkPermission } from "../../utils/checkPermission";
 import NewTicket from "../../components/ticket/New Ticket/NewTicket";
+import { BsArrowReturnLeft } from "react-icons/bs";
+import { TbExclamationCircleFilled } from "react-icons/tb";
+import formatPrice from "../../utils/formatVNprice"; const checkDate = (value: Flight) => {
+    const now = new Date();
 
+    const dateStr = value.departureDate;
+    const timeStr = value.departureTime;
+
+    const departureDateTime = dateStr && timeStr
+        ? new Date(`${dateStr}T${timeStr}`)
+        : null;
+
+    return departureDateTime ? departureDateTime < now : false;
+}
 const Tickets = () => {
     const canCreate = checkPermission("Create Ticket")
     const canUpdate = checkPermission("Update Ticket")
     const canDelete = checkPermission("Delete Ticket")
+    const [isOpen, setIsOpen] = useState(false)
+    const [deletedTicket, setDeletedTicket] = useState<Ticket>()
     const [isNewOpen, setIsNewOpen] = useState(false)
     const { flightSelectOptions, seatSelectOptions } = useSelectOptions();
     const [messageApi, contextHolder] = message.useMessage();
@@ -34,13 +49,14 @@ const Tickets = () => {
     const [flightCode, setFlightCode] = useState("");
     const [passengerEmail, setPassengerEmail] = useState("");
 
-    const { mutate } = useDeleteTicket();
+    const { mutate, isPending } = useDeleteTicket();
 
     const handleDelete = (id: number) => {
         mutate(id, {
             onSuccess: async () => {
                 await refetchData();
-                messageApi.success("Delete ticket successfully");
+                messageApi.success("Refund ticket successfully");
+                setIsOpen(false)
             },
             onError: (error) => {
                 messageApi.error(error.message);
@@ -104,32 +120,46 @@ const Tickets = () => {
             dataIndex: "passengerIDCard",
         },
         {
-            title: "Action",
+            title: "Booking Account",
             render: (_, value) => (
-                <div className="flex gap-[10px]">
-                    <div
-                        onClick={() => {
-                            setUpdateTicket(value);
-                            setIsUpdateOpen(true);
-                        }}
-                        className="text-yellow-400"
-                    >
-                        {icons.edit}
-                    </div>
-                    {
-                        canDelete &&
-                        <Popconfirm
-                            title="Delete the ticket"
-                            description="Are you sure?"
-                            onConfirm={() => handleDelete(value.id)}
-                            okText="Yes"
-                            cancelText="No"
+                <div>{value.userBooking?.username}</div>
+            )
+        },
+        {
+            title: "Status",
+            render: (_: any, value: Ticket) => {
+                const isExpired = value.flight ? checkDate(value.flight) : false;
+                if (isExpired)
+                    return <div className="text-red-400">Expired</div>;
+                return <div className="text-green-400">Active</div>;
+            }
+        },
+        {
+            title: "Action",
+            render: (_, value) => {
+                const isExpired = value.flight ? checkDate(value.flight) : false
+                return (
+                    <div className="flex gap-[10px] items-center">
+                        <div
+                            onClick={() => {
+                                setUpdateTicket(value);
+                                setIsUpdateOpen(true);
+                            }}
+                            className="text-yellow-400"
                         >
-                            <div className="text-red-400">{icons.delete}</div>
-                        </Popconfirm>
-                    }
-                </div>
-            ),
+                            {icons.edit}
+                        </div>
+                        {
+                            canDelete && !isExpired &&
+
+                            <div className="text-red-400" onClick={() => {
+                                setDeletedTicket(value)
+                                setIsOpen(true)
+                            }}><BsArrowReturnLeft /></div>
+                        }
+                    </div>
+                )
+            }
         },
     ];
 
@@ -140,6 +170,13 @@ const Tickets = () => {
     return (
         <>
             {contextHolder}
+            <RefundModal
+                isPending={isPending}
+                handleRefund={handleDelete}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                ticket={deletedTicket}
+            />
             <div className="flex gap-[14px] w-full h-full">
                 <div className="flex drop-shadow-xs flex-col flex-1 w-full gap-[10px]">
                     <div className="flex gap-[30px] drop-shadow-xs bg-white p-[20px] rounded-[8px]">
@@ -223,14 +260,61 @@ const Tickets = () => {
                 setIsNewOpen={setIsNewOpen}
                 refetchData={refetchData}
             />
-            <UpdateTicket
-                flightSelectOptions={flightSelectOptions}
-                seatSelectOptions={seatSelectOptions}
-                refetchData={refetchData}
-                updatedTicket={updateTicket}
-                setIsUpdateOpen={setIsUpdateOpen}
-                isUpdateOpen={isUpdateOpen}
-            />
+            {
+                canUpdate &&
+                <UpdateTicket
+                    flightSelectOptions={flightSelectOptions}
+                    seatSelectOptions={seatSelectOptions}
+                    refetchData={refetchData}
+                    updatedTicket={updateTicket}
+                    setIsUpdateOpen={setIsUpdateOpen}
+                    isUpdateOpen={isUpdateOpen}
+                />
+            }
+        </>
+    );
+};
+const RefundModal = ({ isOpen, setIsOpen, ticket, isPending, handleRefund }: { isOpen: boolean, setIsOpen: (value: boolean) => void, ticket: Ticket | undefined, isPending: boolean, handleRefund: any }) => {
+    const handleCancel = () => {
+        setIsOpen(false);
+    };
+
+    const refundAmount = (ticket?.flight?.originalPrice ?? 0) * ((ticket?.seat?.price ?? 0) / 100) * 0.5
+
+    return (
+        <>
+            <Modal
+                loading={isPending}
+                title={
+                    <div className="flex items-center gap-2">
+                        <TbExclamationCircleFilled className="text-yellow-500" />
+                        <span>Refund Ticket</span>
+                    </div>
+                }
+                open={isOpen}
+                onCancel={handleCancel}
+                onOk={() => handleRefund(ticket?.id)}
+                okText="Confirm Refund"
+                cancelText="Cancel"
+                okButtonProps={{ className: "bg-blue-500 hover:bg-blue-600" }}
+                className="rounded-lg"
+            >
+                <div className="flex flex-col gap-3 p-4 text-gray-800 dark:text-gray-200">
+                    <p className="text-base font-medium">
+                        Do you want to refund ticket for flight{" "}
+                        <span className="font-bold">{ticket?.flight?.flightCode || "N/A"}</span>?
+                    </p>
+                    <p className="text-base">
+                        Refund amount: <span className="font-bold text-green-600 dark:text-green-400">${formatPrice(refundAmount)}</span> (50% of original price).
+                    </p>
+                    <p className="text-base">
+                        This action cannot be undone.
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                        Please confirm to proceed with the refund.
+                    </p>
+                </div>
+            </Modal>
         </>
     );
 };

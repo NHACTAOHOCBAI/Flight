@@ -34,7 +34,11 @@ const DetailFlight = ({ isDetailOpen, setIsDetailOpen, detailFlight }: Props) =>
             key: '1',
             label: 'ID',
             children: detailFlight?.id,
-            span: "filled"
+        },
+        {
+            key: '11',
+            label: 'Airline',
+            children: detailFlight?.plane.airline.airlineName,
         },
         {
             key: '2',

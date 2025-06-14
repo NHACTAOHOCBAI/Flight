@@ -202,13 +202,13 @@ const Flights = () => {
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <button className="cursor-pointer text-blue-500">
+                                    <button className="cursor-pointer text-yellow-400">
                                         {icons.edit}
                                     </button>
                                 </Popconfirm>
                             ) : (
                                 <button
-                                    className="cursor-pointer text-blue-500"
+                                    className="cursor-pointer text-yellow-400"
                                     onClick={() => {
                                         setUpdateFlight(value)
                                         setIsUpdateOpen(true)

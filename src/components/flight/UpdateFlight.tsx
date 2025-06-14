@@ -108,9 +108,9 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
         <>
             {contextHolder}
             <Modal
-                okText="Create Flight"
+                okText="Update Flight"
                 width={1200}
-                title="New Flight"
+                title="Update Flight"
                 open={isUpdateOpen}
                 onOk={() => form.submit()}
                 onCancel={handleCancel}
@@ -134,20 +134,19 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
                         <Form.Item label="ID" name="id">
                             <Input disabled />
                         </Form.Item>
-                        <Form.Item label="Code" name="flightCode" rules={[{ required: true, message: "Please enter flight code" }]}>
-                            <Input disabled={isPending} placeholder="Enter flight code" />
+                        <Form.Item label="Flight Code" name="flightCode">
+                            <Input disabled />
                         </Form.Item>
-
                         <Form.Item label="Plane" name="planeId" rules={[{ required: true, message: "Please select a plane" }]}>
                             <Select disabled={isPending} options={planeSelectOptions} placeholder="Select plane" />
                         </Form.Item>
 
                         <Form.Item label="Departure Airport" name="departureAirportId" rules={[{ required: true, message: "Please select a departure airport" }]}>
-                            <Select disabled={isPending} options={airportSelectOptions} placeholder="Select departure airport" />
+                            <Select disabled={isPending || updatedFlight?.hasTickets} options={airportSelectOptions} placeholder="Select departure airport" />
                         </Form.Item>
 
                         <Form.Item label="Arrival Airport" name="arrivalAirportId" rules={[{ required: true, message: "Please select an arrival airport" }]}>
-                            <Select disabled={isPending} options={airportSelectOptions} placeholder="Select arrival airport" />
+                            <Select disabled={isPending || updatedFlight?.hasTickets} options={airportSelectOptions} placeholder="Select arrival airport" />
                         </Form.Item>
 
                         <div className="w-full flex justify-between gap-4">
@@ -412,7 +411,7 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
                                                         rules={[{ required: true, message: 'Select a seat' }]}
                                                         style={{ marginBottom: 0 }}
                                                     >
-                                                        <Select disabled={isPending} options={seatSelectOptions} placeholder="Select seat" />
+                                                        <Select disabled={isPending || updatedFlight?.hasTickets} options={seatSelectOptions} placeholder="Select seat" />
                                                     </Form.Item>
                                                 </Col>
                                                 <Col span={11}>
@@ -437,18 +436,21 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
                                                         ]}
                                                         style={{ marginBottom: 0 }}
                                                     >
-                                                        <InputNumber min={0} disabled={isPending} placeholder="Enter quantity" addonAfter="Tickets" style={{ width: "100%" }} />
+                                                        <InputNumber min={0} disabled={isPending || updatedFlight?.hasTickets} placeholder="Enter quantity" addonAfter="Tickets" style={{ width: "100%" }} />
                                                     </Form.Item>
                                                 </Col>
                                                 <Col span={2} style={{ textAlign: 'center' }}>
-                                                    <CloseOutlined onClick={() => remove(name)} style={{ fontSize: 20, cursor: 'pointer' }} />
+                                                    <Button type="text" disabled={isPending || updatedFlight?.hasTickets} onClick={() => remove(name)}>
+                                                        <CloseOutlined />
+                                                    </Button>
+
                                                 </Col>
                                             </Row>
                                         )
                                     }
                                     )}
                                     <Form.Item>
-                                        <Button disabled={isPending} type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                        <Button disabled={isPending || updatedFlight?.hasTickets} type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
                                             Add Ticket
                                         </Button>
                                         <Form.ErrorList errors={errors} />
@@ -465,7 +467,7 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
                             <InputNumber
                                 formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                                 parser={(v: string | undefined): number => Number(v?.replace(/[^\d]/g, ""))}
-                                min={0} disabled={isPending} placeholder="Enter original price" style={{ width: "100%" }} addonAfter="VND" />
+                                min={0} disabled={isPending || updatedFlight?.hasTickets} placeholder="Enter original price" style={{ width: "100%" }} addonAfter="VND" />
                         </Form.Item>
                     </div>
                 </Form>

@@ -104,6 +104,7 @@ interface Ticket {
     passengerEmail: string;
     passengerPhone: string;
     passengerIDCard: string;
+    userBooking?: Account
 }
 interface TicketCard {
     id?: number;
