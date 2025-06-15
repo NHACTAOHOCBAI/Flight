@@ -415,6 +415,11 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
                         </Form.Item>
                     </div>
                 </Form>
+                <div className="text-sm text-gray-500">
+                    <span className="text-red-500">Note:</span>{' '}
+                    {`Flight duration must be at least ${MIN_FLIGHT_TIME} minutes. Each stopover must last between ${MIN_STOP_TIME} and ${MAX_STOP_TIME} minutes. A maximum of ${MAX_INTER_QUANTITY} stopover(s) is allowed.`}
+                </div>
+
             </Modal>
         </>
     );

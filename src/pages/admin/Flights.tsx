@@ -333,6 +333,7 @@ const Flights = () => {
                             return buttons;
                         }}
                     />
+                    <div><span className="text-red-500">Note:</span> {`Only applicable for bookings made at least ${params.latestBookingDay} day(s) before departure`}</div>
                 </div>
             </div>
             <DetailFlight

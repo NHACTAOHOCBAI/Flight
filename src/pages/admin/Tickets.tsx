@@ -322,6 +322,11 @@ const Tickets = () => {
                             return [];
                         }}
                     />
+                    <div className="text-sm text-gray-500">
+                        <span className="text-red-500">Note:</span>{' '}
+                        {`A refund of ${params.refundPercentage}% will be issued upon ticket cancellation. The remaining ${100 - params.refundPercentage}% will be charged as a cancellation fee.`}
+                    </div>
+
                 </div>
             </div>
             <NewTicket
