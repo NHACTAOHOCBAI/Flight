@@ -10,6 +10,7 @@ export const updateParameter = async (parameters: {
     maxStopTime?: number,
     latestBookingDays?: number,
     LatestCancelDays?: number,
+    refundPercentage?: number
 }) => {
     return await axiosInstance.put("/parameters", parameters);
 }
