@@ -6,6 +6,7 @@ import icons from "../../assets/icons";
 import { notification } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import formatPrice from "../../utils/formatVNprice";
+import { getAllParamaters } from "../../services/parameter";
 
 const getTicketStatus = (departureDate?: string): string => {
     if (!departureDate) {
@@ -87,6 +88,16 @@ const History = () => {
 }
 
 const RefundModal = ({ isOpen, setIsOpen, ticket, fetchMyTickets }: { isOpen: boolean, setIsOpen: (value: boolean) => void, ticket: Ticket | undefined, fetchMyTickets?: () => void }) => {
+    const [params, setParams] = useState<Parameter>({
+        maxInterQuantity: 0,
+        minFlightTime: 0,
+        minStopTime: 0,
+        maxFlightTime: 0,
+        latestBookingDay: 0,
+        latestCancelDay: 0,
+        maxStopTime: 0,
+        refundPercentage: 0
+    });
     const [isPending, setIsPending] = useState(false)
     const [messageApi, contextHolder] = message.useMessage();
     const handleCancel = () => {
@@ -112,8 +123,14 @@ const RefundModal = ({ isOpen, setIsOpen, ticket, fetchMyTickets }: { isOpen: bo
         setIsPending(false);
     };
 
-    const refundAmount = (ticket?.flight?.originalPrice ?? 0) * ((ticket?.seat?.price ?? 0) / 100) * 0.5
-
+    const refundAmount = (ticket?.flight?.originalPrice ?? 0) * ((ticket?.seat?.price ?? 0) / 100) * params.refundPercentage / 100
+    const refetchParam = async () => {
+        const response = await getAllParamaters();
+        setParams(response.data);
+    };
+    useEffect(() => {
+        refetchParam()
+    }, [])
     return (
         <>
             {contextHolder}
@@ -139,7 +156,7 @@ const RefundModal = ({ isOpen, setIsOpen, ticket, fetchMyTickets }: { isOpen: bo
                         <span className="font-bold">{ticket?.flight?.flightCode || "N/A"}</span>?
                     </p>
                     <p className="text-base">
-                        Refund amount: <span className="font-bold text-green-600 dark:text-green-400">${formatPrice(refundAmount)}</span> (50% of original price).
+                        Refund amount: <span className="font-bold text-green-600 dark:text-green-400">${formatPrice(refundAmount)}</span> {`${params.refundPercentage}%  of original price`}.
                     </p>
                     <p className="text-base">
                         This action cannot be undone.

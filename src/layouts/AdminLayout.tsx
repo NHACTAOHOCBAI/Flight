@@ -48,6 +48,8 @@ const AdminLayout = () => {
     useEffect(() => {
         const fetchUserInf = async () => {
             const response = await getCurrentUser();
+            localStorage.setItem('permission', JSON.stringify(response.role))
+            console.log(response)
             dispath(login(response));
         }
         fetchUserInf()

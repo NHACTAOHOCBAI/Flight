@@ -55,8 +55,8 @@ const Roles = () => {
     };
     const columns: ProColumns<Role>[] = [
         {
-            title: "No.",
-            render: (_text, _record, index) => <div className="text-blue-400">{index + 1}</div>,
+            title: "ID",
+            dataIndex: "id"
         },
         {
             title: "Role Name",
@@ -79,20 +79,17 @@ const Roles = () => {
                         value.roleName !== "ADMIN" && (
                             <>
                                 {canUpdate && (
-                                    value.canDelete ? (
-                                        <div
-                                            onClick={() => {
-                                                setUpdateRole(value);
-                                                setIsUpdateOpen(true);
-                                            }}
-                                            className="text-yellow-400 cursor-pointer"
-                                        >
-                                            {icons.edit}
-                                        </div>
-                                    ) : (
-                                        <div className="text-gray-400 cursor-not-allowed">{icons.edit}</div>
-                                    )
-                                )}
+                                    <div
+                                        onClick={() => {
+                                            setUpdateRole(value);
+                                            setIsUpdateOpen(true);
+                                        }}
+                                        className="text-yellow-400 cursor-pointer"
+                                    >
+                                        {icons.edit}
+                                    </div>
+                                )
+                                }
 
                                 {canDelete && (
                                     value.canDelete ? (

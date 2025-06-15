@@ -32,6 +32,7 @@ const Flights = () => {
         latestBookingDay: 0,
         latestCancelDay: 0,
         maxStopTime: 0,
+        refundPercentage: 0
     });
     const navigate = useNavigate();
     const { planeSelectOptions, airportSelectOptions, seatSelectOptions } = useSelectOptions();
@@ -185,6 +186,8 @@ const Flights = () => {
                 const isBookingExpired = now > bookingDeadline;
 
                 const totalRemaining = value.seats.reduce((sum, seat) => sum + seat.remainingTickets, 0);
+                console.log("id", value.id)
+                console.log(now, bookingDeadline)
                 const canBooking = totalRemaining > 0 && !isBookingExpired;
                 const allowEditAndDelete = !isFlightExpired;
 

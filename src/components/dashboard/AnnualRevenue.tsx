@@ -79,10 +79,10 @@ const AnnualRevenue = () => {
                 rowKey="id"
                 search={false}
                 pagination={{
-                    pageSizeOptions: [5, 10, 12],
+                    pageSizeOptions: [12],
                     showSizeChanger: true,
                     defaultCurrent: 1,
-                    defaultPageSize: 10,
+                    defaultPageSize: 12,
                 }}
                 options={{
                     reload: false,

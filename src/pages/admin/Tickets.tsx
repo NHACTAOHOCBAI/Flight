@@ -38,6 +38,7 @@ const Tickets = () => {
         latestBookingDay: 0,
         latestCancelDay: 0,
         maxStopTime: 0,
+        refundPercentage: 0
     });
     const [isOpen, setIsOpen] = useState(false)
     const [deletedTicket, setDeletedTicket] = useState<Ticket>()
@@ -53,6 +54,7 @@ const Tickets = () => {
         passengerIDCard: "",
         flight: undefined,
         seat: undefined,
+        ticketCode: "",
     });
     const [isLoadingData, setIsLoadingData] = useState(false);
     const [ticketsData, setTicketsData] = useState<Ticket[]>([]);
@@ -104,8 +106,12 @@ const Tickets = () => {
 
     const columns: ProColumns<Ticket>[] = [
         {
-            title: "No.",
-            render: (_text, _record, index) => <div className="text-blue-400">{index + 1}</div>,
+            title: "ID",
+            dataIndex: "id"
+        },
+        {
+            title: "Code",
+            dataIndex: "ticketCode"
         },
         {
             title: "Flight",
@@ -338,12 +344,28 @@ const Tickets = () => {
     );
 };
 const RefundModal = ({ isOpen, setIsOpen, ticket, isPending, handleRefund }: { isOpen: boolean, setIsOpen: (value: boolean) => void, ticket: Ticket | undefined, isPending: boolean, handleRefund: any }) => {
+    const [params, setParams] = useState<Parameter>({
+        maxInterQuantity: 0,
+        minFlightTime: 0,
+        minStopTime: 0,
+        maxFlightTime: 0,
+        latestBookingDay: 0,
+        latestCancelDay: 0,
+        maxStopTime: 0,
+        refundPercentage: 0
+    });
     const handleCancel = () => {
         setIsOpen(false);
     };
 
-    const refundAmount = (ticket?.flight?.originalPrice ?? 0) * ((ticket?.seat?.price ?? 0) / 100) * 0.5
-
+    const refundAmount = (ticket?.flight?.originalPrice ?? 0) * ((ticket?.seat?.price ?? 0) / 100) * params.refundPercentage / 100
+    const refetchParam = async () => {
+        const response = await getAllParamaters();
+        setParams(response.data);
+    };
+    useEffect(() => {
+        refetchParam()
+    }, [])
     return (
         <>
             <Modal
@@ -368,7 +390,7 @@ const RefundModal = ({ isOpen, setIsOpen, ticket, isPending, handleRefund }: { i
                         <span className="font-bold">{ticket?.flight?.flightCode || "N/A"}</span>?
                     </p>
                     <p className="text-base">
-                        Refund amount: <span className="font-bold text-green-600 dark:text-green-400">${formatPrice(refundAmount)}</span> (50% of original price).
+                        Refund amount: <span className="font-bold text-green-600 dark:text-green-400">${formatPrice(refundAmount)}</span> {`${params.refundPercentage}%  of original price`}.
                     </p>
                     <p className="text-base">
                         This action cannot be undone.

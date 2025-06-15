@@ -22,44 +22,6 @@ const AdminTicketInformation = () => {
     const [api, contextHolder] = notification.useNotification();
     const [form] = Form.useForm();
     const flight = useAppSelector(state => state.flight).flight
-    //     id: 0,
-    //     flightCode: "",
-    //     plane: {
-    //         id: 0,
-    //         planeCode: "",
-    //         planeName: "",
-    //         description: "",
-    //         airline: {
-    //             id: 0,
-    //             name: "",
-    //             logo: ""
-    //         }
-    //     },
-    //     departureAirport: {
-    //         id: 0,
-    //         name: "",
-    //         city: {
-    //             id: 0,
-    //             name: ""
-    //         }
-    //     },
-    //     arrivalAirport: {
-    //         id: 0,
-    //         name: "",
-    //         city: {
-    //             id: 0,
-    //             name: ""
-    //         }
-    //     },
-    //     departureDate: "",
-    //     arrivalDate: "",
-    //     departureTime: "",
-    //     arrivalTime: "",
-    //     originalPrice: 0,
-    //     interAirports: [],
-    //     seats: [],
-    //     hasTickets: false
-    // }));
     const seatSelectOptions: { value: number, label: string }[] = flight.seats.map((value) => {
         return ({
             value: value.seat.id,
@@ -176,10 +138,16 @@ const AdminTicketInformation = () => {
                                     <Form.Item
                                         label="ID card"
                                         name={[field.name, 'passengerIDCard']}
-                                        rules={[{ required: true }]}
+                                        rules={[
+                                            { required: true, message: 'Please enter your ID card number' },
+                                            {
+                                                pattern: /^(?:\d{9}|\d{12})$/,
+                                                message: 'ID card must be 9 or 12 digits',
+                                            },
+                                        ]}
                                         style={{ textAlign: 'left' }}
                                     >
-                                        <Input placeholder='Enter a ID' />
+                                        <Input placeholder="Enter your ID card number" />
                                     </Form.Item>
                                 </Card>
                             ))}

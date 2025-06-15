@@ -111,6 +111,14 @@ export default function Setting() {
                             >
                                 <InputNumber disabled={!canUpdate} />
                             </Form.Item>
+
+                            <Form.Item<Parameter>
+                                label="Refund percentage (%)"
+                                name="refundPercentage"
+                                rules={[{ required: true }]}
+                            >
+                                <InputNumber disabled={!canUpdate} />
+                            </Form.Item>
                             {
                                 canUpdate &&
                                 <div className="2-full flex gap-[10px] justify-end">

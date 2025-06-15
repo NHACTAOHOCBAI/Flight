@@ -103,6 +103,7 @@ interface Flight {
 }
 interface Ticket {
     id: number;
+    ticketCode: string
     flight: Flight | undefined;
     seat: Seat | undefined;
     passengerName: string;
@@ -234,4 +235,5 @@ interface Parameter {
     latestBookingDay: number;
     latestCancelDay: number;
     maxStopTime: number;
+    refundPercentage: number
 }

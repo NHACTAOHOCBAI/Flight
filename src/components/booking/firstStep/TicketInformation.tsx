@@ -115,11 +115,18 @@ const TicketInformation = () => {
                   <Form.Item
                     label="ID card"
                     name={[field.name, 'passengerIDCard']}
-                    rules={[{ required: true }]}
+                    rules={[
+                      { required: true, message: 'Please enter your ID card number' },
+                      {
+                        pattern: /^(?:\d{9}|\d{12})$/,
+                        message: 'ID card must be 9 or 12 digits',
+                      },
+                    ]}
                     style={{ textAlign: 'left' }}
                   >
-                    <Input placeholder='Enter a ID' />
+                    <Input placeholder="Enter your ID card number" />
                   </Form.Item>
+
                 </Card>
               ))}
               <Row justify='end' style={{ gap: 10 }}>

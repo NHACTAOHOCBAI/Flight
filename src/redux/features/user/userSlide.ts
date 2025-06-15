@@ -5,12 +5,10 @@ interface User {
     fullName?: string;
     phone?: string;
     avatar?: string | null;
-    role?: {
-        id: number,
-        roleName: string,
-    }
+    role?: Role
     permissions?: string[];
 }
+
 interface UserState {
     user: User
     isLoggedIn: boolean
