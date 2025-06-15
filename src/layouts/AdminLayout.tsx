@@ -162,12 +162,18 @@ const AdminLayout = () => {
                 :
                 <Layout style={{ height: '100%', minHeight: '100vh' }}>
                     <Sider
-                        trigger={null} collapsible collapsed={collapsed}
+                        trigger={null}
+                        collapsible
+                        collapsed={collapsed}
                         style={{
                             backgroundColor: colorBgContainer,
-                            boxShadow: " 0 4px 4px 0 rgba(0, 0, 0, 0.1)"
-                        }}>
-                        <div className="demo-logo-vertical" />
+                            boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.1)",
+                        }}
+                    >
+                        <div className="flex justify-center items-center py-4">
+                            <img src="/logo.png" alt="Logo" className="scale-200 w-[120px]" />
+                        </div>
+
                         <Menu
                             theme="light"
                             mode="inline"
@@ -175,6 +181,7 @@ const AdminLayout = () => {
                             items={menuItems}
                         />
                     </Sider>
+
                     <Layout>
                         <Header style={{
                             display: 'flex',

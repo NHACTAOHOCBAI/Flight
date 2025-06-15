@@ -235,5 +235,5 @@ interface Parameter {
     latestBookingDay: number;
     latestCancelDay: number;
     maxStopTime: number;
-    refundPercentage: number
+    refundRate: number
 }

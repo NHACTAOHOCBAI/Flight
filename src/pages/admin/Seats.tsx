@@ -140,6 +140,9 @@ const Seats = () => {
                             defaultCurrent: 1,
                             defaultPageSize: 5
                         }}
+                        options={{
+                            reload: false,
+                        }}
                         headerTitle="Seat Table"
                         scroll={{ x: 'max-content' }}
                     />

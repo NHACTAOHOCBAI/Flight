@@ -38,7 +38,7 @@ const Tickets = () => {
         latestBookingDay: 0,
         latestCancelDay: 0,
         maxStopTime: 0,
-        refundPercentage: 0
+        refundRate: 0
     });
     const [isOpen, setIsOpen] = useState(false)
     const [deletedTicket, setDeletedTicket] = useState<Ticket>()
@@ -324,7 +324,7 @@ const Tickets = () => {
                     />
                     <div className="text-sm text-gray-500">
                         <span className="text-red-500">Note:</span>{' '}
-                        {`A refund of ${params.refundPercentage}% will be issued upon ticket cancellation. The remaining ${100 - params.refundPercentage}% will be charged as a cancellation fee.`}
+                        {`A refund of ${params.refundRate}% will be issued upon ticket cancellation. The remaining ${100 - params.refundRate}% will be charged as a cancellation fee.`}
                     </div>
 
                 </div>
@@ -357,13 +357,13 @@ const RefundModal = ({ isOpen, setIsOpen, ticket, isPending, handleRefund }: { i
         latestBookingDay: 0,
         latestCancelDay: 0,
         maxStopTime: 0,
-        refundPercentage: 0
+        refundRate: 0
     });
     const handleCancel = () => {
         setIsOpen(false);
     };
 
-    const refundAmount = (ticket?.flight?.originalPrice ?? 0) * ((ticket?.seat?.price ?? 0) / 100) * params.refundPercentage / 100
+    const refundAmount = (ticket?.flight?.originalPrice ?? 0) * ((ticket?.seat?.price ?? 0) / 100) * params.refundRate / 100
     const refetchParam = async () => {
         const response = await getAllParamaters();
         setParams(response.data);
@@ -395,7 +395,7 @@ const RefundModal = ({ isOpen, setIsOpen, ticket, isPending, handleRefund }: { i
                         <span className="font-bold">{ticket?.flight?.flightCode || "N/A"}</span>?
                     </p>
                     <p className="text-base">
-                        Refund amount: <span className="font-bold text-green-600 dark:text-green-400">${formatPrice(refundAmount)}</span> {`${params.refundPercentage}%  of original price`}.
+                        Refund amount: <span className="font-bold text-green-600 dark:text-green-400">${formatPrice(refundAmount)}</span> {`${params.refundRate}%  of original price`}.
                     </p>
                     <p className="text-base">
                         This action cannot be undone.

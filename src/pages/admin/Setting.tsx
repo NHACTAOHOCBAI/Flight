@@ -24,6 +24,7 @@ export default function Setting() {
             maxStopTime: response.data.maxStopTime,
             latestBookingDay: response.data.latestBookingDay,
             latestCancelDay: response.data.latestCancelDay,
+            refundRate: response.data.refundRate
         });
         setIsPending(false);
     }
@@ -114,7 +115,7 @@ export default function Setting() {
 
                             <Form.Item<Parameter>
                                 label="Refund percentage (%)"
-                                name="refundPercentage"
+                                name="refundRate"
                                 rules={[{ required: true }]}
                             >
                                 <InputNumber disabled={!canUpdate} />

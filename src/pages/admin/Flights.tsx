@@ -32,7 +32,7 @@ const Flights = () => {
         latestBookingDay: 0,
         latestCancelDay: 0,
         maxStopTime: 0,
-        refundPercentage: 0
+        refundRate: 0
     });
     const navigate = useNavigate();
     const { planeSelectOptions, airportSelectOptions, seatSelectOptions } = useSelectOptions();
@@ -186,8 +186,6 @@ const Flights = () => {
                 const isBookingExpired = now > bookingDeadline;
 
                 const totalRemaining = value.seats.reduce((sum, seat) => sum + seat.remainingTickets, 0);
-                console.log("id", value.id)
-                console.log(now, bookingDeadline)
                 const canBooking = totalRemaining > 0 && !isBookingExpired;
                 const allowEditAndDelete = !isFlightExpired;
 
@@ -204,60 +202,78 @@ const Flights = () => {
                             <LuEye />
                         </div>
 
-                        {/* Update (chỉ khi chưa hết hạn bay) */}
-                        {canUpdate && allowEditAndDelete && (
+                        {/* Update (luôn hiển thị, disable nếu không được phép) */}
+                        {canUpdate && (
                             value.hasTickets ? (
-                                <Popconfirm
-                                    title="Update the flight"
-                                    description={
-                                        <div className="w-[400px]">
-                                            This flight has already been booked. If you update the flight,
-                                            we will send a notification to all customers. Are you sure you want to edit it?
-                                        </div>
-                                    }
-                                    onConfirm={() => {
-                                        setUpdateFlight(value);
-                                        setIsUpdateOpen(true);
-                                    }}
-                                    okText="Yes"
-                                    cancelText="No"
-                                >
-                                    <button className="cursor-pointer text-yellow-400">
+                                allowEditAndDelete ? (
+                                    <Popconfirm
+                                        title="Update the flight"
+                                        description={
+                                            <div className="w-[400px]">
+                                                This flight has already been booked. If you update the flight,
+                                                we will send a notification to all customers. Are you sure you want to edit it?
+                                            </div>
+                                        }
+                                        onConfirm={() => {
+                                            setUpdateFlight(value);
+                                            setIsUpdateOpen(true);
+                                        }}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <button className="cursor-pointer text-yellow-400">
+                                            {icons.edit}
+                                        </button>
+                                    </Popconfirm>
+                                ) : (
+                                    <div className="text-gray-400 cursor-not-allowed">
+                                        {icons.edit}
+                                    </div>
+                                )
+                            ) : (
+                                allowEditAndDelete ? (
+                                    <button
+                                        className="cursor-pointer text-yellow-400"
+                                        onClick={() => {
+                                            setUpdateFlight(value);
+                                            setIsUpdateOpen(true);
+                                        }}
+                                    >
                                         {icons.edit}
                                     </button>
-                                </Popconfirm>
-                            ) : (
-                                <button
-                                    className="cursor-pointer text-yellow-400"
-                                    onClick={() => {
-                                        setUpdateFlight(value);
-                                        setIsUpdateOpen(true);
-                                    }}
-                                >
-                                    {icons.edit}
-                                </button>
+                                ) : (
+                                    <div className="text-gray-400 cursor-not-allowed">
+                                        {icons.edit}
+                                    </div>
+                                )
                             )
                         )}
 
-                        {/* Delete (chỉ khi chưa hết hạn bay) */}
-                        {canDelete && allowEditAndDelete && (
-                            <Popconfirm
-                                title="Delete the flight"
-                                description={
-                                    <div className="w-[400px]">
-                                        {value.hasTickets
-                                            ? "This flight has already been booked. If you cancel the flight, we will send a notification to all customers. Do you still want to delete it?"
-                                            : "Are you sure you want to delete this flight?"}
-                                    </div>
-                                }
-                                onConfirm={() => handleDelete(value.id)}
-                                okText="Yes"
-                                cancelText="No"
-                            >
-                                <button className="cursor-pointer text-red-400">
+                        {/* Delete (luôn hiển thị, disable nếu không được phép) */}
+                        {canDelete && (
+                            allowEditAndDelete ? (
+                                <Popconfirm
+                                    title="Delete the flight"
+                                    description={
+                                        <div className="w-[400px]">
+                                            {value.hasTickets
+                                                ? "This flight has already been booked. If you cancel the flight, we will send a notification to all customers. Do you still want to delete it?"
+                                                : "Are you sure you want to delete this flight?"}
+                                        </div>
+                                    }
+                                    onConfirm={() => handleDelete(value.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <button className="cursor-pointer text-red-400">
+                                        {icons.delete}
+                                    </button>
+                                </Popconfirm>
+                            ) : (
+                                <div className="text-gray-400 cursor-not-allowed">
                                     {icons.delete}
-                                </button>
-                            </Popconfirm>
+                                </div>
+                            )
                         )}
 
                         {/* Booking (chỉ khi còn ghế và chưa hết hạn đặt vé) */}
@@ -265,7 +281,7 @@ const Flights = () => {
                             disabled={!canBooking}
                             type="dashed"
                             onClick={() => {
-                                handleBooking(value);
+                                if (canBooking) handleBooking(value);
                             }}
                             className="text-yellow-400"
                         >
