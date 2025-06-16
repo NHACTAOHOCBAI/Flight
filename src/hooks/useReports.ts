@@ -3,7 +3,7 @@ import {
     getAnnualRevenueReport,
     getMonthlyRevenueReport,
     getDashboard,
-    getYearDashboard,
+    getBookingRate,
 } from "../services/report"; // điều chỉnh path nếu cần
 
 export const useGetAnnualRevenueReport = (year: number) => {
@@ -30,6 +30,6 @@ export const useGetDashboard = () => {
 export const useGetYearDashboard = (year: number) => {
     return useQuery({
         queryKey: ["get year dashboard", year],
-        queryFn: () => getYearDashboard({ year }),
+        queryFn: () => getBookingRate({ year }),
     });
 };

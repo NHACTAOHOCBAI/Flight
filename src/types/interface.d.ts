@@ -184,10 +184,10 @@ interface Dashboard {
 }
 
 interface BookingRate {
-    months: {
+    monthlyBookings: {
         month: number,
-        maxTickets: number,
-        ticketsSold: number
+        bookedTickets: number,
+        soldTickets: number
     }[],
     year: number
 }

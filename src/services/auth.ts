@@ -16,4 +16,12 @@ const getCurrentUser = async () => {
 const logoutAPI = async () => {
     return (await axiosInstance.post('/auth/logout'))
 }
-export { login, register, getCurrentUser, logoutAPI }
+
+const forgotPassword = async (email: string) => {
+    axiosInstance.post('/auth/forgot-password', { email })
+}
+
+const resetPassword = async (token: string, newPassword: string) => {
+    axiosInstance.post('/auth/reset-password', { token, newPassword })
+}
+export { login, register, getCurrentUser, logoutAPI, forgotPassword, resetPassword }

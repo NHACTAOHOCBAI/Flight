@@ -19,6 +19,8 @@ import Booking from "../pages/admin/Booking";
 
 import RegisterSuccess from "../pages/auth/ConfirmEmail";
 import Profile from "../pages/admin/Profile";
+import ForgetPassword from "../pages/auth/ForgetPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
 
 const router = createBrowserRouter([
     {
@@ -38,10 +40,12 @@ const router = createBrowserRouter([
         element: <RegisterSuccess />
     },
     {
-        path: '/booking',
-        element: <div className="p-[20px]">
-            <Booking />
-        </div>
+        path: '/forget-password',
+        element: <ForgetPassword />
+    },
+    {
+        path: '/reset-password',
+        element: <ResetPassword />
     },
     {
         path: "/admin",

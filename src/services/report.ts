@@ -17,4 +17,9 @@ const flightRevenueReport = async (month: number, year: number) => {
     const res = await axiosInstance.get(`/reports/monthly-revenue/${month}/${year}`)
     return res.data
 }
-export { getAnnualRevenueReport, getMonthlyRevenueReport, getDashboard, getYearDashboard, annualRevenueReport, flightRevenueReport };
+const getBookingRate = async ({ year }: { year: number }) => {
+    const res = await axiosInstance.get(`/tickets/booking-rate/${year} `);
+    console.log(res)
+    return res.data as BookingRate
+}
+export { getAnnualRevenueReport, getMonthlyRevenueReport, getDashboard, getYearDashboard, annualRevenueReport, flightRevenueReport, getBookingRate };

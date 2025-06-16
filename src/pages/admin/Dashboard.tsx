@@ -108,11 +108,11 @@ const StaticCard = ({ title, value }: { title: string, value: number }) => {
 const BookingRate = () => {
     const [value, setValue] = useState(2025)
     const { data: bookingRateData } = useGetYearDashboard(value);
-    const chartData = bookingRateData?.months.flatMap((item) => {
+    const chartData = bookingRateData?.monthlyBookings.flatMap((item) => {
         const monthName = getMonthName(item.month);
         return [
-            { name: "Ticket", 月份: monthName, 月均降雨量: item.maxTickets },
-            { name: "Booking", 月份: monthName, 月均降雨量: item.ticketsSold },
+            { name: "Ticket", 月份: monthName, 月均降雨量: item.soldTickets },
+            { name: "Booking", 月份: monthName, 月均降雨量: item.bookedTickets },
         ];
     });
 

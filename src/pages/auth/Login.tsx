@@ -105,9 +105,13 @@ const Login = () => {
                                     <Input.Password disabled={isPending} />
                                 </Form.Item>
 
-                                <Form.Item<FieldType> name="remember" valuePropName="checked">
-                                    <Checkbox disabled={isPending}>Remember me</Checkbox>
-                                </Form.Item>
+                                <div className='flex justify-between '>
+                                    <Form.Item<FieldType> name="remember" valuePropName="checked">
+                                        <Checkbox disabled={isPending}>Remember me</Checkbox>
+                                    </Form.Item>
+                                    <div onClick={() => { navigate("/forget-password") }} className='text-blue-500 mt-[3px] cursor-pointer'>Forgot Password?</div>
+                                </div>
+
 
                                 <Form.Item>
                                     <Button
