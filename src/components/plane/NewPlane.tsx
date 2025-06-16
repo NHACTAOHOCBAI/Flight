@@ -1,5 +1,6 @@
 import { Button, Form, Input, message, Select } from "antd";
 import { useCreatePlane } from "../../hooks/usePlanes";
+import icons from "../../assets/icons";
 
 interface Props {
     refetchData: () => Promise<void>;
@@ -46,7 +47,7 @@ const NewPlane = ({ refetchData, airlineSelectOptions }: Props) => {
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" loading={isPending} style={{ width: "100%" }}>
-                            Create Plane
+                            {icons.plus} New Plane
                         </Button>
                     </Form.Item>
                 </Form>

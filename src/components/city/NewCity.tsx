@@ -1,5 +1,6 @@
 import { Button, Form, Input, message } from 'antd';
 import { useCreateCity } from '../../hooks/useCities';
+import icons from '../../assets/icons';
 
 interface Prop {
     refetchData: () => Promise<void>
@@ -39,8 +40,9 @@ const NewCity = ({ refetchData }: Prop) => {
                         name="cityCode"
                         rules={[{ required: true }]}>
                         <Input
+                            placeholder="Enter city code"
                             disabled={isPending}
-                            placeholder="please input city code" />
+                        />
                     </Form.Item>
 
                     <Form.Item label="City"
@@ -48,7 +50,7 @@ const NewCity = ({ refetchData }: Prop) => {
                         rules={[{ required: true }]}>
                         <Input
                             disabled={isPending}
-                            placeholder="please input city name" />
+                            placeholder="Enter city name" />
                     </Form.Item>
 
                     <Form.Item >
@@ -56,7 +58,8 @@ const NewCity = ({ refetchData }: Prop) => {
                             style={{ width: '100%', marginTop: 20 }}
                             type="primary" htmlType="submit"
                             loading={isPending}
-                        >New City</Button>
+                        >
+                            {icons.plus} New City</Button>
                     </Form.Item>
                 </Form>
             </div>

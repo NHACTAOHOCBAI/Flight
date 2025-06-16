@@ -18,10 +18,10 @@ const logoutAPI = async () => {
 }
 
 const forgotPassword = async (email: string) => {
-    axiosInstance.post('/auth/forgot-password', { email })
+    return await axiosInstance.post('/auth/forgot-password', { email })
 }
 
 const resetPassword = async (token: string, newPassword: string) => {
-    axiosInstance.post('/auth/reset-password', { token, newPassword })
+    return await axiosInstance.post('/auth/reset-password', { token, newPassword })
 }
 export { login, register, getCurrentUser, logoutAPI, forgotPassword, resetPassword }

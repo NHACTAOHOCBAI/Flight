@@ -107,9 +107,14 @@ const DetailFlight = ({ isDetailOpen, setIsDetailOpen, detailFlight }: Props) =>
                     render: (_text, record) => <div>{dayjs(record.departureDateTime).format('YYYY-MM-DD | HH:mm:ss')}</div>,
                 },
                 {
-                    title: < div className="font-normal text-gray-600" >Note</div >,
-                    render: (_text, record) => <div>{record.note}</div>,
-                },
+                    title: <div className="font-normal text-gray-600">Note</div>,
+                    render: (_text, record) => (
+                        <div style={{ whiteSpace: 'normal', wordBreak: 'break-word', maxWidth: 200 }}>
+                            {record.note}
+                        </div>
+                    ),
+                }
+
             ]
         }
     ];
@@ -145,9 +150,11 @@ const DetailFlight = ({ isDetailOpen, setIsDetailOpen, detailFlight }: Props) =>
             open={isDetailOpen}
         >
             <Descriptions bordered items={items} column={2} />
-            <Table<InterAirportDataType>
-                pagination={false}
-                style={{ marginTop: 20 }} bordered columns={interAirportsColumns} dataSource={detailFlight?.interAirports} />
+            {
+                detailFlight?.interAirports.length !== 0 && <Table<InterAirportDataType>
+                    pagination={false}
+                    style={{ marginTop: 20 }} bordered columns={interAirportsColumns} dataSource={detailFlight?.interAirports} />
+            }
             <Table<SeatsDataType>
                 pagination={false}
                 style={{ marginTop: 20 }} bordered columns={seatsColumns} dataSource={detailFlight?.seats} />

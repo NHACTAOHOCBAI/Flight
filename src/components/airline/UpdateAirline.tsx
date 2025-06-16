@@ -73,6 +73,7 @@ const UpdateAirline = ({ setUpdateAirline, updatedAirline, isUpdateOpen, setIsUp
         <>
             {contextHolder}
             <Modal
+                okText="Update"
                 title="Update Airline"
                 open={isUpdateOpen}
                 onCancel={handleCancel}

@@ -5,6 +5,7 @@ import { getAllParamaters, updateParameter } from "../../services/parameter";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setParams } from "../../redux/features/params/paramsSlide";
 import { checkPermission } from "../../utils/checkPermission";
+import icons from "../../assets/icons";
 
 
 export default function Setting() {
@@ -70,7 +71,7 @@ export default function Setting() {
                                 name="maxInterQuantity"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={!canUpdate} />
+                                <InputNumber min={0} disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -78,7 +79,7 @@ export default function Setting() {
                                 name="minFlightTime"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={!canUpdate} />
+                                <InputNumber min={0} disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -86,7 +87,7 @@ export default function Setting() {
                                 name="minStopTime"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={!canUpdate} />
+                                <InputNumber min={0} disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -94,7 +95,7 @@ export default function Setting() {
                                 name="maxStopTime"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={!canUpdate} />
+                                <InputNumber min={0} disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -102,7 +103,7 @@ export default function Setting() {
                                 name="latestBookingDay"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={!canUpdate} />
+                                <InputNumber min={0} disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -110,7 +111,7 @@ export default function Setting() {
                                 name="latestCancelDay"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={!canUpdate} />
+                                <InputNumber min={0} disabled={!canUpdate} />
                             </Form.Item>
 
                             <Form.Item<Parameter>
@@ -118,16 +119,16 @@ export default function Setting() {
                                 name="refundRate"
                                 rules={[{ required: true }]}
                             >
-                                <InputNumber disabled={!canUpdate} />
+                                <InputNumber min={0} disabled={!canUpdate} />
                             </Form.Item>
                             {
                                 canUpdate &&
                                 <div className="2-full flex gap-[10px] justify-end">
                                     <Button onClick={() => refetchParameters()}>
-                                        Reset
+                                        {icons.reset} Reset
                                     </Button>
                                     <Button type="primary" onClick={() => form.submit()}>
-                                        Save
+                                        Update
                                     </Button>
                                 </div>
                             }

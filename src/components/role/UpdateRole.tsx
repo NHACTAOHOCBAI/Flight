@@ -58,7 +58,7 @@ const UpdateRole = ({ updatedRole, isUpdateOpen, setIsUpdateOpen, refetchData }:
         mutate(input, {
             onSuccess: async () => {
                 await refetchData();
-                messageApi.success("Create role successfully");
+                messageApi.success("Update role successfully");
             },
             onError: (error) => {
                 messageApi.error(error.message);
@@ -73,6 +73,8 @@ const UpdateRole = ({ updatedRole, isUpdateOpen, setIsUpdateOpen, refetchData }:
         <>
             {contextHolder}
             <Modal
+                okText="Update"
+                confirmLoading={isPending}
                 title="Update Role"
                 open={isUpdateOpen}
                 onCancel={() => setIsUpdateOpen(false)}

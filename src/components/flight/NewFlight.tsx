@@ -438,7 +438,7 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
                             <InputNumber
                                 formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                                 parser={(v: string | undefined): number => Number(v?.replace(/[^\d]/g, ""))}
-                                min={0} disabled={isPending} placeholder="Enter original price" style={{ width: "100%" }} addonAfter="VND" />
+                                min={1} disabled={isPending} placeholder="Enter original price" style={{ width: "100%" }} addonAfter="VND" />
                         </Form.Item>
                     </div>
                 </Form>

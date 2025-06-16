@@ -59,7 +59,7 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
                             { type: 'email', message: 'Please enter a valid email address' },
                         ]}
                     >
-                        <Input disabled={isPending} />
+                        <Input placeholder="Enter username" disabled={isPending} />
                     </Form.Item>
 
                     <Form.Item
@@ -74,14 +74,14 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
                             },
                         ]}
                     >
-                        <Input.Password disabled={isPending} />
+                        <Input.Password placeholder="Enter password" disabled={isPending} />
                     </Form.Item>
 
                     <Form.Item
                         name="fullName"
                         label="Full Name"
                     >
-                        <Input disabled={isPending} />
+                        <Input placeholder="Enter full name" disabled={isPending} />
                     </Form.Item>
 
                     <Form.Item
@@ -94,7 +94,7 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
                             },
                         ]}
                     >
-                        <Input disabled={isPending} />
+                        <Input placeholder="Enter phone" disabled={isPending} />
                     </Form.Item>
 
                     <Form.Item
@@ -102,7 +102,7 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
                         label="Role"
                         rules={[{ required: true, message: 'Role is required' }]}
                     >
-                        <Select disabled={isPending} options={roleOptions} />
+                        <Select placeholder="Select role" disabled={isPending} options={roleOptions} />
                     </Form.Item>
 
                     <div className="mb-[10px]">

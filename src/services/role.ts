@@ -9,7 +9,9 @@ export const fetchAllRoles = async () => {
 export const createRole = (data: { roleName: string; roleDescription: string, pageInfos: { method: string, apiPath: string }[] }) =>
     axiosInstance.post("/roles", data);
 
-export const updateRole = ({ id, updateRole }: { id: number; updateRole: { roleName: string; roleDescription: string, pageInfos: { method: string, apiPath: string }[] } }) =>
-    axiosInstance.put(`/roles/${id}`, updateRole);
+export const updateRole = ({ id, updateRole }: { id: number; updateRole: { roleName: string; roleDescription: string, pageInfos: { method: string, apiPath: string }[] } }) => {
+    console.log(updateRole.roleDescription)
+    return axiosInstance.put(`/roles/${id}`, updateRole);
+}
 
 export const deleteRole = (id: number) => axiosInstance.delete(`/roles/${id}`);

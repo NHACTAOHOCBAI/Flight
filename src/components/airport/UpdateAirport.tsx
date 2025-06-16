@@ -48,6 +48,7 @@ const UpdateAirport = ({ updatedAirport, isUpdateOpen, setIsUpdateOpen, refetchD
         <>
             {contextHolder}
             <Modal
+                okText="Update"
                 title="Update Airport"
                 open={isUpdateOpen}
                 onCancel={handleCancel}

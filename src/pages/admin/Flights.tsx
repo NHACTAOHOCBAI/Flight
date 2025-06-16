@@ -333,7 +333,7 @@ const Flights = () => {
                                         key="new"
                                         onClick={() => setIsNewOpen(true)}
                                     >
-                                        New Flight
+                                        {icons.plus} New Flight
                                     </Button>
                                 );
                             }
@@ -343,7 +343,7 @@ const Flights = () => {
                                     key="filter"
                                     onClick={() => setIsFilterOpen(true)}
                                 >
-                                    Filter
+                                    {icons.filter} Filter
                                 </Button>
                             );
                             return buttons;

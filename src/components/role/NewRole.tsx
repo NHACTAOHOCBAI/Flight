@@ -3,6 +3,7 @@ import { Button, Form, Input, Checkbox, message, Divider, Tag } from "antd";
 import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { useCreateRole } from "../../hooks/useRoles";
+import icons from "../../assets/icons";
 
 interface Page {
     id: number;
@@ -67,10 +68,10 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
                     }}
                 >
                     <Form.Item label="Role Name" name="roleName" rules={[{ required: true }]}>
-                        <Input disabled={isPending} />
+                        <Input disabled={isPending} placeholder="Enter role name" />
                     </Form.Item>
                     <Form.Item label="Description" name="roleDescription">
-                        <TextArea rows={4} maxLength={100} />
+                        <TextArea rows={4} maxLength={100} placeholder="Enter role description" />
                     </Form.Item>
                     <Form.Item label="Permission" name="pages" rules={[{ required: true }]}>
                         <Checkbox.Group style={{ width: "100%" }}>
@@ -94,7 +95,7 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" loading={isPending} style={{ width: "100%" }}>
-                            Create Role
+                            {icons.plus} New Role
                         </Button>
                     </Form.Item>
                 </Form>

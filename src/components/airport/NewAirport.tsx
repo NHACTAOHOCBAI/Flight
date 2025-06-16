@@ -1,5 +1,6 @@
 import { Button, Form, Input, message, Select } from "antd";
 import { useCreateAirport } from "../../hooks/useAiports";
+import icons from "../../assets/icons";
 
 
 interface Props {
@@ -44,7 +45,7 @@ const NewAirport = ({ refetchData, citySelectOptions }: Props) => {
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" loading={isPending} style={{ width: "100%" }}>
-                            Create Airport
+                            {icons.plus} New Airport
                         </Button>
                     </Form.Item>
                 </Form>

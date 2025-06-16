@@ -9,6 +9,7 @@ import { LiaTicketAltSolid } from "react-icons/lia";
 import { TbReportAnalytics } from "react-icons/tb";
 import { CgProfile } from "react-icons/cg";
 import { RiResetLeftFill } from "react-icons/ri";
+import { AiOutlineFilter } from "react-icons/ai";
 const size = 20;
 
 const icons = {
@@ -32,6 +33,7 @@ const icons = {
     report: <TbReportAnalytics />,
     google: <IoLogoGoogle size={16} />,
     profile: <CgProfile size={size} />,
-    reset: <RiResetLeftFill size={16} />
+    reset: <RiResetLeftFill size={16} />,
+    filter: <AiOutlineFilter />,
 }
 export default icons;

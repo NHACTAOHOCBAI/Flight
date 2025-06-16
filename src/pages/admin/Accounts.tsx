@@ -274,7 +274,7 @@ const Accounts = () => {
                                             setIsNewOpen(true);
                                         }}
                                     >
-                                        New Account
+                                        {icons.plus}   New Account
                                     </Button>,
                                 ];
                             return [];

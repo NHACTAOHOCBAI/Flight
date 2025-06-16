@@ -86,6 +86,7 @@ const UpdateAccount = ({
         <>
             {contextHolder}
             <Modal
+                okText="Update"
                 title="Update Account"
                 open={isUpdateOpen}
                 onCancel={handleCancel}

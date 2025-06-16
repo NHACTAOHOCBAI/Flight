@@ -3,6 +3,7 @@ import { useCreateAirline } from "../../hooks/useAirlines";
 import type { UploadFile } from "antd/lib";
 import { useState } from "react";
 import UploadImage from "./test";
+import icons from "../../assets/icons";
 
 
 interface Props {
@@ -58,7 +59,7 @@ const NewAirline = ({ refetchData }: Props) => {
                     </div>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" loading={isPending} style={{ width: "100%" }}>
-                            Create Airline
+                            {icons.plus} New Airline
                         </Button>
                     </Form.Item>
                 </Form>

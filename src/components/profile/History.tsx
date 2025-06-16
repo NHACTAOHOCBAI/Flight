@@ -51,7 +51,7 @@ const History = () => {
             />
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
                 <p className="text-xl font-medium gap-[10px]">My tickets</p>
-                <div className="gap-[10px] flex flex-col mt-4 max-h-[450px] overflow-y-auto pr-2">
+                <div className="gap-[10px] flex flex-col mt-4 max-h-[500px] overflow-y-auto pr-2">
                     {
                         myTickets.map((item) => {
                             return (

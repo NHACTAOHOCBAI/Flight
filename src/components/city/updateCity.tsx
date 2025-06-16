@@ -49,7 +49,7 @@ const UpdateCity = ({ updatedCity, isUpdateOpen, setIsUpdateOpen, refetchData }:
                 okText="Update"
                 open={isUpdateOpen}
                 onCancel={handleCancel}
-                loading={isPending}
+                confirmLoading={isPending}
                 onOk={() => form.submit()}
             >
                 <Form

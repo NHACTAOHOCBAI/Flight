@@ -316,7 +316,7 @@ const Tickets = () => {
                                             setIsNewOpen(true)
                                         }}
                                     >
-                                        New Ticket
+                                        {icons.plus} New Ticket
                                     </Button>,
                                 ];
                             return [];

@@ -80,8 +80,8 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
         const interAirports = updatedFlight?.interAirports.map((value) => {
             return {
                 airportId: value.airport.id,
-                arrivalDate: dayjs(value.arrivalDateTime, "YYYY-MM-DD"),
-                departureDate: dayjs(value.departureDateTime, "YYYY-MM-DD"),
+                arrivalDate: dayjs(value.arrivalDateTime, format),
+                departureDate: dayjs(value.departureDateTime, format),
                 note: value.note
             }
         })
@@ -436,14 +436,13 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
                                                         ]}
                                                         style={{ marginBottom: 0 }}
                                                     >
-                                                        <InputNumber min={0} disabled={isPending || updatedFlight?.hasTickets} placeholder="Enter quantity" addonAfter="Tickets" style={{ width: "100%" }} />
+                                                        <InputNumber min={1} disabled={isPending || updatedFlight?.hasTickets} placeholder="Enter quantity" addonAfter="Tickets" style={{ width: "100%" }} />
                                                     </Form.Item>
                                                 </Col>
                                                 <Col span={2} style={{ textAlign: 'center' }}>
                                                     <Button type="text" disabled={isPending || updatedFlight?.hasTickets} onClick={() => remove(name)}>
                                                         <CloseOutlined />
                                                     </Button>
-
                                                 </Col>
                                             </Row>
                                         )
@@ -467,7 +466,7 @@ const UpdateFlight = ({ isUpdateOpen, setIsUpdateOpen, refetchData, updatedFligh
                             <InputNumber
                                 formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                                 parser={(v: string | undefined): number => Number(v?.replace(/[^\d]/g, ""))}
-                                min={0} disabled={isPending || updatedFlight?.hasTickets} placeholder="Enter original price" style={{ width: "100%" }} addonAfter="VND" />
+                                min={1} disabled={isPending || updatedFlight?.hasTickets} placeholder="Enter original price" style={{ width: "100%" }} addonAfter="VND" />
                         </Form.Item>
                     </div>
                 </Form>

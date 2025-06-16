@@ -1,16 +1,10 @@
 import React from "react";
+import dayjs from 'dayjs'; // nếu chưa import
 
 type Props = {
     flight: Flight;
 };
 
-function formatTime(datetime: string): string {
-    return new Date(datetime).toLocaleTimeString("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-    });
-}
 
 function formatDate(datetime: string): string {
     return new Date(datetime).toLocaleDateString("vi-VN");
@@ -69,11 +63,12 @@ const FlightCard: React.FC<Props> = ({ flight }) => {
                         {inter.airport.airportName} ({inter.airport.airportCode})
                     </div>
                     <div className="text-sm text-gray-600">
-                        To: {formatTime(inter.arrivalDateTime)} -- Leave: {formatTime(inter.departureDateTime)}
+                        To: {dayjs(inter.arrivalDateTime).format("YYYY-MM-DD | HH:mm")} -- Leave: {dayjs(inter.departureDateTime).format("YYYY-MM-DD | HH:mm")}
                     </div>
                     <div className="text-sm italic text-gray-500">{inter.note}</div>
                 </div>
             ))}
+
 
             {/* Arrival */}
             <div className="flex items-start space-x-3">

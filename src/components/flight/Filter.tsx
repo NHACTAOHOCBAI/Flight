@@ -49,9 +49,12 @@ const Filter = ({ isFilterOpen, setIsFilterOpen, setFlightsData, originalFlights
 
                 // Lọc theo giá
 
-                const matchesPrice = values.price && values.price[1] !== 5000000
-                    ? flight.originalPrice >= values.price[0] && flight.originalPrice <= values.price[1]
+                // Lọc theo giá
+                const matchesPrice = values.price
+                    ? flight.originalPrice >= values.price[0] &&
+                    flight.originalPrice <= (values.price[1] === 5000000 ? Infinity : values.price[1])
                     : true;
+
 
                 return matchesStraightFlight && matchesSeats && matchesAirlines && matchesPrice;
             });
