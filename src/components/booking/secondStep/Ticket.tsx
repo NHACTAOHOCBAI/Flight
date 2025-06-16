@@ -50,7 +50,7 @@ const Ticket = ({
 
                 <div className="mb-4 text-left">
                     <div><span className="font-semibold">Passenger:</span>{item.passengerName}</div>
-                    <div><span className="font-semibold">classNameName:</span>{seat}</div>
+                    <div><span className="font-semibold">className:</span>{seat}</div>
                 </div>
 
                 <div className="text-left">

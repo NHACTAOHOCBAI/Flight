@@ -14,8 +14,9 @@ const NewTicket = ({ isNewOpen, setIsNewOpen, refetchData }: Props) => {
     return (
         <>
             <Modal
+                okText='New'
                 width={1200}
-                title="New Account"
+                title="Create Ticket"
                 open={isNewOpen}
                 onCancel={handleCancel}
                 footer={null} // Ẩn cả OK và Cancel
