@@ -3,6 +3,7 @@ import { Button, Form, Input, Checkbox, message, Divider, Tag } from "antd";
 import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { useCreateRole } from "../../hooks/useRoles";
+import { MdOutlineChangeCircle } from "react-icons/md";
 
 interface Page {
     id: number;
@@ -83,9 +84,7 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
                                         <div className="flex gap-[5px] flex-wrap">
                                             {pages.map((page) => (
                                                 <Checkbox key={page.id} value={page.id}>
-                                                    <Tag icon={page.icon} color={page.color}>
-                                                        {page.name}
-                                                    </Tag>
+                                                    <Tag icon={page.icon} color={page.color}>{page.name}</Tag>
                                                 </Checkbox>
                                             ))}
                                         </div>
@@ -105,14 +104,13 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
     );
 };
 
-// hardcodedPagesByModule giữ nguyên
-
 const hardcodedPagesByModule: Record<string, Page[]> = {
     "Account": [
         { id: 20, name: "View Account", apiPath: "/accounts/**", method: "GET", module: "Account", icon: <EyeOutlined />, color: "blue" },
         { id: 21, name: "Create Account", apiPath: "/accounts/**", method: "POST", module: "Account", icon: <PlusOutlined />, color: "green" },
         { id: 22, name: "Edit Account", apiPath: "/accounts/**", method: "PUT", module: "Account", icon: <EditOutlined />, color: "orange" },
         { id: 23, name: "Delete Account", apiPath: "/accounts/**", method: "DELETE", module: "Account", icon: <DeleteOutlined />, color: "red" },
+        { id: 24, name: "Change Password", apiPath: '/accounts/**/change-password/**', method: "POST", module: "Account", icon: <div style={{ display: "inline-block", marginRight: 5, marginTop: 5 }}><MdOutlineChangeCircle /></div>, color: "purple" },
     ],
     "Airline": [
         { id: 31, name: "Create Airline", apiPath: "/airlines/**", method: "POST", module: "Airline", icon: <PlusOutlined />, color: "green" },

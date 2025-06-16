@@ -76,7 +76,7 @@ const Roles = () => {
                         <LuEye />
                     </div>
                     {
-                        value.roleName !== "ADMIN" && (
+                        (value.id !== 1 && value.id !== 2) && (
                             <>
                                 {canUpdate && (
                                     <div

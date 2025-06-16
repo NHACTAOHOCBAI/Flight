@@ -9,7 +9,7 @@ const permissionMap: Record<string, string> = {
     'GET_/accounts/**': 'View Account',
     'DELETE_/accounts/**': 'Delete Account',
     'PUT_/accounts/**': 'Update Account',
-    // 'POST_/accounts/**/change-password/**': 'Change Password',
+    'POST_/accounts/**/change-password/**': 'Change Password',
 
     'POST_/roles/**': 'Create Role',
     'PUT_/roles/**': 'Update Role',
@@ -58,7 +58,7 @@ function checkPermission(permissionToCheck: string, roles?: Role): boolean {
         const roleJson = localStorage.getItem('permission');
         if (!roleJson) return false;
         const role = JSON.parse(roleJson);
-        if (role.roleName === "USER")
+        if (role.id === 2)
             return false;
         return true
     }
@@ -75,6 +75,8 @@ function checkPermission(permissionToCheck: string, roles?: Role): boolean {
         const key = `${page.method}_${page.apiPath}`;
         return permissionMap[key];
     });
+    console.log(pages)
+    console.log(permissions)
     return permissions.includes(permissionToCheck);
 }
 export { hasPermission, checkPermission, permissionMap }

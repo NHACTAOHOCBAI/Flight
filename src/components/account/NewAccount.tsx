@@ -1,4 +1,4 @@
-import { Form, Input, message, Modal, notification, Select } from "antd";
+import { Form, Input, message, Modal, Select } from "antd";
 import { useCreateAccount } from "../../hooks/useAccounts";
 import type { UploadFile } from "antd/lib";
 import { useState } from "react";
@@ -12,19 +12,10 @@ interface Props {
 }
 
 const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props) => {
-    const [api, notiContextHolder] = notification.useNotification();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [form] = Form.useForm();
     const { mutate, isPending } = useCreateAccount();
     const [messageApi, contextHolder] = message.useMessage();
-    const openNotification = () => {
-        api.success({
-            message: 'Email verification',
-            description:
-                'We sent a verification link to your email. Please click it to active your account',
-            duration: 0,
-        });
-    };
 
     const handleOk = (value: AccountRequest) => {
         mutate({
@@ -37,7 +28,6 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
                 await refetchData();
                 messageApi.success("Create account successfully");
                 handleCancel();
-                openNotification()
             },
             onError: (error) => {
                 messageApi.error(error.message);
@@ -51,7 +41,6 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
     };
     return (
         <>
-            {notiContextHolder}
             {contextHolder}
             <Modal
                 okText='Create'

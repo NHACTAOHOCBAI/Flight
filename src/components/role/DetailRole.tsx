@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import type { ReactNode } from "react";
 import { permissionMap } from "../../utils/checkPermission";
+import { MdOutlineChangeCircle } from "react-icons/md";
 
 interface Page {
     id: number;
@@ -35,8 +36,9 @@ const getPermissionIconAndColor = (name: string): { icon: ReactNode; color: stri
     } else if (name.includes("Delete")) {
         return { icon: <DeleteOutlined />, color: "red" };
     } else if (name.includes("Change Password")) {
-        return { icon: <EditOutlined />, color: "purple" };
+        return { icon: <div style={{ display: "inline-block", marginRight: 5, marginTop: 5 }}><MdOutlineChangeCircle /></div>, color: "purple" };
     }
+    console.log("⚠️ Unmatched permission:", name);
     return { icon: null, color: "default" };
 };
 
