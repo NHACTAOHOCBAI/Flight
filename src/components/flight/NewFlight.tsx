@@ -4,6 +4,7 @@ import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import { useCreateFlight } from "../../hooks/useFlights";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
+import { useWatch } from "antd/es/form/Form";
 
 interface Props {
     isNewOpen: boolean;
@@ -21,6 +22,7 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
     MIN_FLIGHT_TIME, MAX_STOP_TIME, MIN_STOP_TIME, MAX_INTER_QUANTITY,
     planeSelectOptions, airportSelectOptions, seatSelectOptions }: Props) => {
     const [form] = Form.useForm();
+    const selectedSeats = useWatch("seats", form) || [];
     const { mutate, isPending } = useCreateFlight();
     const [messageApi, contextHolder] = message.useMessage();
     const departureDate = Form.useWatch('departureDate', form);
@@ -56,7 +58,6 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
             interAirports: interAirports,
             seats: values.seats
         }
-        console.log(newFlight);
         mutate(newFlight, {
             onSuccess: async () => {
                 await refetchData();
@@ -69,7 +70,6 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
                 handleCancel();
             }
         });
-        console.log(newFlight)
     };
     return (
         <>
@@ -355,7 +355,7 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
                                 {
                                     validator: async (_, value) => {
                                         if (!value || value.length < 1) {
-                                            return Promise.reject(new Error('You must add at least 1 seat item.'));
+                                            return Promise.reject(new Error("You must add at least 1 seat item."));
                                         }
                                     },
                                 },
@@ -363,38 +363,66 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
                         >
                             {(fields, { add, remove }, { errors }) => (
                                 <>
-                                    {fields.map(({ key, name, ...restField }) => {
+                                    {fields.map(({ key, name, ...restField }, index) => {
+                                        // Lấy danh sách seatId đã chọn, bỏ qua dòng hiện tại
+                                        const selectedSeatIds = selectedSeats
+                                            .map((s: any, i: number) => (i !== index ? s?.seatId : null))
+                                            .filter(Boolean);
+
+                                        // Lọc option chỉ còn ghế chưa được chọn
+                                        const availableOptions = seatSelectOptions.filter(
+                                            (option) => !selectedSeatIds.includes(option.value)
+                                        );
+
                                         return (
                                             <Row key={key} gutter={16} align="middle" style={{ marginBottom: 8 }}>
                                                 <Col span={11}>
                                                     <Form.Item
                                                         {...restField}
-                                                        name={[name, 'seatId']}
-                                                        rules={[{ required: true, message: 'Select a seat' }]}
+                                                        name={[name, "seatId"]}
+                                                        rules={[{ required: true, message: "Select a seat" }]}
                                                         style={{ marginBottom: 0 }}
                                                     >
-                                                        <Select disabled={isPending} options={seatSelectOptions} placeholder="Select seat" />
+                                                        <Select
+                                                            disabled={isPending}
+                                                            placeholder="Select seat"
+                                                            options={availableOptions}
+                                                        />
                                                     </Form.Item>
                                                 </Col>
                                                 <Col span={11}>
                                                     <Form.Item
                                                         {...restField}
-                                                        name={[name, 'quantity']}
-                                                        rules={[{ required: true, message: 'Enter quantity' }]}
+                                                        name={[name, "quantity"]}
+                                                        rules={[{ required: true, message: "Enter quantity" }]}
                                                         style={{ marginBottom: 0 }}
                                                     >
-                                                        <InputNumber disabled={isPending} placeholder="Enter quantity" addonAfter="Tickets" style={{ width: "100%" }} />
+                                                        <InputNumber
+                                                            min={1}
+                                                            disabled={isPending}
+                                                            placeholder="Enter quantity"
+                                                            addonAfter="Tickets"
+                                                            style={{ width: "100%" }}
+                                                        />
                                                     </Form.Item>
                                                 </Col>
-                                                <Col span={2} style={{ textAlign: 'center' }}>
-                                                    <CloseOutlined onClick={() => remove(name)} style={{ fontSize: 20, cursor: 'pointer' }} />
+                                                <Col span={2} style={{ textAlign: "center" }}>
+                                                    <CloseOutlined
+                                                        onClick={() => remove(name)}
+                                                        style={{ fontSize: 20, cursor: "pointer" }}
+                                                    />
                                                 </Col>
                                             </Row>
-                                        )
-                                    }
-                                    )}
+                                        );
+                                    })}
                                     <Form.Item>
-                                        <Button disabled={isPending} type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                        <Button
+                                            disabled={isPending}
+                                            type="dashed"
+                                            onClick={() => add()}
+                                            block
+                                            icon={<PlusOutlined />}
+                                        >
                                             Add Ticket
                                         </Button>
                                         <Form.ErrorList errors={errors} />
@@ -402,7 +430,6 @@ const NewFlight = ({ isNewOpen, setIsNewOpen, refetchData,
                                 </>
                             )}
                         </Form.List>
-
                         <Form.Item
                             label="Original Price"
                             name="originalPrice"
