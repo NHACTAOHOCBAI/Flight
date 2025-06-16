@@ -156,7 +156,7 @@ const RefundModal = ({ isOpen, setIsOpen, ticket, fetchMyTickets }: { isOpen: bo
                         <span className="font-bold">{ticket?.flight?.flightCode || "N/A"}</span>?
                     </p>
                     <p className="text-base">
-                        Refund amount: <span className="font-bold text-green-600 dark:text-green-400">${formatPrice(refundAmount)}</span> {`${params.refundRate}%  of original price`}.
+                        Refund amount: <span className="font-bold text-green-600 dark:text-green-400">{formatPrice(refundAmount)}</span> {`${params.refundRate}%  of original price`}.
                     </p>
                     <p className="text-base">
                         This action cannot be undone.

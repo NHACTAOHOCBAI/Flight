@@ -33,8 +33,7 @@ const Register = () => {
                 navigate('/register/confirm');
             },
             onError: (error: any) => {
-                const errorMsg = error?.response?.data?.message || "Register failed";
-                messageApi.error(errorMsg);
+                messageApi.error(error.message);
             }
         });
     };
@@ -67,7 +66,14 @@ const Register = () => {
                         <Form.Item<FieldType>
                             label="Password"
                             name="password"
-                            rules={[{ required: true, message: 'Please input your password!' }]}
+                            rules={[
+                                { required: true, message: 'Please input your password!' },
+                                {
+                                    pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+                                    message:
+                                        'Password must be at least 6 characters and include uppercase, lowercase, and a number',
+                                },
+                            ]}
                         >
                             <Input.Password disabled={isPending || isRedirecting} />
                         </Form.Item>
@@ -82,6 +88,13 @@ const Register = () => {
                         <Form.Item<FieldType>
                             label="Phone"
                             name="phone"
+                            rules={[
+                                { required: true, message: 'Please input your phone number!' },
+                                {
+                                    pattern: /^0\d{9}$/,
+                                    message: 'Phone number must start with 0 and be 10 digits',
+                                },
+                            ]}
                         >
                             <Input disabled={isPending || isRedirecting} />
                         </Form.Item>

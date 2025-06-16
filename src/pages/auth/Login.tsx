@@ -76,7 +76,7 @@ const Login = () => {
                     <div className="rounded-md bg-white p-[24px] drop-shadow-md flex gap-[20px]">
                         <div className="w-[400px]">
                             <h1 className="font-medium text-[24px] text-center text-blue-500 p-[24px]">
-                                Welcome to our website :))
+                                Welcome to our website
                             </h1>
                             <Form
                                 layout="vertical"

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import ProtectedRoute from "../auth/ProtectedRoute";
 import AdminLayout from "../layouts/AdminLayout";
 import Dashboard from "../pages/admin/Dashboard";
@@ -17,14 +17,13 @@ import Resgister from "../pages/auth/Resgister";
 import NotFound from "../pages/errors/NotFound";
 import Booking from "../pages/admin/Booking";
 
-import FlightSearchPage from "../pages/customer/SearchFlight";
 import RegisterSuccess from "../pages/auth/ConfirmEmail";
 import Profile from "../pages/admin/Profile";
 
 const router = createBrowserRouter([
     {
-        path: "/",
-        element: <FlightSearchPage />,
+        path: '/',
+        element: <Navigate to="/login" replace />
     },
     {
         path: '/login',
