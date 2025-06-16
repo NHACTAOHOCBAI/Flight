@@ -83,7 +83,7 @@ const Seats = () => {
                     </div>
 
                     {canUpdate && (
-                        record.canDelete ? (
+                        record.canUpdate ? (
                             <div
                                 onClick={() => {
                                     setUpdateSeat(record);

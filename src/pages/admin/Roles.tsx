@@ -79,15 +79,19 @@ const Roles = () => {
                         (value.id !== 1 && value.id !== 2) && (
                             <>
                                 {canUpdate && (
-                                    <div
-                                        onClick={() => {
-                                            setUpdateRole(value);
-                                            setIsUpdateOpen(true);
-                                        }}
-                                        className="text-yellow-400 cursor-pointer"
-                                    >
-                                        {icons.edit}
-                                    </div>
+                                    value.canUpdate ? (
+                                        <div
+                                            onClick={() => {
+                                                setUpdateRole(value);
+                                                setIsUpdateOpen(true);
+                                            }}
+                                            className="text-yellow-400 cursor-pointer"
+                                        >
+                                            {icons.edit}
+                                        </div>
+                                    ) : (
+                                        <div className="text-gray-400 cursor-not-allowed">{icons.edit}</div>
+                                    )
                                 )
                                 }
 

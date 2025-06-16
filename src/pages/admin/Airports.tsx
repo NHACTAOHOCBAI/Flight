@@ -107,7 +107,7 @@ const Airports = () => {
                     render: (_: React.ReactNode, value: Airport) => (
                         <div className="flex gap-[10px]">
                             {canUpdate && (
-                                value.canDelete ? (
+                                value.canUpdate ? (
                                     <div
                                         onClick={() => {
                                             setUpdateAirport(value);

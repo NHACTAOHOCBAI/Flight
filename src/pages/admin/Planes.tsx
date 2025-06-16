@@ -108,7 +108,7 @@ const Planes = () => {
                     render: (_: React.ReactNode, value: Plane) => (
                         <div className="flex gap-[10px]">
                             {canUpdate && (
-                                value.canDelete ? (
+                                value.canUpdate ? (
                                     <div
                                         onClick={() => {
                                             setUpdatePlane(value);

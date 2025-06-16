@@ -81,7 +81,7 @@ const Cities = () => {
                     render: (_: React.ReactNode, record: City) => (
                         <div className="flex gap-[10px]">
                             {canUpdate && (
-                                record.canDelete ? (
+                                record.canUpdate ? (
                                     <div
                                         onClick={() => {
                                             setUpdateCity(record);
