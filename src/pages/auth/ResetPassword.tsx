@@ -3,6 +3,7 @@ import { Button, Form, Input, message } from "antd";
 import { useState } from "react";
 import { resetPassword } from "../../services/auth";
 import { useNavigate } from "react-router";
+import icons from "../../assets/icons";
 
 const ResetPassword = () => {
     const [loading, setLoading] = useState(false);
@@ -68,6 +69,7 @@ const ResetPassword = () => {
                         </Button>
                     </Form.Item>
                 </Form>
+                <div className="flex gap-[5px] items-center cursor-pointer text-blue-500" onClick={() => navigate("/login")}><div>{icons.arrow}</div> <span className="text-[14px]">Go back log in</span></div>
             </div>
         </div>
     );

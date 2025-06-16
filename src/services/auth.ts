@@ -18,7 +18,11 @@ const logoutAPI = async () => {
 }
 
 const forgotPassword = async (email: string) => {
-    return await axiosInstance.post('/auth/forgot-password', { email })
+    return await axiosInstance.post('/auth/forgot-password', email, {
+        headers: {
+            'Content-Type': 'text/plain',
+        }
+    });
 }
 
 const resetPassword = async (token: string, newPassword: string) => {

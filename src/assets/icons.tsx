@@ -10,9 +10,11 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { CgProfile } from "react-icons/cg";
 import { RiResetLeftFill } from "react-icons/ri";
 import { AiOutlineFilter } from "react-icons/ai";
+import { IoIosArrowRoundBack } from "react-icons/io";
 const size = 20;
 
 const icons = {
+    arrow: <IoIosArrowRoundBack size={size} />,
     account: <VscAccount size={size} />,
     plane: <IoAirplaneOutline size={size} />,
     airline: <IoPlanetOutline size={size} />,
