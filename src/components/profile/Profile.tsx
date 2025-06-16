@@ -63,8 +63,7 @@ const MyProfile = () => {
                 <div className="flex w-full h-full">
                     <div className="flex-2 flex items-center justify-center text-center">
                         <div>
-                            {/* <Avatar shape="circle" size={164} icon={<UserOutlined />} /> */}
-                            <div className="mb-[10px]">
+                            <div className="mb-[10px] flex justify-center items-center">
                                 <UploadImage
                                     circle={true}
                                     isPending={isPending}
