@@ -56,7 +56,7 @@ const FlightCard = () => {
                 <h3 className="opacity-45">Flights</h3>
                 <Select
                     onChange={onChange}
-                    defaultValue="year"
+                    defaultValue="month"
                     style={{ minWidth: 90 }}
                     options={[
                         { value: 'year', label: <span>The Year</span> },
@@ -82,7 +82,7 @@ const RevenueCard = () => {
                 <h3 className="opacity-45">Revenue</h3>
                 <Select
                     onChange={onChange}
-                    defaultValue="year"
+                    defaultValue="month"
                     style={{ minWidth: 90 }}
                     options={[
                         { value: 'year', label: <span>The Year</span> },
