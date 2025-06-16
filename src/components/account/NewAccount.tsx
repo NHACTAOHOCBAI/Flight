@@ -63,9 +63,16 @@ const NewAccount = ({ refetchData, roleOptions, isNewOpen, setIsNewOpen }: Props
                     </Form.Item>
 
                     <Form.Item
-                        name="password"
                         label="Password"
-                        rules={[{ required: true, message: 'Password is required' }]}
+                        name="password"
+                        rules={[
+                            { required: true, message: 'Please input your password!' },
+                            {
+                                pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+                                message:
+                                    'Password must be at least 6 characters and include uppercase, lowercase, and a number',
+                            },
+                        ]}
                     >
                         <Input.Password disabled={isPending} />
                     </Form.Item>

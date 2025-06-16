@@ -3,7 +3,6 @@ import { Button, Form, Input, Checkbox, message, Divider, Tag } from "antd";
 import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { useCreateRole } from "../../hooks/useRoles";
-import { MdOutlineChangeCircle } from "react-icons/md";
 
 interface Page {
     id: number;
@@ -110,7 +109,6 @@ const hardcodedPagesByModule: Record<string, Page[]> = {
         { id: 21, name: "Create Account", apiPath: "/accounts/**", method: "POST", module: "Account", icon: <PlusOutlined />, color: "green" },
         { id: 22, name: "Edit Account", apiPath: "/accounts/**", method: "PUT", module: "Account", icon: <EditOutlined />, color: "orange" },
         { id: 23, name: "Delete Account", apiPath: "/accounts/**", method: "DELETE", module: "Account", icon: <DeleteOutlined />, color: "red" },
-        { id: 24, name: "Change Password", apiPath: '/accounts/**/change-password/**', method: "POST", module: "Account", icon: <div style={{ display: "inline-block", marginRight: 5, marginTop: 5 }}><MdOutlineChangeCircle /></div>, color: "purple" },
     ],
     "Airline": [
         { id: 31, name: "Create Airline", apiPath: "/airlines/**", method: "POST", module: "Airline", icon: <PlusOutlined />, color: "green" },

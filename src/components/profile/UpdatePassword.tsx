@@ -57,9 +57,16 @@ const UpdatePassword = ({ isModalOpen, setIsModalOpen, fetchUserInf }: Props) =>
                     </Form.Item>
 
                     <Form.Item
-                        name="newPassword"
                         label="New Password"
-                        rules={[{ required: true, message: 'Please enter a new password' }]}
+                        name="newPassword"
+                        rules={[
+                            { required: true, message: 'Please input your password!' },
+                            {
+                                pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+                                message:
+                                    'Password must be at least 6 characters and include uppercase, lowercase, and a number',
+                            },
+                        ]}
                     >
                         <Input.Password disabled={isPending} />
                     </Form.Item>

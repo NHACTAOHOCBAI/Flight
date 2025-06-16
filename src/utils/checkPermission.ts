@@ -9,7 +9,7 @@ const permissionMap: Record<string, string> = {
     'GET_/accounts/**': 'View Account',
     'DELETE_/accounts/**': 'Delete Account',
     'PUT_/accounts/**': 'Update Account',
-    'POST_/accounts/**/change-password/**': 'Change Password',
+    // 'POST_/accounts/**/change-password/**': 'Change Password',
 
     'POST_/roles/**': 'Create Role',
     'PUT_/roles/**': 'Update Role',
@@ -20,8 +20,6 @@ const permissionMap: Record<string, string> = {
     'GET_/tickets/**': 'View Ticket',
     'PUT_/tickets/**': 'Update Ticket',
     'DELETE_/tickets/**': 'Delete Ticket',
-    // 'GET_/tickets/revenue/**': 'Get Total Revenue',
-    // 'GET_/tickets/booking-rate/**': "Get Booking Rate",
 
     'POST_/seats/**': 'Create Seat',
     'PUT_/seats/**': 'Update Seat',
@@ -52,7 +50,6 @@ const permissionMap: Record<string, string> = {
     'GET_/reports/annual-revenue/**': 'Get Anuual Revenue Report',
     'GET_/reports/monthly-revenue/**/**': 'Get Monthly Revenue Report'
 };
-
 function checkPermission(permissionToCheck: string, roles?: Role): boolean {
     if (permissionToCheck === "View Dashboard") {
         const roleJson = localStorage.getItem('permission');
@@ -75,8 +72,6 @@ function checkPermission(permissionToCheck: string, roles?: Role): boolean {
         const key = `${page.method}_${page.apiPath}`;
         return permissionMap[key];
     });
-    console.log(pages)
-    console.log(permissions)
     return permissions.includes(permissionToCheck);
 }
 export { hasPermission, checkPermission, permissionMap }
