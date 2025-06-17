@@ -153,7 +153,6 @@ interface Role {
     roleDescription: string,
     pages: Page[],
     canDelete?: boolean
-    canUpdate?: boolean
 }
 
 interface Account {

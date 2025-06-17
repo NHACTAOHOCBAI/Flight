@@ -41,7 +41,7 @@ const NewAirport = ({ refetchData, citySelectOptions }: Props) => {
                         <Input disabled={isPending} placeholder="Enter airport name" />
                     </Form.Item>
                     <Form.Item label="Located At" name="cityId" rules={[{ required: true }]}>
-                        <Select disabled={isPending} options={citySelectOptions} placeholder="Enter airport name" />
+                        <Select disabled={isPending} options={citySelectOptions} placeholder="Select location" />
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" loading={isPending} style={{ width: "100%" }}>

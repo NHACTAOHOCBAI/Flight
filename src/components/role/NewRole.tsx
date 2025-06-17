@@ -46,9 +46,14 @@ const NewRole = ({ refetchData }: { refetchData: () => Promise<void> }) => {
             onError: (error) => {
                 messageApi.error(error.message);
             },
+            onSettled: () => {
+                handleCancel()
+            }
         });
     };
-
+    const handleCancel = () => {
+        form.resetFields()
+    }
     return (
         <>
             {contextHolder}
