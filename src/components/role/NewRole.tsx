@@ -117,26 +117,31 @@ const hardcodedPagesByModule: Record<string, Page[]> = {
         { id: 23, name: "Delete Account", apiPath: "/accounts/**", method: "DELETE", module: "Account", icon: <DeleteOutlined />, color: "red" },
     ],
     "Airline": [
+        { id: 30, name: "View Airline", apiPath: "/airlines/**", method: "GET", module: "Airline", icon: <EyeOutlined />, color: "blue" },
         { id: 31, name: "Create Airline", apiPath: "/airlines/**", method: "POST", module: "Airline", icon: <PlusOutlined />, color: "green" },
         { id: 32, name: "Edit Airline", apiPath: "/airlines/**", method: "PUT", module: "Airline", icon: <EditOutlined />, color: "orange" },
         { id: 33, name: "Delete Airline", apiPath: "/airlines/**", method: "DELETE", module: "Airline", icon: <DeleteOutlined />, color: "red" },
     ],
     "Airport": [
+        { id: 40, name: "View Airport", apiPath: "/airports/**", method: "GET", module: "Airport", icon: <EyeOutlined />, color: "blue" },
         { id: 41, name: "Create Airport", apiPath: "/airports/**", method: "POST", module: "Airport", icon: <PlusOutlined />, color: "green" },
         { id: 42, name: "Edit Airport", apiPath: "/airports/**", method: "PUT", module: "Airport", icon: <EditOutlined />, color: "orange" },
         { id: 43, name: "Delete Airport", apiPath: "/airports/**", method: "DELETE", module: "Airport", icon: <DeleteOutlined />, color: "red" },
     ],
     "City": [
+        { id: 50, name: "View City", apiPath: "/cities/**", method: "GET", module: "City", icon: <EyeOutlined />, color: "blue" },
         { id: 51, name: "Create City", apiPath: "/cities/**", method: "POST", module: "City", icon: <PlusOutlined />, color: "green" },
         { id: 52, name: "Edit City", apiPath: "/cities/**", method: "PUT", module: "City", icon: <EditOutlined />, color: "orange" },
         { id: 53, name: "Delete City", apiPath: "/cities/**", method: "DELETE", module: "City", icon: <DeleteOutlined />, color: "red" },
     ],
     "Flight": [
+        { id: 60, name: "View Flight", apiPath: "/flights/**", method: "GET", module: "Flight", icon: <EyeOutlined />, color: "blue" },
         { id: 61, name: "Create Flight", apiPath: "/flights/**", method: "POST", module: "Flight", icon: <PlusOutlined />, color: "green" },
         { id: 62, name: "Edit Flight", apiPath: "/flights/**", method: "PUT", module: "Flight", icon: <EditOutlined />, color: "orange" },
         { id: 63, name: "Delete Flight", apiPath: "/flights/**", method: "DELETE", module: "Flight", icon: <DeleteOutlined />, color: "red" },
     ],
     "Plane": [
+        { id: 70, name: "View Plane", apiPath: "/planes/**", method: "GET", module: "Plane", icon: <EyeOutlined />, color: "blue" },
         { id: 71, name: "Create Plane", apiPath: "/planes/**", method: "POST", module: "Plane", icon: <PlusOutlined />, color: "green" },
         { id: 72, name: "Edit Plane", apiPath: "/planes/**", method: "PUT", module: "Plane", icon: <EditOutlined />, color: "orange" },
         { id: 73, name: "Delete Plane", apiPath: "/planes/**", method: "DELETE", module: "Plane", icon: <DeleteOutlined />, color: "red" },
@@ -148,11 +153,13 @@ const hardcodedPagesByModule: Record<string, Page[]> = {
         { id: 83, name: "Delete Role", apiPath: "/roles/**", method: "DELETE", module: "Role", icon: <DeleteOutlined />, color: "red" },
     ],
     "Seat": [
+        { id: 90, name: "View Seat", apiPath: "/seats/**", method: "GET", module: "Seat", icon: <EyeOutlined />, color: "blue" },
         { id: 91, name: "Create Seat", apiPath: "/seats/**", method: "POST", module: "Seat", icon: <PlusOutlined />, color: "green" },
         { id: 92, name: "Edit Seat", apiPath: "/seats/**", method: "PUT", module: "Seat", icon: <EditOutlined />, color: "orange" },
         { id: 93, name: "Delete Seat", apiPath: "/seats/**", method: "DELETE", module: "Seat", icon: <DeleteOutlined />, color: "red" },
     ],
     "Setting": [
+        { id: 100, name: "View Setting", apiPath: "/parameters/**", method: "GET", module: "Setting", icon: <EyeOutlined />, color: "blue" },
         { id: 101, name: "Update Settings", apiPath: "/parameters/**", method: "PUT", module: "Setting", icon: <EditOutlined />, color: "orange" },
     ],
     "Ticket": [

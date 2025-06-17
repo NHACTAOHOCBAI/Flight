@@ -21,37 +21,44 @@ const permissionMap: Record<string, string> = {
     'PUT_/tickets/**': 'Update Ticket',
     'DELETE_/tickets/**': 'Delete Ticket',
 
+    'GET_/seats/**': 'View Seat',
     'POST_/seats/**': 'Create Seat',
     'PUT_/seats/**': 'Update Seat',
     'DELETE_/seats/**': 'Delete Seat',
 
+    'GET_/airports/**': 'View Airport',
     'POST_/airports/**': 'Create Airport',
     'PUT_/airports/**': 'Update Airport',
     'DELETE_/airports/**': 'Delete Airport',
 
+    'VIEW_/cities/**': 'View City',
     'POST_/cities/**': 'Create City',
     'PUT_/cities/**': 'Update City',
     'DELETE_/cities/**': 'Delete City',
 
+    'VIEW_/airlines/**': 'View Airline',
     'POST_/airlines/**': 'Create Airline',
     'PUT_/airlines/**': 'Update Airline',
     'DELETE_/airlines/**': 'Delete Airline',
 
+    'VIEW_/flights/**': 'View Flight',
     'POST_/flights/**': 'Create Flight',
     'PUT_/flights/**': 'Update Flight',
     'DELETE_/flights/**': 'Delete Flight',
 
+    'View_/planes/**': 'View Plane',
     'POST_/planes/**': 'Create Plane',
     'PUT_/planes/**': 'Update Plane',
     'DELETE_/planes/**': 'Delete Plane',
 
+    'View_/parameters/**': 'View Parameter',
     'PUT_/parameters/**': 'Update Parameter',
 
     'GET_/reports/annual-revenue/**': 'Get Anuual Revenue Report',
     'GET_/reports/monthly-revenue/**/**': 'Get Monthly Revenue Report'
 };
 function checkPermission(permissionToCheck: string, roles?: Role): boolean {
-    if (permissionToCheck === "View Dashboard" || permissionToCheck === "View Airline" || permissionToCheck === "View Plane" || permissionToCheck === "View City" || permissionToCheck === "View Airport" || permissionToCheck === "View Seat" || permissionToCheck === "View Account" || permissionToCheck === "View Role" || permissionToCheck === "View Ticket" || permissionToCheck === "View Parameters") {
+    if (permissionToCheck === "View Dashboard") {
         const roleJson = localStorage.getItem('permission');
         if (!roleJson) return false;
         const role = JSON.parse(roleJson);
