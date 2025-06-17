@@ -8,47 +8,55 @@ import { useEffect, useState } from 'react';
 import { flightRevenueReport } from '../../services/report';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import DetailFlight from '../flight/DetailFlight';
+import { getFlightById } from '../../services/flight';
 dayjs.extend(isSameOrAfter);
 
 const disabledDate = (current: dayjs.Dayjs) => {
     return current.isSameOrAfter(dayjs(), 'month'); // Disable tháng hiện tại trở đi
 };
 const defaultDate = dayjs().subtract(1, 'month');
-const columns: ProColumns<MonthlyRevenueReport["flights"][0]>[] = [
-    {
-        title: 'ID',
-        dataIndex: 'flightId',
-    },
-    {
-        title: 'Flight Code',
-        dataIndex: 'flightCode',
-        copyable: true,
-    },
-    {
-        title: 'Ticket Quantity',
-        dataIndex: 'ticketCount',
-        sorter: true,
-    },
-    {
-        title: 'Revenue',
-        dataIndex: 'revenue',
-        sorter: true,
-        render: (_, record) => <div>{record.revenue.toLocaleString("vi-VN")} VND</div>,
-    },
-    {
-        title: 'Rate',
-        dataIndex: 'percentage',
-        sorter: true,
-        render: (text) => <div>{text}%</div>,
-    },
-];
-
 const TicketReport = () => {
+    const [detailFlight, setDetailFlight] = useState<Flight>();
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [report, setReport] = useState<MonthlyRevenueReport>()
     const [date, setDate] = useState<{ month: number, year: number }>({
         month: defaultDate.month() + 1,
         year: defaultDate.year()
     })
+    const columns: ProColumns<MonthlyRevenueReport["flights"][0]>[] = [
+        {
+            title: 'ID',
+            dataIndex: 'flightId',
+        },
+        {
+            title: 'Flight Code',
+            render: (_, record) => <div onClick={async () => {
+                // Fetch the full Flight object here, e.g. by ID
+                const flight = await getFlightById(record.flightId);
+                setIsDetailOpen(true) // You need to implement fetchFlightById
+                setDetailFlight(flight.data)
+            }}>{record.flightCode}</div>,
+            copyable: true,
+        },
+        {
+            title: 'Ticket Quantity',
+            dataIndex: 'ticketCount',
+            sorter: true,
+        },
+        {
+            title: 'Revenue',
+            dataIndex: 'revenue',
+            sorter: true,
+            render: (_, record) => <div>{record.revenue.toLocaleString("vi-VN")} VND</div>,
+        },
+        {
+            title: 'Rate',
+            dataIndex: 'percentage',
+            sorter: true,
+            render: (text) => <div>{text}%</div>,
+        },
+    ];
     const onChange: DatePickerProps['onChange'] = (date) => {
         setDate({
             month: date.month() + 1,
@@ -79,59 +87,66 @@ const TicketReport = () => {
         refetchReport()
     }, [date])
     return (
-        <div className="flex-1 min-w-[400px] bg-white mt-[10px] shadow-md">
-            {/* Thống kê tổng quan */}
-            <div className="p-4 border-b border-gray-200 text-[15px] font-medium">
-                <div>
-                    Date: {report?.month}/{report?.year}
-                </div>
-                <div>
-                    Total Revenue: {formatPrice(report?.revenue || 0)}
-                </div>
-                <div>
-                    Percentage: {report?.percentage}%
-                </div>
-            </div>
-
-            {/* Bảng ProTable */}
-            <ProTable<MonthlyRevenueReport["flights"][0]>
-                style={{ width: "100%" }}
-                headerTitle={
-                    <div className="text-[18px] flex gap-[5px] underline underline-offset-1">
-                        {icons.report}Flight Revenue Report
-                    </div>
-                }
-                columns={columns}
-                dataSource={report?.flights}
-                rowKey="flightId"
-                search={false}
-                pagination={{
-                    pageSizeOptions: [5, 10, 20, 50],
-                    showSizeChanger: true,
-                    defaultCurrent: 1,
-                    defaultPageSize: 10,
-                }}
-                toolBarRender={() => [
-                    <Button
-                        type="primary"
-                        style={{ marginLeft: "auto", marginRight: 10 }}
-                        onClick={() => exportToExcel(excelData, "Flight_Ticket_Sales_Report")}
-                    >
-                        {icons.export} Export
-                    </Button>,
-
-                    <DatePicker
-                        value={dayjs(`${date.year}-${date.month}`, 'YYYY-M')}
-                        onChange={onChange}
-                        picker="month"
-                        disabledDate={disabledDate}
-                    />
-                ]}
-                options={{
-                    reload: false,
-                }}
+        <>
+            <DetailFlight
+                isDetailOpen={isDetailOpen}
+                setIsDetailOpen={setIsDetailOpen}
+                detailFlight={detailFlight}
             />
-        </div>
+            <div className="flex-1 min-w-[400px] bg-white mt-[10px] shadow-md">
+                {/* Thống kê tổng quan */}
+                <div className="p-4 border-b border-gray-200 text-[15px] font-medium">
+                    <div>
+                        Date: {report?.month}/{report?.year}
+                    </div>
+                    <div>
+                        Total Revenue: {formatPrice(report?.revenue || 0)}
+                    </div>
+                    <div>
+                        Percentage: {report?.percentage}%
+                    </div>
+                </div>
+
+                {/* Bảng ProTable */}
+                <ProTable<MonthlyRevenueReport["flights"][0]>
+                    style={{ width: "100%" }}
+                    headerTitle={
+                        <div className="text-[18px] flex gap-[5px] underline underline-offset-1">
+                            {icons.report}Flight Revenue Report
+                        </div>
+                    }
+                    columns={columns}
+                    dataSource={report?.flights}
+                    rowKey="flightId"
+                    search={false}
+                    pagination={{
+                        pageSizeOptions: [5, 10, 20, 50],
+                        showSizeChanger: true,
+                        defaultCurrent: 1,
+                        defaultPageSize: 10,
+                    }}
+                    toolBarRender={() => [
+                        <Button
+                            type="primary"
+                            style={{ marginLeft: "auto", marginRight: 10 }}
+                            onClick={() => exportToExcel(excelData, "Flight_Ticket_Sales_Report")}
+                        >
+                            {icons.export} Export
+                        </Button>,
+
+                        <DatePicker
+                            value={dayjs(`${date.year}-${date.month}`, 'YYYY-M')}
+                            onChange={onChange}
+                            picker="month"
+                            disabledDate={disabledDate}
+                        />
+                    ]}
+                    options={{
+                        reload: false,
+                    }}
+                />
+            </div>
+        </>
     );
 };
 
