@@ -21,6 +21,7 @@ const AdminLayout = () => {
     const myAccount = useAppSelector((state) => state.user)
     const { pathname } = useLocation();
     const endpoints = pathname.split('/').pop() as string;
+    console.log(endpoints)
     const [collapsed, setCollapsed] = useState(false);
     const {
         token: { colorBgContainer },
@@ -60,7 +61,7 @@ const AdminLayout = () => {
             navigator('/login')
     }, [])
     const labelMap: Record<string, { label: React.ReactNode; icon: React.ReactNode }> = {
-        Dashboard: { label: <Link to="/admin">Dashboard</Link>, icon: icons.dashboard },
+        Dashboard: { label: <Link to="/admin/dashboard">Dashboard</Link>, icon: icons.dashboard },
         Accounts: { label: <Link to="/admin/accounts">Account</Link>, icon: icons.account },
         Airlines: { label: <Link to="/admin/airlines">Airline</Link>, icon: icons.airline },
         Airports: { label: <Link to="/admin/airports">Airport</Link>, icon: icons.airport },
@@ -92,30 +93,30 @@ const AdminLayout = () => {
             }] : []),
         ...(canViewAirline
             ? [{
-                key: 'airline',
+                key: 'airlines',
                 icon: labelMap['Airlines'].icon,
                 label: labelMap['Airlines'].label,
             },] : []),
         ...(canViewPlane
             ? [{
-                key: 'plane',
+                key: 'planes',
                 icon: labelMap['Planes'].icon,
                 label: labelMap['Planes'].label,
             },] : []),
         ...(canViewCity
             ? [{
-                key: 'city',
+                key: 'cities',
                 icon: labelMap['Cities'].icon,
                 label: labelMap['Cities'].label,
             },] : []),
         ...(canViewAirport
             ? [{
-                key: 'airport',
+                key: 'airports',
                 icon: labelMap['Airports'].icon,
                 label: labelMap['Airports'].label,
             },] : []),
         {
-            key: 'flight',
+            key: 'flights',
             icon: labelMap['Flights'].icon,
             label: labelMap['Flights'].label,
         },

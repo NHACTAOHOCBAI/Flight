@@ -56,7 +56,7 @@ const router = createBrowserRouter([
                 element: <AdminLayout />,
                 children: [
                     {
-                        path: "",
+                        path: "dashboard",
                         element: <ProtectedRoute permissionToCheck="View Dashboard" />,
                         children: [{ index: true, element: <Dashboard /> }]
                     },
