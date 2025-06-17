@@ -8,8 +8,6 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ permissionToCheck }: ProtectedRouteProps) => {
-    console.log(permissionToCheck)
-
     if (!permissionToCheck)
         return <Outlet />;
     if (!checkPermission(permissionToCheck)) {

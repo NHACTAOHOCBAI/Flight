@@ -51,7 +51,7 @@ const permissionMap: Record<string, string> = {
     'GET_/reports/monthly-revenue/**/**': 'Get Monthly Revenue Report'
 };
 function checkPermission(permissionToCheck: string, roles?: Role): boolean {
-    if (permissionToCheck === "View Dashboard") {
+    if (permissionToCheck === "View Dashboard" || permissionToCheck === "View Airline" || permissionToCheck === "View Plane" || permissionToCheck === "View City" || permissionToCheck === "View Airport" || permissionToCheck === "View Seat" || permissionToCheck === "View Account" || permissionToCheck === "View Role" || permissionToCheck === "View Ticket" || permissionToCheck === "View Parameters") {
         const roleJson = localStorage.getItem('permission');
         if (!roleJson) return false;
         const role = JSON.parse(roleJson);

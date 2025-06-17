@@ -76,8 +76,13 @@ const AdminLayout = () => {
     const canViewDashBoard = checkPermission("View Dashboard");
     const canViewAccount = checkPermission("View Account");
     const canViewRole = checkPermission("View Role");
+    const canViewAirline = checkPermission("View Airline");
+    const canViewPlane = checkPermission("View Plane");
+    const canViewCity = checkPermission("View City");
+    const canViewAirport = checkPermission("View Airport");
+    const canViewSeat = checkPermission("View Seat");
     const canViewTicket = checkPermission("View Ticket");
-
+    const canViewParams = checkPermission("View Parameters");
     const menuItems = [
         ...(canViewDashBoard
             ? [{
@@ -85,36 +90,41 @@ const AdminLayout = () => {
                 icon: labelMap['Dashboard'].icon,
                 label: labelMap['Dashboard'].label,
             }] : []),
-        {
-            key: 'airline',
-            icon: labelMap['Airlines'].icon,
-            label: labelMap['Airlines'].label,
-        },
-        {
-            key: 'plane',
-            icon: labelMap['Planes'].icon,
-            label: labelMap['Planes'].label,
-        },
-        {
-            key: 'city',
-            icon: labelMap['Cities'].icon,
-            label: labelMap['Cities'].label,
-        },
-        {
-            key: 'airport',
-            icon: labelMap['Airports'].icon,
-            label: labelMap['Airports'].label,
-        },
+        ...(canViewAirline
+            ? [{
+                key: 'airline',
+                icon: labelMap['Airlines'].icon,
+                label: labelMap['Airlines'].label,
+            },] : []),
+        ...(canViewPlane
+            ? [{
+                key: 'plane',
+                icon: labelMap['Planes'].icon,
+                label: labelMap['Planes'].label,
+            },] : []),
+        ...(canViewCity
+            ? [{
+                key: 'city',
+                icon: labelMap['Cities'].icon,
+                label: labelMap['Cities'].label,
+            },] : []),
+        ...(canViewAirport
+            ? [{
+                key: 'airport',
+                icon: labelMap['Airports'].icon,
+                label: labelMap['Airports'].label,
+            },] : []),
         {
             key: 'flight',
             icon: labelMap['Flights'].icon,
             label: labelMap['Flights'].label,
         },
-        {
-            key: 'seats',
-            icon: labelMap['Seats'].icon,
-            label: labelMap['Seats'].label,
-        },
+        ...(canViewSeat
+            ? [{
+                key: 'seats',
+                icon: labelMap['Seats'].icon,
+                label: labelMap['Seats'].label,
+            },] : []),
         ...(canViewAccount
             ? [{
                 key: 'accounts',
@@ -133,11 +143,12 @@ const AdminLayout = () => {
                 icon: labelMap['Tickets'].icon,
                 label: labelMap['Tickets'].label,
             }] : []),
-        {
-            key: 'setting',
-            icon: labelMap['Setting'].icon,
-            label: labelMap['Setting'].label,
-        },
+        ...(canViewParams
+            ? [{
+                key: 'setting',
+                icon: labelMap['Setting'].icon,
+                label: labelMap['Setting'].label,
+            },] : []),
         {
             key: 'profile',
             icon: labelMap['Profile'].icon,

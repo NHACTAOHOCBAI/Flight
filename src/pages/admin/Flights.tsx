@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { ProTable } from "@ant-design/pro-components";
 import type { ProColumns } from "@ant-design/pro-components";
-import { Button, DatePicker, Form, Input, message, Popconfirm, Select } from "antd";
-import { fetchAllFlights } from "../../services/flight";
+import { Button, DatePicker, Form, Input, message, Modal, Popconfirm, Select, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { fetchAllFlights, importFlights } from "../../services/flight";
 import DetailFlight from "../../components/flight/DetailFlight";
 import NewFlight from "../../components/flight/NewFlight";
 import UpdateFlight from "../../components/flight/UpdateFlight";
@@ -19,6 +20,8 @@ import dayjs from "dayjs";
 import { LuEye } from "react-icons/lu";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setFlight } from "../../redux/features/flight/flightSlide";
+import * as XLSX from "xlsx";
+import { IoCloudDownloadOutline } from "react-icons/io5";
 const Flights = () => {
     const canCreate = checkPermission("Create Flight");
     const canUpdate = checkPermission("Update Flight");
@@ -34,6 +37,8 @@ const Flights = () => {
         maxStopTime: 0,
         refundRate: 0
     });
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+    const [importFlightsData, setImportFlightsData] = useState<FlightRequest[]>([]);
     const navigate = useNavigate();
     const { planeSelectOptions, airportSelectOptions, seatSelectOptions } = useSelectOptions();
     const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -47,7 +52,38 @@ const Flights = () => {
     const [flightsData, setFlightsData] = useState<Flight[]>([]);
     const [originalFlightsData, setOriginalFlightsData] = useState<Flight[]>([]); // Lưu dữ liệu gốc
     const { mutate } = useDeleteFlight();
+    const seatTemplate = JSON.stringify([
+        {
+            "seatId": 1,
+            "quantity": 50
+        }
+    ])
+    console.log(seatTemplate)
+    const downloadExcel = () => {
+        // Dữ liệu mẫu cho file Excel
+        const data = [
+            {
+                "planeId": 1,
+                "departureAirportId": 1,
+                "arrivalAirportId": 2,
+                "departureDate": "2025-06-20",
+                "arrivalDate": "2025-06-20",
+                "departureTime": "08:00",
+                "arrivalTime": "10:00",
+                "originPrice": 1000000,
+                "interAirports": [],
+                "seats": seatTemplate
+            }
+        ];
 
+        // Tạo worksheet từ dữ liệu
+        const ws = XLSX.utils.json_to_sheet(data);
+        // Tạo workbook và thêm worksheet
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        // Tạo file Excel và tải xuống
+        XLSX.writeFile(wb, 'Mutil_Upload_Template.xlsx');
+    };
     const fetchData = async () => {
         setIsLoadingData(true);
         try {
@@ -74,7 +110,23 @@ const Flights = () => {
                 messageApi.success("Delete flight successfully");
             },
             onError: (error) => {
-                messageApi.error(error.message);
+                if (error instanceof Error) {
+                    if (error instanceof Error) {
+                        if (error instanceof Error) {
+                            if (error instanceof Error) {
+                                messageApi.error(error.message);
+                            } else {
+                                messageApi.error("An unknown error occurred.");
+                            }
+                        } else {
+                            messageApi.error("An unknown error occurred.");
+                        }
+                    } else {
+                        messageApi.error("An unknown error occurred.");
+                    }
+                } else {
+                    messageApi.error("Import error occurred.");
+                }
             },
         });
     };
@@ -85,6 +137,229 @@ const Flights = () => {
         navigate("/admin/booking");
     };
 
+    const handleFileUpload = async (file: File) => {
+        try {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const data = e.target?.result;
+                const workbook = XLSX.read(data, { type: "binary", cellDates: true, dateNF: "m/d/yyyy;@" });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { raw: false });
+
+                const flights: FlightRequest[] = jsonData.map((row: any, index: number) => {
+                    console.log(`Raw data row ${index + 2}:`, row); // Log raw data for each row
+
+                    // Handle date
+                    let departureDate = "";
+                    if (row.departureDate) {
+                        const parsedDate = dayjs(row.departureDate, ["M/D/YYYY", "YYYY-MM-DD", "MM/DD/YYYY", "DD-MM-YYYY"], true);
+                        departureDate = parsedDate.isValid() ? parsedDate.format("YYYY-MM-DD") : "";
+                        if (!departureDate) {
+                            messageApi.error(`Invalid departure date at row ${index + 2}: ${row.departureDate}`);
+                        }
+                    }
+
+                    let arrivalDate = "";
+                    if (row.arrivalDate) {
+                        const parsedDate = dayjs(row.arrivalDate, ["M/D/YYYY", "YYYY-MM-DD", "MM/DD/YYYY", "DD-MM-YYYY"], true);
+                        arrivalDate = parsedDate.isValid() ? parsedDate.format("YYYY-MM-DD") : "";
+                        if (!arrivalDate) {
+                            messageApi.error(`Invalid arrival date at row ${index + 2}: ${row.arrivalDate}`);
+                        }
+                    }
+
+                    // Handle time
+                    let departureTime = "";
+                    if (row.departureTime) {
+                        const parsedTime = dayjs(row.departureTime, ["h:mm", "HH:mm", "h:mm:ss", "HH:mm:ss", "h:mm A", "h:mm:ss A"], true);
+                        departureTime = parsedTime.isValid() ? parsedTime.format("HH:mm:ss") : "";
+                        if (!departureTime) {
+                            messageApi.error(`Invalid departure time at row ${index + 2}: ${row.departureTime}`);
+                        }
+                    }
+
+                    let arrivalTime = "";
+                    if (row.arrivalTime) {
+                        const parsedTime = dayjs(row.arrivalTime, ["h:mm", "HH:mm", "h:mm:ss", "HH:mm:ss", "h:mm A", "h:mm:ss A"], true);
+                        arrivalTime = parsedTime.isValid() ? parsedTime.format("HH:mm:ss") : "";
+                        if (!arrivalTime) {
+                            messageApi.error(`Invalid arrival time at row ${index + 2}: ${row.arrivalTime}`);
+                        }
+                    }
+
+                    // Handle interAirports
+                    let interAirports: { airportId: number; departureDateTime: string; arrivalDateTime: string; note: string }[] = [];
+                    if (row.interAirports) {
+                        try {
+                            const parsedInterAirports = JSON.parse(row.interAirports);
+                            interAirports = parsedInterAirports.map((ia: any) => ({
+                                airportId: ia.airportId || 0,
+                                departureDateTime: ia.departureDateTime || "",
+                                arrivalDateTime: ia.arrivalDateTime || "",
+                                note: ia.note || "",
+                            }));
+                        } catch {
+                            messageApi.error(`Invalid intermediate airports data at row ${index + 2}: ${row.interAirports}`);
+                        }
+                    }
+
+                    // Handle seats
+                    let seats: {
+                        seatId: number;
+                        quantity: number;
+                    }[] = [];
+                    if (row.seats) {
+                        console.log(`Raw seats data row ${index + 2}:`, row.seats); // Log raw seats data
+                        try {
+                            let parsedSeats;
+                            if (typeof row.seats === "string") {
+                                parsedSeats = JSON.parse(row.seats);
+                            } else if (Array.isArray(row.seats)) {
+                                parsedSeats = row.seats; // If already an array, no need to parse
+                            } else {
+                                throw new Error("Seats data is neither a JSON string nor an array");
+                            }
+                            seats = parsedSeats.map((seat: {
+                                seatId: number;
+                                quantity: number;
+                            }) => {
+                                if (!seat.seatId || typeof seat.seatId !== "number") {
+                                    throw new Error("seatId is invalid or not a number");
+                                }
+                                return {
+                                    seatId: seat.seatId,
+                                    quantity: seat.quantity,
+                                };
+                            });
+                        } catch (e) {
+                            if (e instanceof Error) {
+                                messageApi.error(`Invalid seats data at row ${index + 2}: ${row.seats} - Error: ${e.message}`);
+                            } else {
+                                messageApi.error(`Invalid seats data at row ${index + 2}: ${row.seats} - Unknown error`);
+                            }
+                        }
+                    }
+
+                    return {
+                        flightCode: row.flightCode || "",
+                        planeId: Number(row.planeId) || 0,
+                        departureAirportId: Number(row.departureAirportId) || 0,
+                        arrivalAirportId: Number(row.arrivalAirportId) || 0,
+                        departureDate,
+                        arrivalDate,
+                        departureTime,
+                        arrivalTime,
+                        originPrice: Number(row.originPrice) || 0,
+                        interAirports,
+                        seats,
+                    };
+                });
+
+                // Check and log invalid flights
+                const invalidFlights = flights.filter(
+                    (flight) =>
+                        !flight.planeId ||
+                        !flight.departureAirportId ||
+                        !flight.arrivalAirportId ||
+                        !flight.departureDate ||
+                        !flight.arrivalDate ||
+                        !flight.departureTime ||
+                        !flight.arrivalTime ||
+                        flight.originPrice < 0 ||
+                        !flight.seats.every((seat) => seat.seatId && seat.quantity !== undefined)
+                );
+
+                if (invalidFlights.length > 0) {
+                    invalidFlights.forEach((flight, index) => {
+                        console.log(`Invalid flight ${index + 1}:`, flight);
+                        if (!flight.departureDate) messageApi.error(`Invalid departure date at row ${index + 2}`);
+                        if (!flight.arrivalDate) messageApi.error(`Invalid arrival date at row ${index + 2}`);
+                        if (!flight.departureTime) messageApi.error(`Invalid departure time at row ${index + 2}`);
+                        if (!flight.arrivalTime) messageApi.error(`Invalid arrival time at row ${index + 2}`);
+                        if (!flight.seats.every((seat) => seat.seatId && seat.quantity !== undefined))
+                            messageApi.error(`Invalid seats data at row ${index + 2}`);
+                    });
+                    return;
+                }
+
+                // Save valid data to state and show modal
+                setImportFlightsData(flights);
+                setIsImportModalOpen(true);
+            };
+
+            reader.readAsBinaryString(file);
+            return false; // Prevent Upload component from sending request automatically
+        } catch (error) {
+            messageApi.error("Unable to process the file. Please try again.");
+            console.error("File import error:", error);
+            return false;
+        }
+    };
+    // Hàm xác nhận import
+    const handleConfirmImport = async () => {
+        try {
+            await importFlights(importFlightsData);
+            messageApi.success("Flights imported successfully!");
+            handleCancelImport()
+            fetchData(); // Làm mới dữ liệu
+        } catch (error) {
+            messageApi.error(error.message);
+            console.error("Import error:", error);
+        }
+    };
+
+    // Hàm hủy import
+    const handleCancelImport = () => {
+        setIsImportModalOpen(false);
+        setImportFlightsData([]);
+    };
+    // Cột cho bảng dữ liệu import
+    const importColumns: ProColumns<FlightRequest>[] = [
+        {
+            title: "Plane ID",
+            dataIndex: "planeId",
+        },
+        {
+            title: "Departure Airport ID",
+            dataIndex: "departureAirportId",
+        },
+        {
+            title: "Arrival Airport ID",
+            dataIndex: "arrivalAirportId",
+        },
+        {
+            title: "Departure Date",
+            dataIndex: "departureDate",
+        },
+        {
+            title: "Arrival Date",
+            dataIndex: "arrivalDate",
+        },
+        {
+            title: "Departure Time",
+            dataIndex: "departureTime",
+        },
+        {
+            title: "Arrival Time",
+            dataIndex: "arrivalTime",
+        },
+        {
+            title: "Price",
+            dataIndex: "originPrice",
+            render: (price) => `${new Intl.NumberFormat('en-US').format(Number(price) || 0)} VND`,
+        },
+        {
+            title: "Intermediate Airports",
+            dataIndex: "interAirports",
+            render: (_dom, entity) => entity.interAirports && entity.interAirports.length ? JSON.stringify(entity.interAirports) : "None",
+        },
+        {
+            title: "Seats",
+            dataIndex: "seats",
+            render: (_dom, entity) => JSON.stringify(entity.seats),
+        },
+    ];
     const columns: ProColumns<Flight>[] = [
         {
             title: "ID",
@@ -138,7 +413,7 @@ const Flights = () => {
             render: (_text, record) => {
                 const departureDateTime = new Date(`${record.departureDate}T${record.departureTime}`);
                 const now = new Date();
-                const totalRemaining = record.seats.reduce((sum, seat) => sum + seat.remainingTickets, 0);
+                const totalRemaining = record.seats.reduce((sum, seat) => sum + seat.quantity, 0);
 
                 if (departureDateTime < now) {
                     return <div className="text-red-500 font-semibold">Expired</div>;
@@ -159,7 +434,7 @@ const Flights = () => {
             onFilter: (value: boolean | React.Key, record: Flight) => {
                 const departureDateTime = new Date(`${record.departureDate}T${record.departureTime}`);
                 const now = new Date();
-                const totalRemaining = record.seats.reduce((sum, seat) => sum + seat.remainingTickets, 0);
+                const totalRemaining = record.seats.reduce((sum, seat) => sum + seat.quantity, 0);
 
                 if (value === "Expired") {
                     return departureDateTime < now;
@@ -185,7 +460,7 @@ const Flights = () => {
                 bookingDeadline.setDate(bookingDeadline.getDate() - params.latestBookingDay);
                 const isBookingExpired = now > bookingDeadline;
 
-                const totalRemaining = value.seats.reduce((sum, seat) => sum + seat.remainingTickets, 0);
+                const totalRemaining = value.seats.reduce((sum, seat) => sum + seat.quantity, 0);
                 const canBooking = totalRemaining > 0 && !isBookingExpired;
                 const allowEditAndDelete = !isFlightExpired;
 
@@ -334,6 +609,19 @@ const Flights = () => {
                                         onClick={() => setIsNewOpen(true)}
                                     >
                                         {icons.plus} New Flight
+                                    </Button>,
+                                    <Upload
+                                        key="import"
+                                        accept=".xlsx,.csv"
+                                        showUploadList={false}
+                                        beforeUpload={handleFileUpload}
+                                    >
+                                        <Button type="primary" icon={<UploadOutlined />}>
+                                            Import Flights
+                                        </Button>
+                                    </Upload>,
+                                    <Button type="primary" onClick={() => downloadExcel()} icon={<IoCloudDownloadOutline />}>
+                                        Download Template
                                     </Button>
                                 );
                             }
@@ -352,6 +640,24 @@ const Flights = () => {
                     <div><span className="text-red-500">Note:</span> {`Only applicable for bookings made at least ${params.latestBookingDay} day(s) before departure`}</div>
                 </div>
             </div>
+            <Modal
+                title="Preview Flights to Import"
+                open={isImportModalOpen}
+                onOk={handleConfirmImport}
+                onCancel={handleCancelImport}
+                okText="Confirm Import"
+                cancelText="Cancel"
+                width={1200}
+            >
+                <ProTable<FlightRequest>
+                    columns={importColumns}
+                    dataSource={importFlightsData}
+                    rowKey="flightCode"
+                    search={false}
+                    pagination={{ pageSize: 5 }}
+                    options={{ density: false, reload: false, setting: false }}
+                />
+            </Modal>
             <DetailFlight
                 isDetailOpen={isDetailOpen}
                 setIsDetailOpen={setIsDetailOpen}

@@ -10,7 +10,6 @@ import Loading from '../../components/Loading';
 
 
 const Booking = () => {
-    // const [isPending, setIsPending] = useState(false)
     const flight: Flight = JSON.parse(localStorage.getItem('booked_flight') || JSON.stringify({
         id: 0,
         flightCode: "",

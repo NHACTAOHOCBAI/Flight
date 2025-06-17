@@ -67,23 +67,28 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "airlines",
-                        element: <Airlines />
+                        element: <ProtectedRoute permissionToCheck="View Airline" />,
+                        children: [{ index: true, element: <Airlines /> }]
                     },
+
                     {
                         path: "airports",
-                        element: <Airports />
+                        element: <ProtectedRoute permissionToCheck="View Airport" />,
+                        children: [{ index: true, element: <Airports /> }]
                     },
                     {
                         path: "cities",
-                        element: <Cities />
+                        element: <ProtectedRoute permissionToCheck="View City" />,
+                        children: [{ index: true, element: <Cities /> }]
                     },
                     {
                         path: "flights",
-                        element: <Flights />
+                        element: <Flights /> // Giữ nguyên, không áp dụng mẫu
                     },
                     {
                         path: "planes",
-                        element: <Planes />
+                        element: <ProtectedRoute permissionToCheck="View Plane" />,
+                        children: [{ index: true, element: <Planes /> }]
                     },
                     {
                         path: "roles",
@@ -92,15 +97,17 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "seats",
-                        element: <Seats />
+                        element: <ProtectedRoute permissionToCheck="View Seat" />,
+                        children: [{ index: true, element: <Seats /> }]
                     },
                     {
                         path: "setting",
-                        element: <Setting />
+                        element: <ProtectedRoute permissionToCheck="View Parameters" />,
+                        children: [{ index: true, element: <Setting /> }]
                     },
                     {
                         path: "booking",
-                        element: <Booking />
+                        element: <Booking /> // Giữ nguyên, không áp dụng mẫu
                     },
                     {
                         path: "tickets",

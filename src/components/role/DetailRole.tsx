@@ -86,16 +86,18 @@ const DetailRole = ({ isDetailOpen, setIsDetailOpen, detailRole }: Props) => {
                         <div className="flex  gap-[10px] flex-wrap">
                             {pages.map((page) => {
                                 const { icon, color } = getPermissionIconAndColor(page.name);
-                                return (
-                                    <Tag
-                                        key={page.id}
-                                        color={color}
-                                        style={{ display: "flex", alignItems: "center", gap: 8, width: "fit-content" }}
-                                    >
-                                        {icon}
-                                        <span>{page.name}</span>
-                                    </Tag>
-                                );
+                                if (icon) {
+                                    return (
+                                        <Tag
+                                            key={page.id}
+                                            color={color}
+                                            style={{ display: "flex", alignItems: "center", gap: 8, width: "fit-content" }}
+                                        >
+                                            {icon}
+                                            <span>{page.name}</span>
+                                        </Tag>
+                                    );
+                                }
                             })}
                         </div>
                     </div>

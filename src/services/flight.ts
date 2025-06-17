@@ -19,4 +19,7 @@ const getFlightCount = async (period: "year" | "month") => {
 const getFlightById = (id: number) => {
     return axiosInstance.get(`/flights/${id}`)
 }
-export { fetchAllFlights, createFlight, updateFlight, deleteFlight, getFlightCount, getFlightById }
+const importFlights = async (importFlightsData: FlightRequest[]) => {
+    return axiosInstance.post(`/flights/batch`, { flights: importFlightsData })
+}
+export { fetchAllFlights, createFlight, updateFlight, deleteFlight, getFlightCount, getFlightById, importFlights }
