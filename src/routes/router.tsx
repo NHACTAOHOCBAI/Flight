@@ -83,7 +83,8 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "flights",
-                        element: <Flights /> // Giữ nguyên, không áp dụng mẫu
+                        element: <ProtectedRoute permissionToCheck="View Flight" />,
+                        children: [{ index: true, element: <Flights /> }] // Giữ nguyên, không áp dụng mẫu
                     },
                     {
                         path: "planes",
@@ -102,7 +103,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "setting",
-                        element: <ProtectedRoute permissionToCheck="View Parameters" />,
+                        element: <ProtectedRoute permissionToCheck="View Parameter" />,
                         children: [{ index: true, element: <Setting /> }]
                     },
                     {

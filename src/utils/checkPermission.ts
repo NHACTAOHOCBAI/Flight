@@ -31,46 +31,43 @@ const permissionMap: Record<string, string> = {
     'PUT_/airports/**': 'Update Airport',
     'DELETE_/airports/**': 'Delete Airport',
 
-    'VIEW_/cities/**': 'View City',
+    'GET_/cities/**': 'View City',
     'POST_/cities/**': 'Create City',
     'PUT_/cities/**': 'Update City',
     'DELETE_/cities/**': 'Delete City',
 
-    'VIEW_/airlines/**': 'View Airline',
+    'GET_/airlines/**': 'View Airline',
     'POST_/airlines/**': 'Create Airline',
     'PUT_/airlines/**': 'Update Airline',
     'DELETE_/airlines/**': 'Delete Airline',
 
-    'VIEW_/flights/**': 'View Flight',
+    'GET_/flights/**': 'View Flight',
     'POST_/flights/**': 'Create Flight',
     'PUT_/flights/**': 'Update Flight',
     'DELETE_/flights/**': 'Delete Flight',
 
-    'View_/planes/**': 'View Plane',
+    'GET_/planes/**': 'View Plane',
     'POST_/planes/**': 'Create Plane',
     'PUT_/planes/**': 'Update Plane',
     'DELETE_/planes/**': 'Delete Plane',
 
-    'View_/parameters/**': 'View Parameter',
+    'GET_/parameters/**': 'View Parameter',
     'PUT_/parameters/**': 'Update Parameter',
 
     'GET_/reports/annual-revenue/**': 'Get Anuual Revenue Report',
     'GET_/reports/monthly-revenue/**/**': 'Get Monthly Revenue Report'
 };
 function checkPermission(permissionToCheck: string, roles?: Role): boolean {
-    if (permissionToCheck === "View Dashboard") {
-        const roleJson = localStorage.getItem('permission');
-        if (!roleJson) return false;
-        const role = JSON.parse(roleJson);
-        if (role.id === 2)
-            return false;
-        return true
+    const roleJson = localStorage.getItem('permission');
+    if (!roleJson) return false;
+    const role = JSON.parse(roleJson);
+    if (role.id === 2) {
+        if (permissionToCheck === "View Flight")
+            return true;
+        return false
     }
     let pages = [];
     if (!roles) {
-        const roleJson = localStorage.getItem('permission');
-        if (!roleJson) return false;
-        const role = JSON.parse(roleJson);
         pages = role.pages || [];
     }
     else

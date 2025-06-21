@@ -83,7 +83,8 @@ const AdminLayout = () => {
     const canViewAirport = checkPermission("View Airport");
     const canViewSeat = checkPermission("View Seat");
     const canViewTicket = checkPermission("View Ticket");
-    const canViewParams = checkPermission("View Parameters");
+    const canViewParams = checkPermission("View Parameter");
+    const canViewFlight = checkPermission("View Flight");
     const menuItems = [
         ...(canViewDashBoard
             ? [{
@@ -115,11 +116,12 @@ const AdminLayout = () => {
                 icon: labelMap['Airports'].icon,
                 label: labelMap['Airports'].label,
             },] : []),
-        {
-            key: 'flights',
-            icon: labelMap['Flights'].icon,
-            label: labelMap['Flights'].label,
-        },
+        ...(canViewFlight
+            ? [{
+                key: 'flights',
+                icon: labelMap['Flights'].icon,
+                label: labelMap['Flights'].label,
+            },] : []),
         ...(canViewSeat
             ? [{
                 key: 'seats',
