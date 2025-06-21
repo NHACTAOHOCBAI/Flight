@@ -66,6 +66,8 @@ function checkPermission(permissionToCheck: string, roles?: Role): boolean {
             return true;
         return false
     }
+    if (permissionToCheck)
+        return true;
     let pages = [];
     if (!roles) {
         pages = role.pages || [];
